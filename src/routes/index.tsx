@@ -3,6 +3,7 @@ import LoginPage from "../pages/LoginPage";
 import MainLayout from "../layout/MainLayout";
 import WaterMonitoringPage from "../pages/WaterMonitoringPage";
 import ElectricMonitoringPage from "../pages/ElectricMonitoringPage";
+import SettingsPage from "../pages/SettingsPage";
 
 const routes = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ const routes = createBrowserRouter([
       },
       {
         path: "/settings",
-        element: (<h1>Settings</h1>)
+        element: (<SettingsPage />)
       },
       {
         path: "*",

@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../states/auth";
 import { useNavigate } from "react-router";
 import { hasToken } from "../utils/tokenHandler";
+import { useWaterMonitoring } from "../states/water-monitoring";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -17,15 +18,9 @@ export default function LoginPage() {
 
   const login = useAuth((state) => state.login);
   const token = useAuth((state) => state.token);
-  const error = useAuth((state) => state.error);
+  const errorAuth = useAuth((state) => state.error);
+  const errorToken = useWaterMonitoring((state) => state.error);
 
-
-  // useEffect(() => {
-  //   if(hasToken()) {
-  //     navigate("/");
-  //   }
-  // }, [navigate])
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,12 +39,12 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    if (hasToken()) {
+    if (hasToken() && !errorToken) {
       navigate("/");
     } else {
       if ( window.location.pathname !== "/login" ) navigate("/login");
     }
-  }, [token, navigate]);
+  }, [token, navigate, errorToken]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center pb-12 sm:px-6 lg:px-8">
@@ -67,9 +62,9 @@ export default function LoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="p-4 mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900/50 dark:text-red-400 dark:border-red-500 rounded">
-                <div className="text-sm">{error}</div>
+            {errorAuth || errorToken && (
+              <div className="p-4 mb-4 bg-red-100 border-l-4 border-red-500 text-white dark:bg-red-900/50 dark:text-red-400 dark:border-red-500 rounded">
+                <div className="text-sm">{errorAuth || errorToken}</div>
               </div>
             )}
             <div>

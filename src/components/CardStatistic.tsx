@@ -24,10 +24,10 @@ export default function CardStatistic({
           <h2 className="text-xs text-primary-200">{subheading}</h2>
           <div className="flex flex-row items-center space-x-2">
             <h4 className="text-2xl font-bold text-white">{value}</h4>
-            <span className="relative flex h-2 w-2">
+            {/* <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-            </span>
+            </span> */}
           </div>
         </div>
       </div>

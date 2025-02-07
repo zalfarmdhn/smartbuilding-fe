@@ -12,19 +12,36 @@ interface IWaterData {
 }
 
 interface WaterMonitoringState {
-  waterData: IWaterData | null;
+  waterData: IWaterData;
   waterChart: {
-    dataPenggunaanMingguan: Array<{ pipa: string; volume: number }>;
-    dataPenggunaanTahunan: Array<{ pipa: string; volume: number }>;
-  } | null;
-  error: string | null;
-  getWaterData: () => void;
+    DataPenggunaanHarian: {
+      [key: string]: Array<{ pipa: string; volume: string }>;
+    };
+    DataPenggunaanMingguan: {
+      [key: string]: Array<{ pipa: string; volume: string }>;
+    };
+    DataPenggunaanTahunan: {
+      [key: string]: Array<{ pipa: string; volume: string }>;
+    };
+  };
+  error: string;
+  getWaterData: () => Promise<void>;
 }
 
 export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
-  waterData: null,
-  waterChart: null,
-  error: null,
+  waterData: {
+    KapasitasToren: '',
+    AirKeluar: '',
+    AirMasuk: '',
+    VolumeSensor: '',
+    UpdatedAt: '',
+  },
+  waterChart: {
+    DataPenggunaanHarian: {},
+    DataPenggunaanMingguan: {},
+    DataPenggunaanTahunan: {},
+  },
+  error: '',
   getWaterData: async () => {
     try {
       const response = await waterMonitoring.getMonitoringAir();
@@ -42,8 +59,9 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
       });
       set({
         waterChart : {
-          dataPenggunaanMingguan: response.DataPenggunaanMingguan,
-          dataPenggunaanTahunan: response.DataPenggunaanTahunan,
+          DataPenggunaanHarian: response.DataPenggunaanHarian,
+          DataPenggunaanMingguan: response.DataPenggunaanMingguan,
+          DataPenggunaanTahunan: response.DataPenggunaanTahunan,
         }
       })
       setDataMonitoring(JSON.stringify(response));

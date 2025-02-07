@@ -10,11 +10,15 @@ export interface WaterMonitoringStateRoot {
   UpdatedAt: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface DataPenggunaanHarian {}
+export interface DataPenggunaanHarian {
+  [key: string]: Array<{
+    pipa: string
+    volume: string
+  }>
+}
 
 export interface DataPenggunaanMingguan {
-  [key: `Minggu ${number}`]: Array<{
+  [key: string]: Array<{
     pipa: string
     volume: string
   }>

@@ -5,20 +5,19 @@ import CardStatistic from "../components/CardStatistic";
 import ElectricalIcon from "../components/icons/electrical-icon";
 import RupiahIcon from "../components/icons/rupiah-icon";
 import { getDataListrik, getSpecificDataListrik } from "../utils/backupData";
+import ElectricityGraph from "../components/ElectricityGraph";
 
 export default function ElectricMonitoringPage() {
   const [loading, setIsLoading] = useState(true);
   
   const electricData = useElectricMonitoring((state) => state.electricData);
 
-  if (loading) {
-      if (electricData) {
-        setIsLoading(false)
-      } else if(getDataListrik()) {
-        setIsLoading(false);
-      };
+  if (loading && electricData && getDataListrik()) {
+      setIsLoading(false);
       return <p>Loading...</p>;
     }
+
+  const totalWatt = electricData?.TotalWatt ?? getSpecificDataListrik("TotalWatt");
 
   return (
     <div className="w-[1200px] h-[442px] flex flex-col gap-4">
@@ -32,7 +31,7 @@ export default function ElectricMonitoringPage() {
         <div className="flex flex-col gap-2 items-center justify-center text-white w-full">
           <ElectricalIcon width={`60`} height={`60`} />
           <h1 className="text-2xl font-semibold">Total Watt</h1>
-          <h1 className="text-2xl font-bold">{electricData?.TotalWatt ?? getSpecificDataListrik("TotalWatt")}</h1>
+          <h1 className="text-2xl font-bold">{totalWatt}</h1>
           <p className="bg-[#273C97] p-2 rounded-md text-sm">Terakhir diupdate : <span className="font-bold">{formatDate(electricData?.UpdatedAt ?? getSpecificDataListrik("UpdatedAt"))}</span></p>
         </div>
       </div>
@@ -41,19 +40,19 @@ export default function ElectricMonitoringPage() {
           <CardStatistic
             className="w-[298px]"
             icon={<ElectricalIcon />}
-            heading="Daya Listrik"
+            heading="Total Daya Listrik"
             subheading="Lantai 1"
             value={electricData?.TotalDayaListrikLT1 ?? getSpecificDataListrik("TotalDayaListrikLT1")} />
           <CardStatistic
             className="w-[298px]"
             icon={<ElectricalIcon />}
-            heading="Daya Listrik" 
+            heading="Total Daya Listrik" 
             subheading="Lantai 2"
             value={electricData?.TotalDayaListrikLT2 ?? getSpecificDataListrik("TotalDayaListrikLT2")} />
           <CardStatistic
             className="w-[298px]"
             icon={<ElectricalIcon />}
-            heading="Daya Listrik"
+            heading="Total Daya Listrik"
             subheading="Lantai 3"
             value={electricData?.TotalDayaListrikLT3 ?? getSpecificDataListrik("TotalDayaListrikLT3")} />
         </div>
@@ -62,12 +61,12 @@ export default function ElectricMonitoringPage() {
           <CardStatistic
             className="w-[298px]"
             icon={<ElectricalIcon />}
-            heading="Daya Listrik"
+            heading="Total Daya Listrik"
             subheading="Lantai 4"
             value={electricData?.TotalDayaListrikLT4 ?? getSpecificDataListrik("TotalDayaListrikLT4")} />
           <CardStatistic
             className="w-[298px]"
-            icon={<ElectricalIcon />}
+            icon={<RupiahIcon />}
             heading="Biaya Pemakaian"
             subheading="Lantai 1"
             value={electricData?.BiayaPemakaianLT1 ?? getSpecificDataListrik("BiayaPemakaianLT1")} />
@@ -94,6 +93,8 @@ export default function ElectricMonitoringPage() {
             value={electricData?.BiayaPemakaianLT4 ?? getSpecificDataListrik("BiayaPemakaianLT4")} />
         </div>
       </div>
+      {/* Section Grafik Penggunaan Listrik */}
+      <ElectricityGraph />
     </div>
   )
 }
