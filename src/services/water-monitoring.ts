@@ -1,10 +1,10 @@
 import { AxiosError, AxiosResponse } from "axios";
 import init from ".";
 
-export const getMonitoringAir = async (idBangunan: number | null): Promise<AxiosResponse['data']> => {
+export const getMonitoringAir = async (idBangunan: number): Promise<AxiosResponse['data']> => {
   try {
-    if (idBangunan === null) {
-      throw new Error(`ID bangunan tidak ditemukan`);
+    if (typeof idBangunan !== "number") {
+      throw new Error(`ID bangunan tidak ditemukan atau invalid`);
     }
     const response = await init.get(`/monitoring_air/${idBangunan}`, {
       headers: {

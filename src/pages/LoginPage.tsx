@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 import { useAuth } from "../states/auth";
-import { useNavigate } from "react-router";
 // import { hasToken } from "../utils/tokenHandler";
 // import { useWaterMonitoring } from "../states/water-monitoring";
 // import { useSettings } from "../states/settings";

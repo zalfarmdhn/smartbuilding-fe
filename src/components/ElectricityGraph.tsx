@@ -4,12 +4,16 @@ import { useElectricMonitoring } from "../states/electricity-monitoring";
 import ButtonGroupComponent from "./ButtonGroup";
 import { ReusableDropdown } from "./DropdownLogic";
 
+type DayType = "Senin" | "Selasa" | "Rabu" | "Kamis" | "Jumat" | "Sabtu" | "Minggu";
+type WeekType = "Minggu 1" | "Minggu 2" | "Minggu 3" | "Minggu 4";
+type MonthType = "Januari" | "Februari" | "Maret" | "April" | "Mei" | "Juni" | "Juli" | "Agustus" | "September" | "Oktober" | "November" | "Desember";
+
 export default function ElectricityGraph() {
   const [labels, setLabels] = useState<string[]>([]);
   const [chartData, setChartData] = useState<string[]>([]);
-  const [activeMonth, setActiveMonth] = useState<string>("Januari");
-  const [activeWeek, setActiveWeek] = useState<string>("Minggu 1");
-  const [activeDay, setActiveDay] = useState<string>("Senin");
+  const [activeMonth, setActiveMonth] = useState<MonthType>("Januari");
+  const [activeWeek, setActiveWeek] = useState<WeekType>("Minggu 1");
+  const [activeDay, setActiveDay] = useState<DayType>("Senin");
   const [activeTab, setActiveTab] = useState<number>(0);
 
   const electricalChart = useElectricMonitoring((state) => state.electricChart);
@@ -95,19 +99,19 @@ export default function ElectricityGraph() {
         <ReusableDropdown
           items={day}
           activeValue={activeDay}
-          onSelect={setActiveDay}
+          onSelect={(value) => setActiveDay(value as DayType)}
           isVisible={activeTab === 0}
         />
         <ReusableDropdown
           items={week}
           activeValue={activeWeek}
-          onSelect={setActiveWeek}
+          onSelect={(value) => setActiveWeek(value as WeekType)}
           isVisible={activeTab === 1}
         />
         <ReusableDropdown
           items={month}
           activeValue={activeMonth}
-          onSelect={setActiveMonth}
+          onSelect={(value) => setActiveMonth(value as MonthType)}
           isVisible={activeTab === 2}
         />
       </div>
