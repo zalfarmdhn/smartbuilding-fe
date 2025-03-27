@@ -1,10 +1,11 @@
 import axios from "axios"
 
-const API_URL = "http://127.0.0.1:3000/api"
+const API_URL = import.meta.env.VITE_API_URL
+// const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
 const init = axios.create({
   baseURL: API_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json"
   }

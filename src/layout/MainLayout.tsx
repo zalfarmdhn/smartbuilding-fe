@@ -1,77 +1,63 @@
 import { Outlet, ScrollRestoration, useNavigate } from "react-router";
-import Sidebar from "../components/Sidebar";
+import SidebarComponent from "../components/SidebarComponent";
 import { useEffect, useState } from "react";
 import { hasToken } from "../utils/tokenHandler";
 import { useWaterMonitoring } from "../states/water-monitoring";
 import { useElectricMonitoring } from "../states/electricity-monitoring";
-import { getSettings } from "../services/settings";
 import { formatSeconds } from "../utils/formatSeconds";
+import { useSettings } from "../states/settings";
 
 export default function MainLayout() {
+  const [loading, setLoading] = useState<boolean>(true);
   const getWaterData = useWaterMonitoring((state) => state.getWaterData);
-  const getElectricData = useElectricMonitoring((state) => state.getElecticData);
-  const error = useWaterMonitoring((state) => state.error);
+  const getElectricData = useElectricMonitoring(
+    (state) => state.getElectricData
+  );
 
   const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [scheduler, setScheduler] = useState<number>(30000);
+  const getSettings = useSettings((state) => state.getSettings);
+  const scheduler = useSettings((state) => state.scheduler);
+  console.log(`ini scheduler`, scheduler);
 
-  console.log(`tampilan error ${error}`);
+  // Render pertama untuk inital data pada mount
+  useEffect(() => {
+    const initialFetch = async () => {
+      await getSettings();
+      await Promise.all([getWaterData(), getElectricData()]);
+      setLoading(false);
+    };
+
+    initialFetch();
+  }, [getSettings, getWaterData, getElectricData]);
+
+  // useEffect kedua untuk fetch data setiap interval sekian detik
+  useEffect(() => {
+    const fetchData = async () => {
+      await Promise.all([getWaterData(), getElectricData()]);
+      
+    };
+
+    const interval = setInterval(fetchData, formatSeconds(scheduler || 30000));
+    return () => clearInterval(interval);
+  }, [getWaterData, getElectricData, scheduler, navigate]);
 
   useEffect(() => {
-    // Fetch data on mount
-    getWaterData();
-    getElectricData();
-    
-    // Set interval to fetch every 30 secs
-    const fetchData = async () => {
-      await Promise.all([
-        getWaterData(),
-        getElectricData()
-      ]);
-    };
-
-    const initializeScheduler = async () => {
-      const settings = await getSettings();
-      setScheduler(settings.scheduler);
-    };
-
-    initializeScheduler();
-
-
-    if(error) {
+    if (!hasToken()) {
       navigate("/login");
       return;
     }
-    
-    const interval = setInterval(fetchData, formatSeconds(scheduler));
-    return () => clearInterval(interval);
-  }, [getWaterData, getElectricData, navigate, error, scheduler]);
 
-  useEffect(() => {
-    if (hasToken() && !error) {
-      // Ganti loading state ke false jika user ada token
-      setLoading(false);
-      // Merubah title website
-      document.title = "Smart Building Dashboard";
-    } else {
-      if (window.location.pathname !== "/login") {
-        setLoading(false);
-        navigate("/login");
-      }
-    }
-  }, [error, navigate]);
+    setLoading(false);
+  }, [navigate]);
 
-  if (loading || error) {
-    return (
-      <p>Loading...</p>
-    );
+  if (loading) {
+    return <p>Loading... MAIN LAYOUT INI</p>;
   }
 
   return (
     <>
-      <Sidebar />
-      <div className="p-4 pt-16 sm:ml-64 bg-[#E9EDEF] min-h-dvh">
+      <SidebarComponent />
+      <div className="p-4 pt-16 sm:ml-64 bg-[#E9EDEF] min-h-screen">
         <Outlet />
         <ScrollRestoration />
       </div>

@@ -3,11 +3,12 @@ import { Eye, EyeOff } from "lucide-react";
 
 import { useAuth } from "../states/auth";
 import { useNavigate } from "react-router";
-import { hasToken } from "../utils/tokenHandler";
-import { useWaterMonitoring } from "../states/water-monitoring";
+// import { hasToken } from "../utils/tokenHandler";
+// import { useWaterMonitoring } from "../states/water-monitoring";
+// import { useSettings } from "../states/settings";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,10 +18,14 @@ export default function LoginPage() {
   });
 
   const login = useAuth((state) => state.login);
-  const token = useAuth((state) => state.token);
+  // const token = useAuth((state) => state.token);
+  const isLoading = useAuth((state) => state.loading);
   const errorAuth = useAuth((state) => state.error);
-  const errorToken = useWaterMonitoring((state) => state.error);
+  // const errorToken = useWaterMonitoring((state) => state.error);
+  // const idBangunan = useSettings((state) => state.idBangunan);
+  const idBangunanResponse = useAuth((state) => state.idBangunanResponse);
 
+  console.log(`ini banyaknya id`, idBangunanResponse);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,16 +40,12 @@ export default function LoginPage() {
     if (!email || !password) return;
 
     // Call the login function
-    login(email, password);
-  };
-
-  useEffect(() => {
-    if (hasToken() && !errorToken) {
-      navigate("/");
-    } else {
-      if ( window.location.pathname !== "/login" ) navigate("/login");
+    try {
+      await login(email, password);
+    } catch (e) {
+      console.error(e);
     }
-  }, [token, navigate, errorToken]);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center pb-12 sm:px-6 lg:px-8">
@@ -62,9 +63,9 @@ export default function LoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {errorAuth || errorToken && (
+            {(errorAuth) && (
               <div className="p-4 mb-4 bg-red-100 border-l-4 border-red-500 text-white dark:bg-red-900/50 dark:text-red-400 dark:border-red-500 rounded">
-                <div className="text-sm">{errorAuth || errorToken}</div>
+              <div className="text-sm">{errorAuth && "Terjadi kesalahan, silahkan coba kembali"}</div>
               </div>
             )}
             <div>
@@ -118,36 +119,12 @@ export default function LoginPage() {
               </div>
               <div className="text-red-500 text-xs mt-1">{validationError.password}</div>
             </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
-                  Forgot your password?
-                </a>
-              </div>
-            </div>
-
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600">
-                Sign in
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isLoading}>
+                {isLoading ? "Loading..." : "Sign in"}
               </button>
             </div>
           </form>

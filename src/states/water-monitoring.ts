@@ -1,14 +1,21 @@
 import { create } from "zustand";
 import waterMonitoring from "../services/water-monitoring";
-import { setDataMonitoring } from "../utils/backupData";
+import { getIdBangunan, setDataMonitoring } from "../utils/backupData";
 import { AxiosError } from "axios";
 
 interface IWaterData {
-  KapasitasToren: string;
+  KapasitasToren: IKapasitasToren[];
   AirKeluar: string;
   AirMasuk: string;
-  VolumeSensor: string;
   UpdatedAt: string;
+}
+
+interface IKapasitasToren {
+  nama: string;
+  kapasitas: string;
+  kapasitas_toren: string;
+  volume_sensor: string;
+  created_at: string;
 }
 
 interface WaterMonitoringState {
@@ -25,15 +32,15 @@ interface WaterMonitoringState {
     };
   };
   error: string;
+  loading: boolean;
   getWaterData: () => Promise<void>;
 }
 
 export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
   waterData: {
-    KapasitasToren: '',
+    KapasitasToren: [],
     AirKeluar: '',
     AirMasuk: '',
-    VolumeSensor: '',
     UpdatedAt: '',
   },
   waterChart: {
@@ -42,18 +49,21 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
     DataPenggunaanTahunan: {},
   },
   error: '',
+  loading: true,
   getWaterData: async () => {
     try {
-      const response = await waterMonitoring.getMonitoringAir();
+      // set({ loading: true });
+      // const idBangunan = useSettings.getState().idBangunan;
+      const idBangunan = parseInt(getIdBangunan() || "1"); // fix later, might be incorrect
+      const response = await waterMonitoring.getMonitoringAir(idBangunan);
       if (response instanceof AxiosError) {
         throw new Error(response.response?.data.error);
       }
       set({
         waterData: {
-          KapasitasToren: response.KapasitasToren,
+          KapasitasToren: response.kapasitasToren,
           AirKeluar: response.AirKeluar,
           AirMasuk: response.AirMasuk,
-          VolumeSensor: response.VolumeSensor,
           UpdatedAt: response.UpdatedAt,
         },
       });
@@ -65,9 +75,12 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
         }
       })
       setDataMonitoring(JSON.stringify(response));
+      set({ loading: false });
+      set({ error: '' });
     } catch (e) {
       set({ error: `${e}` });
       console.error(e);
+      set({ loading: false });
     }
   },
 }));

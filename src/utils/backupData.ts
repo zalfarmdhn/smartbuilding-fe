@@ -4,8 +4,33 @@ export const setDataMonitoring = ( dataToren: string ) => {
   db.setItem("dataTorenAir", dataToren);
 }
 
+export const setDataSetting = ( dataSetting: string ) => {
+  db.setItem("dataSetting", dataSetting);
+}
+
+export const setDataRole = ( role: string ) => {
+  db.setItem("role", role);
+}
+
 export const setDataListrik = ( dataListrik: string ) => {
   db.setItem("dataListrik", dataListrik);
+}
+
+export const setIdBangunan = ( idBangunan: string ) => {
+  db.setItem("idBangunan", idBangunan);
+}
+
+export const getIdBangunan = () => {
+  return db.getItem("idBangunan");
+}
+
+export const getDataSetting = () => {
+  const dataSetting = db.getItem("dataSetting");
+  return dataSetting !== null ? JSON.parse(dataSetting) : null;
+}
+
+export const getDataRole = () => {
+  return db.getItem("role");
 }
 
 export const getDataTorenAir = () => {
@@ -30,4 +55,13 @@ export const getSpecificDataListrik = (target: string) => {
 
 export const hasDataTorenAir = () => {
   return getDataTorenAir() !== null;
+}
+
+export const removeAllData = () => {
+  db.removeItem("dataTorenAir");
+  db.removeItem("dataSetting");
+  db.removeItem("dataListrik");
+  db.removeItem("idBangunan");
+  db.removeItem("token");
+  db.removeItem("role");
 }

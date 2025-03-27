@@ -14,13 +14,8 @@ export default function ElectricityGraph() {
 
   const electricalChart = useElectricMonitoring((state) => state.electricChart);
 
-
-  console.log("labels", labels);
-  console.log("chartData", chartData);
+  console.log(`data chart`, electricalChart.DataBiayaListrikMingguan);
   
-  
-
-
   const day = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
 
   const month = [
@@ -45,7 +40,7 @@ export default function ElectricityGraph() {
     if (electricalChart && activeTab === 0) {
       setLabels(
         electricalChart?.DataBiayaListrikHarian?.[activeDay]?.map(
-          (item) => item.Lantai
+          (item) => item.Nama
         ) || []
       );
       setChartData(
@@ -59,7 +54,7 @@ export default function ElectricityGraph() {
     if (electricalChart && activeTab === 1) {
       setLabels(
         electricalChart?.DataBiayaListrikMingguan?.[activeWeek]?.map(
-          (item) => item.Lantai
+          (item) => item.Nama
         ) || []
       );
       setChartData(
@@ -74,7 +69,7 @@ export default function ElectricityGraph() {
       // const bulan = Object.keys(electricalChart.DataPenggunaanTahunan)[0];
       setLabels(
         electricalChart?.DataBiayaListrikTahunan?.[activeMonth]?.map(
-          (item) => item.Lantai
+          (item) => item.Nama
         ) || []
       );
       setChartData(
@@ -86,7 +81,7 @@ export default function ElectricityGraph() {
   }, [electricalChart, activeMonth, activeTab, activeWeek, activeDay]);
 
   return (
-    <div className="w-[806px] mt-2">
+    <div className="mt-2">
       <div className="flex flex-row justify-between items-center mb-4">
         <div className="flex flex-row justify-center items-center gap-4">
           <h1 className="text-primary-500 font-bold text-xl">
@@ -116,7 +111,7 @@ export default function ElectricityGraph() {
           isVisible={activeTab === 2}
         />
       </div>
-      <div className="w-[1200px] h-[442px] bg-white p-4 rounded-lg shadow-md">
+      <div className="w-[900px] h-[442px] bg-white p-4 rounded-lg shadow-md mx-auto">
         <BarchartExample mapLabels={labels} mapData={chartData} />
       </div>
     </div>
