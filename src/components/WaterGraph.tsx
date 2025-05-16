@@ -34,15 +34,9 @@ export default function WaterGraph() {
     "Oktober",
     "November",
     "Desember",
-  ]
+  ];
 
-  const week = [
-    "Minggu 1",
-    "Minggu 2",
-    "Minggu 3",
-    "Minggu 4",
-  ]
-
+  const week = ["Minggu 1", "Minggu 2", "Minggu 3", "Minggu 4"];
 
   useEffect(() => {
     // Chart Harian
@@ -77,8 +71,9 @@ export default function WaterGraph() {
     if (waterChart && activeTab === 2) {
       // const bulan = Object.keys(waterChart.DataPenggunaanTahunan)[0];
       setLabels(
-        waterChart?.DataPenggunaanTahunan?.Januari?.map((item) => item.pipa) ||
-          []
+        waterChart?.DataPenggunaanTahunan?.[activeMonth]?.map(
+          (item) => item.pipa
+        ) || []
       );
       setChartData(
         waterChart?.DataPenggunaanTahunan[activeMonth]?.map(
@@ -89,40 +84,49 @@ export default function WaterGraph() {
   }, [waterChart, activeMonth, activeTab, activeWeek, activeDay]);
 
   return (
-    <div className="w-[806px] mt-2 mx-auto">
-      <div className="flex flex-row justify-between items-center mb-4">
-        <div className="flex flex-row justify-center items-center gap-4 mt-4">
+    <div className="w-full max-w-[806px] mt-2 sm:px-0">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
+        <div className="flex flex-col sm:flex-row justify-center items-start sm:items-center gap-4 mt-4">
           <h1 className="text-primary-500 font-bold text-xl">
             Grafik Penggunaan Air
           </h1>
-          <ButtonGroupComponent activeTab={activeTab} setActiveTab={setActiveTab} />
+          <ButtonGroupComponent
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
         </div>
-        <ReusableDropdown
-          items={day}
-          activeValue={activeDay}
-          onSelect={setActiveDay}
-          isVisible={activeTab === 0}
-        />
-        <ReusableDropdown
-          items={week}
-          activeValue={activeWeek}
-          onSelect={setActiveWeek}
-          isVisible={activeTab === 1}
-        />
-        <ReusableDropdown
-          items={month}
-          activeValue={activeMonth}
-          onSelect={setActiveMonth}
-          isVisible={activeTab === 2}
-        />
+        <div className="w-full sm:w-auto">
+          {activeTab === 0 && (
+            <ReusableDropdown
+              items={day}
+              activeValue={activeDay}
+              onSelect={setActiveDay}
+              isVisible={true}
+            />
+          )}
+          {activeTab === 1 && (
+            <ReusableDropdown
+              items={week}
+              activeValue={activeWeek}
+              onSelect={setActiveWeek}
+              isVisible={true}
+            />
+          )}
+          {activeTab === 2 && (
+            <ReusableDropdown
+              items={month}
+              activeValue={activeMonth}
+              onSelect={setActiveMonth}
+              isVisible={true}
+            />
+          )}
+        </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <LineChartExample
-          mapLabels={labels}
-          mapData={chartData}
-          // timeRange={activeTab === 0 ? activeDay : activeTab === 1 ? activeWeek : activeMonth}
-        />
+      <div className="bg-white p-2 sm:p-4 rounded-lg shadow-md overflow-x-auto">
+        <div className="min-h-[300px] md:min-h-[400px] w-full">
+          <LineChartExample mapLabels={labels} mapData={chartData} />
+        </div>
       </div>
     </div>
   );

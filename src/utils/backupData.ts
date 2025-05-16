@@ -8,8 +8,8 @@ export const setDataSetting = ( dataSetting: string ) => {
   db.setItem("dataSetting", dataSetting);
 }
 
-export const setDataRole = ( role: string ) => {
-  db.setItem("role", role);
+export const setDataUser = (user: object) => {
+  db.setItem("dataUser", JSON.stringify(user));
 }
 
 export const setDataListrik = ( dataListrik: string ) => {
@@ -29,8 +29,9 @@ export const getDataSetting = () => {
   return dataSetting !== null ? JSON.parse(dataSetting) : null;
 }
 
-export const getDataRole = () => {
-  return db.getItem("role");
+export const getDataUser = () => {
+  const user = db.getItem("user");
+  return user !== null ? JSON.parse(user) : null;
 }
 
 export const getDataTorenAir = () => {
@@ -60,8 +61,8 @@ export const hasDataTorenAir = () => {
 export const removeAllData = () => {
   db.removeItem("dataTorenAir");
   db.removeItem("dataSetting");
+  db.removeItem("dataUser");
   db.removeItem("dataListrik");
   db.removeItem("idBangunan");
   db.removeItem("token");
-  db.removeItem("role");
 }

@@ -56,7 +56,7 @@ export function BarchartExample({ mapLabels, mapData }: { mapLabels: string[], m
       },
       title: {
         display: true,
-        text: 'Biaya Listrik per Kategori'
+        text: 'Perkiraan Biaya Listrik per Kategori'
       },
     },
   };

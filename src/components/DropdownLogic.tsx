@@ -7,7 +7,6 @@ const customTheme: CustomFlowbiteTheme["dropdown"] = {
   }
 }
 
-
 interface ReusableDropdownProps {
   items: string[];
   activeValue: string;

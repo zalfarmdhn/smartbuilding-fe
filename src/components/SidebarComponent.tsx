@@ -12,8 +12,9 @@ import {
 import { useSettings } from "../states/settings";
 import { CustomFlowbiteTheme, Sidebar } from "flowbite-react";
 import { ISettings } from "../types/settings";
-import { getDataRole, getDataSetting, removeAllData } from "../utils/backupData";
+import { getDataSetting, removeAllData } from "../utils/backupData";
 import { BuildingIcon } from "lucide-react";
+import ControlIcon from "./icons/control-icon";
 
 export default function SidebarComponent() {
   const [userPopup, setUserPopup] = useState<boolean>(false);
@@ -22,6 +23,10 @@ export default function SidebarComponent() {
     null
   );
   const navigate = useNavigate();
+  const setIdBangunanState = useSettings((state) => state.setIdBangunanState);
+  const settings = useSettings((state) => state.settings) ?? getDataSetting();  
+  const userData = useSettings((state) => state.dataUser);
+  console.log(`ini data user`, userData);
 
   const customTheme: CustomFlowbiteTheme["sidebar"] = {
     "root": {
@@ -35,11 +40,6 @@ export default function SidebarComponent() {
       "base": "flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-[#3791eb] text-white",
     }
   }
-
-  const setIdBangunanState = useSettings((state) => state.setIdBangunanState);
-  const settings = useSettings((state) => state.settings) ?? getDataSetting();  
-  const role = getDataRole();
-  console.log(`ini role user`, role);
 
   const buildings = [
     {
@@ -141,7 +141,7 @@ export default function SidebarComponent() {
                     <span className="sr-only">Open user menu</span>
                     <img
                       className="w-8 h-8 rounded-full"
-                      src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                      src={`https://ui-avatars.com/api/?name=${userData?.data.username}&background=random`}
                       alt="user photo"
                     />
                   </button>
@@ -175,7 +175,7 @@ export default function SidebarComponent() {
         aria-label="Sidebar">
         <Sidebar theme={customTheme} className="h-full px-3 pb-4 overflow-y-auto bg-[#1776d6] text-white">
           <Sidebar.Items className="bg-[#1776d6]">
-            <Sidebar.ItemGroup>
+          <Sidebar.ItemGroup>
               {buildings.map((building, index) => (
                 <div key={building.id ?? index}>
                   {building.name === "Dashboard" ? (
@@ -227,27 +227,29 @@ export default function SidebarComponent() {
             </Sidebar.ItemGroup>
             <Sidebar.ItemGroup>
               {/* Management section */}
-              {(role === "admin" || role === "manajement") && 
+              {(userData?.data.role === "admin" || userData?.data.role === "manajement") && 
               sidebarItems.map((section, sectionKey) => (
                 <div key={sectionKey}>
                   <Sidebar.Collapse
-                    icon={() => <SettingsIcon />}
+                    icon={() => <ControlIcon />}
                     label={section.title}
                     className="text-white">
                     {section.items.map((item, itemIndex) => (
-                      <Sidebar.Item
-                        key={itemIndex}
-                        as={Link}
-                        to={item.href}
-                        icon={() => item.icon}
-                        onClick={() => setOpenSidebar(!openSidebar)}
-                        className={
+                        (item.name !== "Pengguna" || userData?.data.role !== "manajement" && "pengelola") && (
+                        <Sidebar.Item
+                          key={itemIndex}
+                          as={Link}
+                          to={item.href}
+                          icon={() => item.icon}
+                          onClick={() => setOpenSidebar(!openSidebar)}
+                          className={
                           window.location.pathname === item.href
                             ? "bg-[#489aeb]"
                             : ""
-                        }>
-                        {item.name}
-                      </Sidebar.Item>
+                          }>
+                          {item.name}
+                        </Sidebar.Item>
+                        )
                     ))}
                   </Sidebar.Collapse>
                 </div>

@@ -1,13 +1,15 @@
 interface ElectricalIconProps {
   width?: string;
   height?: string;
+  className?: string;
 }
 
-const ElectricalIcon = ({width = '20', height = '20'}: ElectricalIconProps) => {
+const ElectricalIcon = ({width = '20', height = '20', className}: ElectricalIconProps) => {
   return (
     <svg
       width={`${width}`}
       height={`${height}`}
+      className={`${className}`}
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg">

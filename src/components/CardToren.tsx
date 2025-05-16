@@ -24,18 +24,18 @@ export const CardToren = ({
   lastUpdated,
 }: ICardToren) => {
   return (
-    <div className="flex flex-col gap-4 border-2 border-primary-400 p-4 rounded-lg">
-      <h3 className="text-primary-500 opacity-60 font-medium text-lg">
+    <div className="flex flex-col gap-4 border-2 border-primary-400 p-3 sm:p-4 rounded-lg">
+      <h3 className="text-gray-800 opacity-60 font-medium text-base sm:text-lg">
         {torenTitle}
       </h3>
-      <div className="flex flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
         {/* Card Toren */}
-        <div className="flex flex-col w-[290px] h-[354px] bg-primary-400 p-4 rounded-lg shadow-md justify-center items-center">
+        <div className="flex flex-col w-full lg:w-[290px] h-[250px] lg:h-[354px] bg-primary-400 p-4 rounded-lg shadow-md justify-center items-center relative">
           <TorenIcon />
-          <h1 className="text-primary-200 absolute font-bold text-3xl">
+          <h1 className="text-primary-200 absolute font-bold text-2xl sm:text-3xl">
             {torenPercentage ?? getSpecificDataToren("KapasitasToren")}
           </h1>
-          <div className="absolute w-[200px] h-[200px]">
+          <div className="absolute w-[150px] h-[150px] sm:w-[180px] sm:h-[180px] lg:w-[200px] lg:h-[200px]">
             <svg className="w-full h-full" viewBox="0 0 100 100">
               <circle
                 className="stroke-primary-200 opacity-25"
@@ -73,39 +73,46 @@ export const CardToren = ({
             </svg>
           </div>
         </div>
-        {/* Card statistik 1 */}
-        <div className="h-[354px] flex flex-col gap-4">
-          <CardStatistic
-            icon={<WaterTankIcon />}
-            heading="Kapasitas Toren"
-            value={`${formatNumber(
-              torenCapacity ?? getSpecificDataToren("KapasitasToren")
-            )} L`}
-          />
-          <CardStatistic
-            icon={<IndikatorAirIcon />}
-            heading="Indikator Level Air"
-            value={`${
-              torenPercentage ?? getSpecificDataToren("KapasitasToren")
-            }`}
-          />
-        </div>
-        {/* Card Statistik 2 */}
-        <div className="h-[354px] flex flex-col gap-4">
-          <CardStatistic
-            icon={<VolumeSensorIcon />}
-            heading="Volume Sensor"
-            value={`${formatNumber(
-              sensorVolume ?? getSpecificDataToren("VolumeSensor")
-            )} L`}
-          />
-          <CardStatistic
-            icon={<ClockIcon />}
-            heading="Terakhir Diperbarui"
-            value={formatDate(
-              lastUpdated ?? getSpecificDataToren("LastUpdated")
-            )}
-          />
+        {/* Card Statistik Wrapper */}
+        <div className="flex flex-col gap-4 flex-1">
+          {/* Statistik Row 1 */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <CardStatistic
+              icon={<WaterTankIcon />}
+              heading="Kapasitas Toren"
+              value={`${formatNumber(
+          torenCapacity ?? getSpecificDataToren("KapasitasToren")
+              )} L`}
+              className="flex-1"
+            />
+            <CardStatistic
+              icon={<IndikatorAirIcon />}
+              heading="Indikator Level Air"
+              value={`${
+          torenPercentage ?? getSpecificDataToren("KapasitasToren")
+              }`}
+              className="flex-1"
+            />
+          </div>
+          {/* Statistik Row 2 */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <CardStatistic
+              icon={<VolumeSensorIcon />}
+              heading="Volume Sensor"
+              value={`${formatNumber(
+          sensorVolume ?? getSpecificDataToren("VolumeSensor")
+              )} L`}
+              className="flex-1"
+            />
+            <CardStatistic
+              icon={<ClockIcon />}
+              heading="Terakhir Diperbarui"
+              value={formatDate(
+          lastUpdated ?? getSpecificDataToren("LastUpdated")
+              )}
+              className="flex-1"
+            />
+          </div>
         </div>
       </div>
     </div>

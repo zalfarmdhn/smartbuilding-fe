@@ -17,9 +17,9 @@ export default function ElectricityGraph() {
   const [activeTab, setActiveTab] = useState<number>(0);
 
   const electricalChart = useElectricMonitoring((state) => state.electricChart);
+  const error = useElectricMonitoring((state) => state.error);
 
-  console.log(`data chart`, electricalChart.DataBiayaListrikMingguan);
-  
+
   const day = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
 
   const month = [
@@ -83,12 +83,18 @@ export default function ElectricityGraph() {
       );
     }
   }, [electricalChart, activeMonth, activeTab, activeWeek, activeDay]);
-
   return (
     <div className="mt-2">
-      <div className="flex flex-row justify-between items-center mb-4">
-        <div className="flex flex-row justify-center items-center gap-4">
-          <h1 className="text-primary-500 font-bold text-xl">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3 md:gap-0">
+        <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-2 md:gap-4 w-full md:w-auto">
+          {error && (
+            <div className="flex items-center bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded relative text-sm md:text-base" role="alert">
+              <strong className="font-bold">Gagal mengakses data!</strong>
+              <span className="block sm:inline"> Tolong coba lagi.</span>
+            </div>
+          )}
+
+          <h1 className="text-primary-500 font-bold text-lg md:text-xl">
             Grafik Data Biaya Listrik
           </h1>
           <ButtonGroupComponent
@@ -114,8 +120,7 @@ export default function ElectricityGraph() {
           onSelect={(value) => setActiveMonth(value as MonthType)}
           isVisible={activeTab === 2}
         />
-      </div>
-      <div className="w-[900px] h-[442px] bg-white p-4 rounded-lg shadow-md mx-auto">
+      </div>      <div className="w-full max-w-[900px] h-[300px] md:h-[442px] bg-white p-4 rounded-lg shadow-md mx-auto">
         <BarchartExample mapLabels={labels} mapData={chartData} />
       </div>
     </div>

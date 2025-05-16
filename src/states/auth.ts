@@ -1,12 +1,11 @@
 import { create } from "zustand";
 import { setToken } from "../utils/tokenHandler"
 import authAPI from "../services/auth";
-import { setDataRole, setDataSetting, setIdBangunan } from "../utils/backupData";
+import { setDataSetting, setIdBangunan } from "../utils/backupData";
 
 interface AuthState {
   token: string | null;
   loading: boolean;
-  role: string;
   idBangunanResponse: number | null;
   error: string | null;
   login: (email: string, password: string) => void;
@@ -14,7 +13,6 @@ interface AuthState {
 
 export const useAuth = create<AuthState>()((set) => ({
   token: null,
-  role: "",
   idBangunanResponse: null,
   loading: false,
   error: null,
@@ -32,7 +30,6 @@ export const useAuth = create<AuthState>()((set) => ({
       }
       setIdBangunan(String(settingBangunan[0].id));
       setDataSetting(JSON.stringify(settingBangunan));
-      setDataRole(response.data.role);
       set({ loading: false });
       window.location.href = "/";
       return response.data;

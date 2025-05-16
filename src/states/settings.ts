@@ -1,12 +1,15 @@
 import { create } from "zustand";
 import settingAPI from "../services/settings";
-import { setIdBangunan } from "../utils/backupData";
+import { setDataUser, setIdBangunan } from "../utils/backupData";
 import { useWaterMonitoring } from "./water-monitoring";
 import { useElectricMonitoring } from "./electricity-monitoring";
+import { getMe } from "../services/me";
+import { IMeRoot } from "../types/me";
 
 interface ISettingsRoot {
   scheduler: number | null;
   idBangunan: number | null;
+  dataUser: IMeRoot | null;
   loading: boolean;
   settings: {
     id: number;
@@ -18,6 +21,7 @@ interface ISettingsRoot {
     jenis_listrik: string;
   } | null;
   getSettings: () => Promise<void>;
+  setCurrentUser: () => Promise<void>;
   getIdBangunanState: () => number | null;
   setIdBangunanState: (newId: number) => Promise<void>;
   deleteSetting: (id: number) => Promise<void>;
@@ -39,6 +43,7 @@ interface IDataToren {
 
 export const useSettings = create<ISettingsRoot>((set, get) => ({
   scheduler: null,
+  dataUser: null,
   loading: false,
   settings: null,
   idBangunan: null,
@@ -56,11 +61,24 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
       console.error(e);
     }
   },
-  // setSchedulerById: async (id: number) => {
-  //   set({ loading: true });
-
-  //   set({ loading: false });
-  // },
+  setCurrentUser: async () => {
+    try {
+      const response = await getMe();
+      if (response && response.data) {
+        // set data user ke state
+        set({
+          dataUser: response.data,
+        });
+        // masukkan data user ke localStorage
+        setDataUser(response.data);
+      } else {
+        console.error("Error fetching user data");
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  },
   getIdBangunanState: () => {
     return get().idBangunan;
   },

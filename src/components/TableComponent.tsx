@@ -3,7 +3,6 @@ import { useState } from "react";
 import { ModalExample } from "./ModalExample";
 import { ModalDelete } from "./ModalDeleteConfirmation";
 import { useSettings } from "../states/settings";
-import { getDataRole } from "../utils/backupData";
 
 export interface TableSettings {
   id: number;
@@ -41,7 +40,7 @@ export default function TableComponent(): JSX.Element {
 
   const settings = useSettings((state) => state.settings) ?? [];
   const loading = useSettings((state) => state.loading);
-  const role = getDataRole();
+  const role = useSettings((state) => state.dataUser?.data.role);
 
   const handleEdit = (setting: TableSettings) => {
     setSelectedSetting(setting);
