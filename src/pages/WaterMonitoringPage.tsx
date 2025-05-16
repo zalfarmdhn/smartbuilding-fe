@@ -7,6 +7,7 @@ import AirMasukIcon from "../components/icons/air-masuk-icon";
 import { Alert, Spinner } from "flowbite-react";
 import { Droplet, OctagonAlert } from "lucide-react";
 import { useSettings } from "../states/settings";
+import { useEffect } from "react";
 
 export default function WaterMonitoringPage() {
   // const [loading, setIsLoading] = useState(true);
@@ -15,6 +16,10 @@ export default function WaterMonitoringPage() {
   const loading = useWaterMonitoring((state) => state.loading);
   const error = useWaterMonitoring((state) => state.error);
   const scheduler = useSettings((state) => state.scheduler);
+
+  useEffect(() => {
+    document.title = "Smartbuilding | Monitoring Air";
+  }, []);
 
   console.log(`ini air data`, waterData);
   console.log(`ini loading`, loading);
@@ -31,7 +36,8 @@ export default function WaterMonitoringPage() {
   //   return <p>Data not found</p>;
   // }
 
-  return (    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl">
+  return (
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl">
       {/* Warning */}
       {error && (
         <Alert color="warning" icon={OctagonAlert}>
@@ -48,9 +54,10 @@ export default function WaterMonitoringPage() {
       </div>
       {!waterData.KapasitasToren && (
         <Alert color="warning" icon={OctagonAlert} className="mb-4">
-          <span className="font-medium">Server gagal mengakses data!</span> Mohon menunggu dan tolong coba lagi.
+          <span className="font-medium">Server gagal mengakses data!</span>{" "}
+          Mohon menunggu dan tolong coba lagi.
         </Alert>
-      )}      
+      )}
       {/* Statistik Toren Air */}
       <section>
         <h2 className="text-primary-500 font-bold text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4">
@@ -69,8 +76,8 @@ export default function WaterMonitoringPage() {
           ))}
         </div>
       </section>
-
-      {/* Data Monitoring Air */}      <section className="mt-6">
+      {/* Data Monitoring Air */}{" "}
+      <section className="mt-6">
         <h2 className="text-primary-500 font-bold text-xl md:text-2xl mb-4">
           Data Monitoring Air
         </h2>
@@ -89,7 +96,6 @@ export default function WaterMonitoringPage() {
           />
         </div>
       </section>
-
       {/* Water Usage Graph */}
       <WaterGraph />
     </div>

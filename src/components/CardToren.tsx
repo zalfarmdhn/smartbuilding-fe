@@ -35,7 +35,7 @@ export const CardToren = ({
           <h1 className="text-primary-200 absolute font-bold text-2xl sm:text-3xl">
             {torenPercentage ?? getSpecificDataToren("KapasitasToren")}
           </h1>
-          <div className="absolute w-[150px] h-[150px] sm:w-[180px] sm:h-[180px] lg:w-[200px] lg:h-[200px]">
+          <div className="absolute w-[150px] h-[150px] sm:w-[150px] sm:h-[150px] lg:w-[200px] lg:h-[200px]">
             <svg className="w-full h-full" viewBox="0 0 100 100">
               <circle
                 className="stroke-primary-200 opacity-25"
@@ -81,7 +81,7 @@ export const CardToren = ({
               icon={<WaterTankIcon />}
               heading="Kapasitas Toren"
               value={`${formatNumber(
-          torenCapacity ?? getSpecificDataToren("KapasitasToren")
+                torenCapacity ?? getSpecificDataToren("KapasitasToren")
               )} L`}
               className="flex-1"
             />
@@ -89,7 +89,7 @@ export const CardToren = ({
               icon={<IndikatorAirIcon />}
               heading="Indikator Level Air"
               value={`${
-          torenPercentage ?? getSpecificDataToren("KapasitasToren")
+                torenPercentage ?? getSpecificDataToren("KapasitasToren")
               }`}
               className="flex-1"
             />
@@ -100,7 +100,7 @@ export const CardToren = ({
               icon={<VolumeSensorIcon />}
               heading="Volume Sensor"
               value={`${formatNumber(
-          sensorVolume ?? getSpecificDataToren("VolumeSensor")
+                sensorVolume ?? getSpecificDataToren("VolumeSensor")
               )} L`}
               className="flex-1"
             />
@@ -108,7 +108,7 @@ export const CardToren = ({
               icon={<ClockIcon />}
               heading="Terakhir Diperbarui"
               value={formatDate(
-          lastUpdated ?? getSpecificDataToren("LastUpdated")
+                lastUpdated ?? getSpecificDataToren("LastUpdated")
               )}
               className="flex-1"
             />

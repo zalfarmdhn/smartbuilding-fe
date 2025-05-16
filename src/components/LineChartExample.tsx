@@ -1,3 +1,4 @@
+import { useMemo, useRef, useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -7,9 +8,9 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { returnNumber } from '../utils/formatNumber';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { returnNumber } from "../utils/formatNumber";
 
 ChartJS.register(
   CategoryScale,
@@ -21,44 +22,129 @@ ChartJS.register(
   Legend
 );
 
+export default function LineChartExample({
+  mapLabels,
+  mapData,
+}: {
+  mapLabels: string[];
+  mapData: string[];
+}) {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [chartWidth, setChartWidth] = useState(0);
 
-export default function LineChartExample({ mapLabels, mapData }: { mapLabels: string[], mapData: string[] }) {
+  // Handle resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (chartRef.current) {
+        setChartWidth(chartRef.current.offsetWidth);
+      }
+    };
+
+    // Set initial size
+    handleResize();
+
+    // Add resize listener
+    window.addEventListener("resize", handleResize);
+
+    // Clean up
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  // Convert string values to numbers
   const numberData = mapData.map((item) => returnNumber(item));
 
-  // Sort mapLabels and mapData based on sorted mapLabels
-  const sortedIndices = mapLabels
-    .map((label, index) => ({ label, index }))
-    .sort((a, b) => a.label.localeCompare(b.label))
-    .map(({ index }) => index);
+  // Memoize the sorted data
+  const { sortedLabels, sortedValues } = useMemo(() => {
+    // Create an array of objects with label and value pairs
+    const combinedData = mapLabels.map((label, index) => ({
+      label: label,
+      value: numberData[index],
+    }));
 
-  const sortedLabels = sortedIndices.map(index => mapLabels[index]);
-  const sortedData = sortedIndices.map(index => numberData[index]);
+    // Sort the combined data alphabetically by label
+    const sortedCombined = combinedData.sort((a, b) =>
+      a.label.localeCompare(b.label)
+    );
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
+    // Extract the sorted labels and values
+    const sortedLabels = sortedCombined.map((item) => item.label);
+    const sortedValues = sortedCombined.map((item) => item.value);
+
+    return { sortedLabels, sortedValues };
+  }, [mapLabels, numberData]);
+
+  // Adjust options based on screen size
+  const options = useMemo(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: chartWidth < 600 ? ("bottom" as const) : ("top" as const),
+          labels: {
+            boxWidth: chartWidth < 400 ? 10 : 20,
+            font: {
+              size: chartWidth < 400 ? 10 : 12,
+            },
+          },
+        },
+        title: {
+          display: true,
+          text: "Grafik Penggunaan Air",
+          font: {
+            size: chartWidth < 400 ? 14 : 16,
+          },
+        },
+        tooltip: {
+          titleFont: {
+            size: chartWidth < 400 ? 12 : 14,
+          },
+          bodyFont: {
+            size: chartWidth < 400 ? 11 : 13,
+          },
+        },
       },
-      title: {
-        display: true,
-        // text: `Grafik Penggunaan Air pada ${timeRange}`,
-      }
-    },
-  };
-  
+      scales: {
+        x: {
+          ticks: {
+            font: {
+              size: chartWidth < 400 ? 10 : 12,
+            },
+            maxRotation: chartWidth < 600 ? 90 : 0,
+            minRotation: chartWidth < 600 ? 45 : 0,
+          },
+        },
+        y: {
+          ticks: {
+            font: {
+              size: chartWidth < 400 ? 10 : 12,
+            },
+          },
+        },
+      },
+    }),
+    [chartWidth]
+  );
+
   const data = {
     labels: sortedLabels,
     datasets: [
       {
-        label: 'Volume (L)',
-        data: sortedData,
-        borderColor: 'rgb(53, 162, 235)',
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        label: "Volume (L)",
+        data: sortedValues,
+        borderColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
   };
 
-
-  return <Line options={options} data={data} />;
+  return (
+    <div
+      ref={chartRef}
+      style={{ width: "100%", height: chartWidth < 400 ? "300px" : "400px" }}>
+      <Line options={options} data={data} />
+    </div>
+  );
 }

@@ -10,9 +10,8 @@ import { useSettings } from "../states/settings";
 /**
  * TODO :
  * - Buatlah handle function jika server API sedang error, ambil dari localStorage
- * - Ubah auth agar mengecek /me untuk mendapatkan data user
+ * - Handle error jika API tidak merespon
  * - Handle expire token belum ada
- * - Responsive belum ada
  */
 export default function MainLayout() {
   const [loading, setLoading] = useState<boolean>(true);

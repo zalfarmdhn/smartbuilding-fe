@@ -1,6 +1,7 @@
-const WaterIcon = () => {
+const WaterIcon = ({ className }: { className?: string }) => {
   return (
     <svg
+      className={className}
       width="24"
       height="25"
       viewBox="0 0 24 25"

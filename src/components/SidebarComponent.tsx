@@ -24,22 +24,23 @@ export default function SidebarComponent() {
   );
   const navigate = useNavigate();
   const setIdBangunanState = useSettings((state) => state.setIdBangunanState);
-  const settings = useSettings((state) => state.settings) ?? getDataSetting();  
+  const settings = useSettings((state) => state.settings) ?? getDataSetting();
   const userData = useSettings((state) => state.dataUser);
   console.log(`ini data user`, userData);
 
   const customTheme: CustomFlowbiteTheme["sidebar"] = {
-    "root": {
-      "inner": "h-full overflow-y-auto overflow-x-hidden rounded bg-[#1776d6]",
+    root: {
+      inner: "h-full overflow-y-auto overflow-x-hidden rounded bg-[#1776d6]",
     },
-    "collapse": {
-      "button": "group flex w-full items-center rounded-lg p-2 text-base font-normal text-gray-900 transition duration-75 hover:bg-[#3791eb] dark:text-white dark:hover:bg-gray-700 ",
-      "list": "space-y-2 py-2"
+    collapse: {
+      button:
+        "group flex w-full items-center rounded-lg p-2 text-base font-normal text-gray-900 transition duration-75 hover:bg-[#3791eb] dark:text-white dark:hover:bg-gray-700 ",
+      list: "space-y-2 py-2",
     },
-    "item": {
-      "base": "flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-[#3791eb] text-white",
-    }
-  }
+    item: {
+      base: "flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-[#3791eb] text-white",
+    },
+  };
 
   const buildings = [
     {
@@ -67,7 +68,7 @@ export default function SidebarComponent() {
           href: "/electricity-monitor",
         },
       ],
-    })) || [])
+    })) || []),
   ];
 
   const sidebarItems = [
@@ -96,7 +97,7 @@ export default function SidebarComponent() {
   }
 
   const handleBuildingSelect = (buildingId: number) => {
-    if(selectedBuildingId === buildingId) return;
+    if (selectedBuildingId === buildingId) return;
     setSelectedBuildingId(buildingId);
     setIdBangunanState(buildingId);
   };
@@ -116,7 +117,7 @@ export default function SidebarComponent() {
                 onClick={() => setOpenSidebar(!openSidebar)}
                 aria-controls="logo-sidebar"
                 type="button"
-                className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden focus:outline-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden focus:outline-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                 <span className="sr-only">Open sidebar</span>
                 <HamburgerIcon />
               </button>
@@ -167,93 +168,104 @@ export default function SidebarComponent() {
           </div>
         </div>
       </nav>
+      {/* Sidebar Section */}
       <aside
         id="logo-sidebar"
         className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-[#1776d6] ${
           !openSidebar ? "-translate-x-full" : "translate-x-0"
         } bg-[#1776d6] border-r border-gray-200 sm:translate-x-0`}
         aria-label="Sidebar">
-        <Sidebar theme={customTheme} className="h-full px-3 pb-4 overflow-y-auto bg-[#1776d6] text-white">
+        <Sidebar
+          theme={customTheme}
+          className="h-full px-3 pb-4 overflow-y-auto bg-[#1776d6] text-white">
           <Sidebar.Items className="bg-[#1776d6]">
-          <Sidebar.ItemGroup>
+            <Sidebar.ItemGroup>
               {buildings.map((building, index) => (
                 <div key={building.id ?? index}>
                   {building.name === "Dashboard" ? (
-                  // Dashboard section
-                  building.items.map((item: BuildingItem, itemIndex: number) => (
-                    <Sidebar.Item
-                    key={itemIndex}
-                    as={Link}
-                    to={item.href}
-                    icon={() => item.icon}
-                    onClick={() => setOpenSidebar(!openSidebar)}
-                    className={`
-                      ${window.location.pathname === item.href
-                      ? "bg-[#489aeb] "
-                      : ""}`
-                    }>
-                    {item.name}
-                    </Sidebar.Item>
-                  ))
-                  ) : (
-                  // Building sections with collapsible menu
-                  <Sidebar.Collapse
-                    icon={() => <BuildingIcon />}
-                    label={building.name}
-                    className="text-white"
-                    >
-                    {building.items.map((item: BuildingItem, itemIndex: number) => (
-                    <Sidebar.Item
-                      key={itemIndex}
-                      as={Link}
-                      to={item.href}
-                      icon={() => item.icon}
-                      onClick={() => {
-                      handleBuildingSelect(building.id ?? 1);
-                      setOpenSidebar(!openSidebar);
-                      }}
-                      className={
-                      window.location.pathname === item.href &&
-                      selectedBuildingId === building.id
-                        && "bg-[#3791eb]"
-                      }>
-                      {item.name}
-                    </Sidebar.Item>
-                    ))}
-                  </Sidebar.Collapse>
-                  )}
-                </div>
-              ))}
-            </Sidebar.ItemGroup>
-            <Sidebar.ItemGroup>
-              {/* Management section */}
-              {(userData?.data.role === "admin" || userData?.data.role === "manajement") && 
-              sidebarItems.map((section, sectionKey) => (
-                <div key={sectionKey}>
-                  <Sidebar.Collapse
-                    icon={() => <ControlIcon />}
-                    label={section.title}
-                    className="text-white">
-                    {section.items.map((item, itemIndex) => (
-                        (item.name !== "Pengguna" || userData?.data.role !== "manajement" && "pengelola") && (
+                    // Dashboard section
+                    building.items.map(
+                      (item: BuildingItem, itemIndex: number) => (
                         <Sidebar.Item
                           key={itemIndex}
                           as={Link}
                           to={item.href}
                           icon={() => item.icon}
                           onClick={() => setOpenSidebar(!openSidebar)}
-                          className={
-                          window.location.pathname === item.href
-                            ? "bg-[#489aeb]"
-                            : ""
-                          }>
+                          className={`
+                      ${
+                        window.location.pathname === item.href
+                          ? "bg-[#489aeb] "
+                          : ""
+                      }`}>
                           {item.name}
                         </Sidebar.Item>
+                      )
+                    )
+                  ) : (
+                    // Building sections with collapsible menu
+                    <Sidebar.Collapse
+                      icon={() => <BuildingIcon />}
+                      label={building.name}
+                      className="text-white">
+                      {building.items.map(
+                        (item: BuildingItem, itemIndex: number) => (
+                          <Sidebar.Item
+                            key={itemIndex}
+                            as={Link}
+                            to={item.href}
+                            icon={() => item.icon}
+                            onClick={() => {
+                              handleBuildingSelect(building.id ?? 1);
+                              setOpenSidebar(!openSidebar);
+                            }}
+                            className={
+                              window.location.pathname === item.href &&
+                              selectedBuildingId === building.id &&
+                              "bg-[#3791eb]"
+                            }>
+                            {item.name}
+                          </Sidebar.Item>
                         )
-                    ))}
-                  </Sidebar.Collapse>
+                      )}
+                    </Sidebar.Collapse>
+                  )}
                 </div>
               ))}
+            </Sidebar.ItemGroup>
+            <Sidebar.ItemGroup>
+              {/* Management section */}
+              {(userData?.data.role === "admin" ||
+                userData?.data.role === "manajement") &&
+                sidebarItems.map((section, sectionKey) => (
+                  <div key={sectionKey}>
+                    <Sidebar.Collapse
+                      icon={() => <ControlIcon />}
+                      label={section.title}
+                      className="text-white">
+                      {section.items.map(
+                        (item, itemIndex) =>
+                          (item.name !== "Pengguna" ||
+                            (userData?.data.role !== "manajement" &&
+                              "pengelola")) && (
+                            <Sidebar.Item
+                              key={itemIndex}
+                              as={Link}
+                              to={item.href}
+                              icon={() => item.icon}
+                              onClick={() => setOpenSidebar(!openSidebar)}
+                              className={
+                                window.location.pathname === item.href
+                                  ? "bg-[#489aeb]"
+                                  : ""
+                              }>
+                              {item.name}
+                            </Sidebar.Item>
+                          )
+                      )}
+                    </Sidebar.Collapse>
+                  </div>
+                ))}
             </Sidebar.ItemGroup>
           </Sidebar.Items>
         </Sidebar>

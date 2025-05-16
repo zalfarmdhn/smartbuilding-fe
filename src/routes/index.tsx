@@ -4,43 +4,43 @@ import MainLayout from "../layout/MainLayout";
 import WaterMonitoringPage from "../pages/WaterMonitoringPage";
 import ElectricMonitoringPage from "../pages/ElectricMonitoringPage";
 import SettingsPage from "../pages/SettingsPage";
+import DashboardPage from "../pages/DashboardPage";
 
 const routes = createBrowserRouter([
   {
     path: "/login",
-    element: (<LoginPage />),
+    element: <LoginPage />,
   },
   {
     path: "/",
-    element: (<MainLayout />),
+    element: <MainLayout />,
     children: [
       {
         index: true,
-        element: (<h1>Dashboard</h1>)
+        element: <DashboardPage />,
       },
       {
-        path:"/water-monitor",
-        element: (<WaterMonitoringPage />)
+        path: "/water-monitor",
+        element: <WaterMonitoringPage />,
       },
       {
         path: "/electricity-monitor",
-        element: (<ElectricMonitoringPage />)
+        element: <ElectricMonitoringPage />,
       },
       {
         path: "/users",
-        element: (<h1>User</h1>)
+        element: <h1>User</h1>,
       },
       {
         path: "/settings",
-        element: (<SettingsPage />)
+        element: <SettingsPage />,
       },
       {
         path: "*",
-        element: (<h1>404 - Page Not Found</h1>)
+        element: <h1>404 - Page Not Found</h1>,
       },
-      
-    ]
-  }
+    ],
+  },
 ]);
 
 export default routes;

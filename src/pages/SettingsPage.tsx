@@ -16,6 +16,10 @@ const SettingsPage: React.FC = () => {
     getSettings();
   }, [getSettings]);
 
+  useEffect(() => {
+    document.title = "Smartbuilding | Settings";
+  }, []);
+
   // if (!settings) {
   //   return <p>Loading...</p>;
   // }
