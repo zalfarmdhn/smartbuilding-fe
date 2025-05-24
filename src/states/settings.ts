@@ -10,6 +10,7 @@ interface ISettingsRoot {
   scheduler: number | null;
   idBangunan: number | null;
   dataUser: IMeRoot | null;
+  errorMe: string | null;
   loading: boolean;
   settings: {
     id: number;
@@ -44,6 +45,7 @@ interface IDataToren {
 export const useSettings = create<ISettingsRoot>((set, get) => ({
   scheduler: null,
   dataUser: null,
+  errorMe: null,
   loading: false,
   settings: null,
   idBangunan: null,
@@ -73,10 +75,11 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
         setDataUser(response.data);
       } else {
         console.error("Error fetching user data");
+        set({ errorMe: `Error fetching user data` });
         return;
       }
     } catch (e) {
-      console.error(e);
+      console.error(`ini detail errornya`, e);
     }
   },
   getIdBangunanState: () => {
@@ -108,7 +111,7 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
     jenis_listrik: string,
     haos_token: string,
     scheduler: number,
-    data_toren: IDataToren[],
+    data_toren: IDataToren[]
   ) => {
     try {
       await settingAPI.addSetting(

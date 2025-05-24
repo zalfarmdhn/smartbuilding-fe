@@ -6,12 +6,14 @@ import { useWaterMonitoring } from "../states/water-monitoring";
 import { useElectricMonitoring } from "../states/electricity-monitoring";
 import { formatSeconds } from "../utils/formatSeconds";
 import { useSettings } from "../states/settings";
+import { Toaster } from "react-hot-toast";
 
 /**
  * TODO :
  * - Buatlah handle function jika server API sedang error, ambil dari localStorage
  * - Handle error jika API tidak merespon
  * - Handle expire token belum ada
+ * - CRUD data user
  */
 export default function MainLayout() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,11 +21,13 @@ export default function MainLayout() {
   const getElectricData = useElectricMonitoring(
     (state) => state.getElectricData
   );
+
+  const errorUserData = useSettings((state) => state.errorMe);
   const navigate = useNavigate();
   const getSettings = useSettings((state) => state.getSettings);
   const getMe = useSettings((state) => state.setCurrentUser);
   const scheduler = useSettings((state) => state.scheduler);
-  console.log(`ini scheduler`, scheduler);
+  console.log("ini error", errorUserData);
 
   // Render pertama untuk inital data pada mount
   useEffect(() => {
@@ -51,23 +55,32 @@ export default function MainLayout() {
   }, [getWaterData, getElectricData, scheduler, navigate]);
 
   useEffect(() => {
-    // kalau user gaada token direct ke halaman login (bukan expire token)
-    if (!hasToken()) {
+    /**
+     * TODO :
+     * - Handle error berbeda jika token expired 401 Unauthorized
+     * - Handle error jika API dari server tidak merespon
+     *
+     * Code dibawah hanya akan redirect ke halaman login dengan semua error
+     */
+    if (!hasToken() || errorUserData) {
       navigate("/login");
       return;
     }
 
     setLoading(false);
-  }, [navigate]);
+  }, [navigate, errorUserData]);
 
   if (loading) {
-    return <p>Loading main layout...I</p>;
+    return <p>Loading main layout...</p>;
   }
 
   return (
     <>
       <SidebarComponent />
       <div className="p-4 pt-16 sm:ml-64 bg-[#E9EDEF] min-h-screen">
+        <div>
+          <Toaster />
+        </div>
         <Outlet />
         <ScrollRestoration />
       </div>

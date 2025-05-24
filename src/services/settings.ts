@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import init from ".";
 import { IAddSettings } from "../types/settings";
 
@@ -39,7 +40,7 @@ export const getSettingById = async (id: number) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const putSettings = async (
   id: number,
@@ -48,7 +49,7 @@ export const putSettings = async (
   haos_url: string,
   jenis_listrik: string,
   haos_token: string,
-  scheduler: number,
+  scheduler: number
 ): Promise<ISettings> => {
   try {
     const response = await init.put(
@@ -68,9 +69,11 @@ export const putSettings = async (
         },
       }
     );
+    toast.success("Pengaturan berhasil diperbarui!");
     return response.data;
   } catch (error) {
     console.error(error);
+    toast.error("Gagal memperbarui pengaturan. Silakan coba lagi.");
     return {
       id: 1,
       nama_gedung: "",
@@ -110,9 +113,11 @@ const addSetting = async (
         },
       }
     );
+    toast.success("Pengaturan berhasil ditambahkan!");
     return response.data;
   } catch (error) {
     console.error(error);
+    toast.error("Gagal menambahkan pengaturan. Silakan coba lagi.");
     return {
       nama_gedung: "",
       harga_listrik: 0,
@@ -123,7 +128,7 @@ const addSetting = async (
       data_toren: [],
     };
   }
-}
+};
 
 const deleteSetting = async (id: number) => {
   try {
@@ -132,10 +137,18 @@ const deleteSetting = async (id: number) => {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
+    toast.success("Pengaturan berhasil dihapus!");
     return response.data;
   } catch (error) {
+    toast.error("Gagal menghapus pengaturan. Silakan coba lagi.");
     console.error(error);
   }
-}
+};
 
-export default { getSettings, putSettings, addSetting, deleteSetting, getSettingById };
+export default {
+  getSettings,
+  putSettings,
+  addSetting,
+  deleteSetting,
+  getSettingById,
+};

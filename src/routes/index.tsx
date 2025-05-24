@@ -5,6 +5,8 @@ import WaterMonitoringPage from "../pages/WaterMonitoringPage";
 import ElectricMonitoringPage from "../pages/ElectricMonitoringPage";
 import SettingsPage from "../pages/SettingsPage";
 import DashboardPage from "../pages/DashboardPage";
+import UserPage from "../pages/UserPage";
+import PengelolaGedungPage from "../pages/PengelolaGedungPage";
 
 const routes = createBrowserRouter([
   {
@@ -29,7 +31,11 @@ const routes = createBrowserRouter([
       },
       {
         path: "/users",
-        element: <h1>User</h1>,
+        element: <UserPage />,
+      },
+      {
+        path: "/pengelola_gedung",
+        element: <PengelolaGedungPage />,
       },
       {
         path: "/settings",

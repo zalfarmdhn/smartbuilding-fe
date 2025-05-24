@@ -70,7 +70,6 @@ export default function SidebarComponent() {
       ],
     })) || []),
   ];
-
   const sidebarItems = [
     {
       title: "Kelola",
@@ -79,6 +78,11 @@ export default function SidebarComponent() {
           name: "Pengguna",
           icon: <UserIcon />,
           href: "/users",
+        },
+        {
+          name: "Pengelola Gedung",
+          icon: <BuildingIcon className="w-5 h-5" />,
+          href: "/pengelola_gedung",
         },
         {
           name: "Settings",
