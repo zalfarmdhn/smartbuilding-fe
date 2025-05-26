@@ -7,41 +7,35 @@ export default function WaterGraph() {
   const [activeTab, setActiveTab] = useState<number>(1); // Default to weekly view since we have data for it
 
   const waterChart = useWaterMonitoring((state) => state.waterChart);
-
   // Determine which data and period to use based on active tab
   const getChartData = () => {
-    switch(activeTab) {
+    switch (activeTab) {
       case 0: // Daily
         return {
           periodData: waterChart?.DataPenggunaanHarian || {},
-          activePeriod: '',
-          chartType: 'daily' as const
+          chartType: "daily" as const,
         };
       case 1: // Weekly
         return {
           periodData: waterChart?.DataPenggunaanMingguan || {},
-          activePeriod: '',
-          chartType: 'weekly' as const
+          chartType: "weekly" as const,
         };
       case 2: // Monthly
         // Untuk tampilan bulanan, kita menggunakan data dari DataPenggunaanBulanan
         return {
           periodData: waterChart?.DataPenggunaanBulanan || {},
-          activePeriod: '', // Tidak perlu active period untuk tampilan bulanan
-          chartType: 'monthly' as const
+          chartType: "monthly" as const,
         };
       case 3: // Yearly
         // Untuk tampilan tahunan, kita menggunakan DataPenggunaanTahunan
         return {
           periodData: waterChart?.DataPenggunaanTahunan || {},
-          activePeriod: '',
-          chartType: 'yearly' as const
+          chartType: "yearly" as const,
         };
       default:
         return {
           periodData: {},
-          activePeriod: '',
-          chartType: 'weekly' as const
+          chartType: "weekly" as const,
         };
     }
   };

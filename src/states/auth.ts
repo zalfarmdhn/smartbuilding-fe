@@ -4,6 +4,7 @@ import authAPI from "../services/auth";
 import { setDataSetting, setIdBangunan } from "../utils/backupData";
 import { IErrorAPI } from "../types/error";
 import { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
 interface AuthState {
   token: string | null;
@@ -29,11 +30,13 @@ export const useAuth = create<AuthState>()((set) => ({
       }
       setIdBangunan(String(settingBangunan[0].id));
       setDataSetting(JSON.stringify(settingBangunan));
+      toast.success("Berhasil login, redirect ke halaman dashboard...");
       set({ loading: false });
       window.location.href = "/";
       return response.data;
     } catch (e: unknown) {
       if (e instanceof AxiosError) {
+        toast.error(e.response?.data.message || "Terjadi kesalahan saat login");
         console.error(e);
         set({ errorAuth: e.response?.data as IErrorAPI, loading: false });
       }

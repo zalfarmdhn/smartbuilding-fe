@@ -8,9 +8,15 @@ import {
   Title,
   Tooltip,
   Legend,
+  TooltipItem,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { returnNumber } from "../../utils/formatNumber";
+import {
+  BULAN_CONSTANT,
+  HARI_CONSTANT,
+  MINGGU_CONSTANT,
+} from "../../utils/dateConstants";
 
 ChartJS.register(
   CategoryScale,
@@ -31,15 +37,10 @@ interface ChartProps {
   periodData: {
     [key: string]: WaterDataPoint[];
   };
-  activePeriod: string;
-  chartType: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  chartType: "daily" | "weekly" | "monthly" | "yearly";
 }
 
-export default function Linechart({
-  periodData,
-  activePeriod,
-  chartType,
-}: ChartProps) {
+export default function Linechart({ periodData, chartType }: ChartProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const [chartWidth, setChartWidth] = useState(0);
 
@@ -65,62 +66,57 @@ export default function Linechart({
 
   // Process the data for the chart
   const { labels, datasets } = useMemo(() => {
-    // Define standard orders for different time periods
-    const monthOrder = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-    ];
-    
-    const weekOrder = ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'];
-    
-    const dayOrder = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-    
     // Handle different chart types
-    if (chartType === 'monthly' || chartType === 'weekly' || chartType === 'daily') {
+    if (
+      chartType === "monthly" ||
+      chartType === "weekly" ||
+      chartType === "daily"
+    ) {
       // Get all available time periods from the data
       const allPeriods = Object.keys(periodData);
-      
+
       if (allPeriods.length === 0) {
         return { labels: [], datasets: [] };
       }
-      
+
       // Sort periods based on the chart type
       let sortedPeriods;
-      if (chartType === 'monthly') {
+      if (chartType === "monthly") {
         sortedPeriods = allPeriods.sort((a, b) => {
-          return monthOrder.indexOf(a) - monthOrder.indexOf(b);
+          return BULAN_CONSTANT.indexOf(a) - BULAN_CONSTANT.indexOf(b);
         });
-      } else if (chartType === 'weekly') {
+      } else if (chartType === "weekly") {
         sortedPeriods = allPeriods.sort((a, b) => {
-          return weekOrder.indexOf(a) - weekOrder.indexOf(b);
+          return MINGGU_CONSTANT.indexOf(a) - MINGGU_CONSTANT.indexOf(b);
         });
-      } else { // daily
+      } else {
+        // daily
         sortedPeriods = allPeriods.sort((a, b) => {
-          return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+          return HARI_CONSTANT.indexOf(a) - HARI_CONSTANT.indexOf(b);
         });
       }
-      
+
       // Get all unique pipe names across all periods
       const allPipes = new Set<string>();
-      sortedPeriods.forEach(period => {
+      sortedPeriods.forEach((period) => {
         const periodItems = periodData[period] || [];
         periodItems.forEach((item: WaterDataPoint) => {
           allPipes.add(item.pipa);
         });
       });
-      
+
       // Create datasets for each pipe
       const pipeDatasets = Array.from(allPipes).map((pipeName, index) => {
         // Generate a color based on the index
         const hue = (index * 137) % 360; // Use golden ratio to spread colors
-        
+
         // Get data for this pipe across all periods
-        const data = sortedPeriods.map(period => {
+        const data = sortedPeriods.map((period) => {
           const periodItems = periodData[period] || [];
-          const pipeData = periodItems.find(item => item.pipa === pipeName);
+          const pipeData = periodItems.find((item) => item.pipa === pipeName);
           return pipeData ? returnNumber(pipeData.volume) : 0;
         });
-        
+
         return {
           label: pipeName,
           data,
@@ -129,51 +125,49 @@ export default function Linechart({
           tension: 0.3, // Add some curve to the lines
         };
       });
-      
+
       return {
         labels: sortedPeriods,
         datasets: pipeDatasets,
       };
-    } else if (chartType === 'yearly') {
+    } else if (chartType === "yearly") {
       // For yearly view, we handle it differently
       // Get all available years from the data
       const allYears = Object.keys(periodData);
-      
-      console.log('Available years for yearly chart:', allYears);
-      console.log('Period data for yearly chart:', periodData);
-      
+
+      console.log("Available years for yearly chart:", allYears);
+      console.log("Period data for yearly chart:", periodData);
+
       if (allYears.length === 0) {
-        console.log('No years found in data');
+        console.log("No years found in data");
         return { labels: [], datasets: [] };
       }
-      
+
       // Get all unique pipe names across all years
       const allPipes = new Set<string>();
-      allYears.forEach(year => {
+      allYears.forEach((year) => {
         const yearItems = periodData[year] || [];
         console.log(`Items for year ${year}:`, yearItems);
-        
+
         yearItems.forEach((item: WaterDataPoint) => {
           allPipes.add(item.pipa);
         });
       });
-      
-      console.log('All unique pipes for yearly view:', Array.from(allPipes));
-      
+
       // Create datasets for each pipe
       const pipeDatasets = Array.from(allPipes).map((pipeName, index) => {
         // Generate a color based on the index
         const hue = (index * 137) % 360; // Use golden ratio to spread colors
-        
+
         // Get data for this pipe across all years
-        const data = allYears.map(year => {
+        const data = allYears.map((year) => {
           const yearItems = periodData[year] || [];
-          const pipeData = yearItems.find(item => item.pipa === pipeName);
+          const pipeData = yearItems.find((item) => item.pipa === pipeName);
           const value = pipeData ? returnNumber(pipeData.volume) : 0;
           console.log(`Value for ${pipeName} in ${year}:`, value);
           return value;
         });
-        
+
         return {
           label: pipeName,
           data,
@@ -182,9 +176,9 @@ export default function Linechart({
           tension: 0.3, // Add some curve to the lines
         };
       });
-      
-      console.log('Generated datasets for yearly view:', pipeDatasets);
-      
+
+      console.log("Generated datasets for yearly view:", pipeDatasets);
+
       return {
         labels: allYears,
         datasets: pipeDatasets,
@@ -192,13 +186,16 @@ export default function Linechart({
     } else {
       return { labels: [], datasets: [] };
     }
-  }, [periodData, activePeriod, chartType]);
-
+  }, [periodData, chartType]);
   // Adjust options based on screen size
   const options = useMemo(
     () => ({
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: "index" as const,
+        intersect: false,
+      },
       plugins: {
         legend: {
           position: chartWidth < 600 ? ("bottom" as const) : ("top" as const),
@@ -223,13 +220,14 @@ export default function Linechart({
           bodyFont: {
             size: chartWidth < 400 ? 11 : 13,
           },
-          callbacks: {
-            label: function(context: any) {
-              const label = context.dataset.label || '';
-              const value = context.parsed.y;
-              return `${label}: ${value} L`;
-            }
-          }
+          title: function (context: TooltipItem<"line">[]) {
+            return context[0].label;
+          },
+          label: function (context: TooltipItem<"line">) {
+            const label = context.dataset.label || "";
+            const value = context.parsed.y;
+            return `${label}: ${value} L`;
+          },
         },
       },
       scales: {
@@ -247,17 +245,19 @@ export default function Linechart({
             font: {
               size: chartWidth < 400 ? 10 : 12,
             },
-            callback: function(value: any) {
-              return value + ' L';
-            }
+            callback: function (value: string | number) {
+              const numValue =
+                typeof value === "string" ? parseFloat(value) : value;
+              return `${numValue} L`;
+            },
           },
           title: {
             display: true,
-            text: 'Volume (L)',
+            text: "Volume (L)",
             font: {
               size: chartWidth < 400 ? 10 : 12,
-            }
-          }
+            },
+          },
         },
       },
     }),
@@ -265,13 +265,18 @@ export default function Linechart({
   );
 
   // Helper function to get chart type title
-  function getChartTypeTitle(type: 'daily' | 'weekly' | 'monthly' | 'yearly') {
-    switch(type) {
-      case 'daily': return 'Harian';
-      case 'weekly': return 'Mingguan';
-      case 'monthly': return 'Bulanan';
-      case 'yearly': return 'Tahunan';
-      default: return '';
+  function getChartTypeTitle(type: "daily" | "weekly" | "monthly" | "yearly") {
+    switch (type) {
+      case "daily":
+        return "Harian";
+      case "weekly":
+        return "Mingguan";
+      case "monthly":
+        return "Bulanan";
+      case "yearly":
+        return "Tahunan";
+      default:
+        return "";
     }
   }
 

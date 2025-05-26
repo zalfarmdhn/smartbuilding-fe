@@ -1,43 +1,43 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import { useAuth } from "../states/auth";
 import { useSettings } from "../states/settings";
-// import { getMe } from "../services/me";
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email harus diisi")
+    .email("Format email tidak valid"),
+  password: z.string().min(1, "Password harus diisi"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  // const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [validationError, setValidationError] = useState({
-    email: "",
-    password: "",
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
   });
 
   const login = useAuth((state) => state.login);
-  // const token = useAuth((state) => state.token);
   const isLoading = useAuth((state) => state.loading);
   const errorAuth = useAuth((state) => state.errorAuth);
   const getMeError = useSettings((state) => state.errorMe);
 
   console.log(`ini response errornya`, getMeError);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Basic validation
-    const errors = {
-      email: !email ? "Email harus diisi" : "",
-      password: !password ? "Password harus diisi" : "",
-    };
-
-    setValidationError(errors);
-    if (!email || !password) return;
-
-    // Call the login function
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(email, password);
+      login(data.email, data.password);
     } catch (e) {
       console.error(e);
     }
@@ -58,7 +58,7 @@ export default function LoginPage() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {(errorAuth || getMeError) && (
               <div className="p-4 mb-4 bg-red-100 border-l-4 border-red-500 text-white dark:bg-red-900/50 dark:text-red-400 dark:border-red-500 rounded">
                 <div className="text-sm">
@@ -76,18 +76,18 @@ export default function LoginPage() {
               <div className="mt-1">
                 <input
                   id="email"
-                  name="email"
                   type="email"
                   autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  {...register("email")}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white"
                   placeholder="Masukkan email anda"
                 />
               </div>
-              <div className="text-red-500 text-xs mt-1">
-                {validationError.email}
-              </div>
+              {errors.email && (
+                <div className="text-red-500 text-xs mt-1">
+                  {errors.email.message}
+                </div>
+              )}
             </div>
 
             <div>
@@ -99,11 +99,9 @@ export default function LoginPage() {
               <div className="mt-1 relative">
                 <input
                   id="password"
-                  name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  {...register("password")}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white"
                   placeholder="Masukkan password anda"
                 />
@@ -118,9 +116,11 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
-              <div className="text-red-500 text-xs mt-1">
-                {validationError.password}
-              </div>
+              {errors.password && (
+                <div className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </div>
+              )}
             </div>
             <div>
               <button
