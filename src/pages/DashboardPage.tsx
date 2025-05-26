@@ -45,7 +45,11 @@ export default function DashboardPage() {
             <CardStatistic
               icon={<BuildingIcon />}
               heading="Jumlah Gedung"
-              value={Array.isArray(settings) ? settings.length.toString() : "N/A"}
+              value={
+                Array.isArray(settings)
+                  ? settings.length.toString()
+                  : "Loading..."
+              }
             />
             {/* TODO : Integrasi total pengguna */}
             <CardStatistic

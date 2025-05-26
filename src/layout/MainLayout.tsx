@@ -10,10 +10,9 @@ import { Toaster } from "react-hot-toast";
 
 /**
  * TODO :
- * - Buatlah handle function jika server API sedang error, ambil dari localStorage
- * - Handle error jika API tidak merespon
- * - Handle expire token belum ada
- * - CRUD data user
+ * - Handle error berbeda jika token expired 401 Unauthorized (DONE)
+ * - Handle error jika API dari server tidak merespon
+ * - Fix try catch double di state dan service, utamakan hanya di service saja
  */
 export default function MainLayout() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,7 +24,7 @@ export default function MainLayout() {
   const errorUserData = useSettings((state) => state.errorMe);
   const navigate = useNavigate();
   const getSettings = useSettings((state) => state.getSettings);
-  const getMe = useSettings((state) => state.setCurrentUser);
+  const getMe = useSettings((state) => state.getCurrentUser);
   const scheduler = useSettings((state) => state.scheduler);
   console.log("ini error", errorUserData);
 
@@ -55,13 +54,6 @@ export default function MainLayout() {
   }, [getWaterData, getElectricData, scheduler, navigate]);
 
   useEffect(() => {
-    /**
-     * TODO :
-     * - Handle error berbeda jika token expired 401 Unauthorized
-     * - Handle error jika API dari server tidak merespon
-     *
-     * Code dibawah hanya akan redirect ke halaman login dengan semua error
-     */
     if (!hasToken() || errorUserData) {
       navigate("/login");
       return;

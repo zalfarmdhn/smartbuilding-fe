@@ -2,9 +2,8 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 import { useAuth } from "../states/auth";
-// import { hasToken } from "../utils/tokenHandler";
-// import { useWaterMonitoring } from "../states/water-monitoring";
-// import { useSettings } from "../states/settings";
+import { useSettings } from "../states/settings";
+// import { getMe } from "../services/me";
 
 export default function LoginPage() {
   // const navigate = useNavigate();
@@ -19,12 +18,10 @@ export default function LoginPage() {
   const login = useAuth((state) => state.login);
   // const token = useAuth((state) => state.token);
   const isLoading = useAuth((state) => state.loading);
-  const errorAuth = useAuth((state) => state.error);
-  // const errorToken = useWaterMonitoring((state) => state.error);
-  // const idBangunan = useSettings((state) => state.idBangunan);
-  const idBangunanResponse = useAuth((state) => state.idBangunanResponse);
+  const errorAuth = useAuth((state) => state.errorAuth);
+  const getMeError = useSettings((state) => state.errorMe);
 
-  console.log(`ini banyaknya id`, idBangunanResponse);
+  console.log(`ini response errornya`, getMeError);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +31,7 @@ export default function LoginPage() {
       email: !email ? "Email harus diisi" : "",
       password: !password ? "Password harus diisi" : "",
     };
-    
+
     setValidationError(errors);
     if (!email || !password) return;
 
@@ -62,9 +59,12 @@ export default function LoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {(errorAuth) && (
+            {(errorAuth || getMeError) && (
               <div className="p-4 mb-4 bg-red-100 border-l-4 border-red-500 text-white dark:bg-red-900/50 dark:text-red-400 dark:border-red-500 rounded">
-              <div className="text-sm">{errorAuth && "Terjadi kesalahan, silahkan coba kembali"}</div>
+                <div className="text-sm">
+                  {errorAuth && `${errorAuth.error}`}{" "}
+                  {getMeError && `${getMeError.error}`}
+                </div>
               </div>
             )}
             <div>
@@ -85,7 +85,9 @@ export default function LoginPage() {
                   placeholder="Masukkan email anda"
                 />
               </div>
-              <div className="text-red-500 text-xs mt-1">{validationError.email}</div>
+              <div className="text-red-500 text-xs mt-1">
+                {validationError.email}
+              </div>
             </div>
 
             <div>
@@ -116,7 +118,9 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
-              <div className="text-red-500 text-xs mt-1">{validationError.password}</div>
+              <div className="text-red-500 text-xs mt-1">
+                {validationError.password}
+              </div>
             </div>
             <div>
               <button

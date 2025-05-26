@@ -7,6 +7,7 @@ import SettingsPage from "../pages/SettingsPage";
 import DashboardPage from "../pages/DashboardPage";
 import UserPage from "../pages/UserPage";
 import PengelolaGedungPage from "../pages/PengelolaGedungPage";
+import ChangePasswordPage from "../pages/ChangePasswordPage";
 
 const routes = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const routes = createBrowserRouter([
       {
         path: "/settings",
         element: <SettingsPage />,
+      },
+      {
+        path: "/change-password",
+        element: <ChangePasswordPage />,
       },
       {
         path: "*",

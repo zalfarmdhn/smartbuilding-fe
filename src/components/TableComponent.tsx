@@ -1,7 +1,7 @@
 import { Button, Spinner } from "flowbite-react";
 import { useState } from "react";
-import { ModalExample } from "./ModalExample";
-import { ModalDelete } from "./ModalDeleteConfirmation";
+import { EditSettingModal } from "./settings/EditSettingModal";
+import { DeleteSettingModal } from "./settings/DeleteSettingModal";
 import { useSettings } from "../states/settings";
 
 export interface TableSettings {
@@ -138,26 +138,23 @@ export default function TableComponent(): JSX.Element {
             )}
           </tbody>
         </table>
-      </div>
-
+      </div>{" "}
       {/* Modal Edit Gedung */}
       {openModal.editModal && selectedSetting && (
         <div className="modal">
-          <ModalExample
+          <EditSettingModal
             openModal={openModal.editModal}
-            setOpenModal={(value) =>
+            setOpenModal={(value: boolean) =>
               setOpenModal((prev) => ({ ...prev, editModal: value }))
             }
             selectedSetting={selectedSetting}
-            // fetchSettings={fetchSettings}
           />
         </div>
       )}
-
       {/* Modal Delete Gedung */}
       {openModal.deleteModal && selectedSetting && (
         <div className="modal">
-          <ModalDelete
+          <DeleteSettingModal
             openModal={openModal.deleteModal}
             setOpenModal={(value) =>
               setOpenModal((prev) => ({ ...prev, deleteModal: value }))

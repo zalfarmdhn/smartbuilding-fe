@@ -1,53 +1,82 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
-export interface Electricity {
-  TotalWatt: string
-  TotalDayaListrikLT1: string
-  TotalDayaListrikLT2: string
-  TotalDayaListrikLT3: string
-  TotalDayaListrikLT4: string
-  BiayaPemakaianLT1: string
-  BiayaPemakaianLT2: string
-  BiayaPemakaianLT3: string
-  BiayaPemakaianLT4: string
-  DataPenggunaanListrikHarian: DataPenggunaanListrikHarian
-  DataBiayaListrikHarian: DataBiayaListrikHarian
-  DataPenggunaanListrikMingguan: DataPenggunaanListrikMingguan
-  DataBiayaListrikMingguan: DataBiayaListrikMingguan
-  DataPenggunaanListrikTahunan: DataPenggunaanListrikTahunan
-  DataBiayaListrikTahunan: DataBiayaListrikTahunan
-  CreatedAt: string
-  UpdatedAt: string
+interface IBiayaPemakaian {
+  Nama: string;
+  Biaya: string;
 }
 
-export interface DataPenggunaanListrikHarian {}
-
-export interface DataBiayaListrikHarian {}
-
-export interface DataPenggunaanListrikMingguan {
-  [key: `Minggu ${number}`]: Array<{
-    Lantai: number
-    Biaya: string
-  }>
+interface IDayaListrik {
+  nama: string;
+  Value: string;
 }
 
-export interface DataBiayaListrikMingguan {
-  [key: `Minggu ${number}`]: Array<{
-    Lantai: number
-    Biaya: string
-  }>
+export type THari =
+  | "Senin"
+  | "Selasa"
+  | "Rabu"
+  | "Kamis"
+  | "Jumat"
+  | "Sabtu"
+  | "Minggu";
+
+  
+export type TMinggu =
+  | "Minggu 1"
+  | "Minggu 2"
+  | "Minggu 3"
+  | "Minggu 4"
+  | "Minggu 5";
+
+export type TBulan =
+  | "Januari"
+  | "Februari"
+  | "Maret"
+  | "April"
+  | "Mei"
+  | "Juni"
+  | "Juli"
+  | "Agustus"
+  | "September"
+  | "Oktober"
+  | "November"
+  | "Desember";
+
+export interface IElectricData {
+  nama_gedung: string;
+  TotalWatt: string;
+  TotalDayaListrik: IDayaListrik[];
+  BiayaPemakaian: IBiayaPemakaian[];
+  CreatedAt: string;
+  UpdatedAt: string;
 }
 
-export interface DataPenggunaanListrikTahunan {
-  [key: string]: Array<{
-    Lantai: number
-    Value: string
-  }>
-}
-
-export interface DataBiayaListrikTahunan {
-  [key: string]: Array<{
-    Lantai: number
-    Biaya: string
-  }>
+export interface IElectricChart {
+  nama_gedung: string;
+  TotalWatt: string;
+  TotalDayaListrik: IDayaListrik[];
+  BiayaPemakaian: IBiayaPemakaian[];
+  DataPenggunaanListrikHarian: {
+    [key in THari]?: Array<{ nama: string; Value: string }>;
+  };
+  DataBiayaListrikHarian: {
+    [key in THari]?: Array<{ Nama: string; Biaya: string }>;
+  };
+  DataPenggunaanListrikMingguan: {
+    [key in TMinggu]?: Array<{ nama: string; Value: string }>;
+  };
+  DataBiayaListrikMingguan: {
+    [key in TMinggu]?: Array<{ Nama: string; Biaya: string }>;
+  };
+  DataPenggunaanListrikBulanan: {
+    [key in TBulan]?: Array<{ nama: string; Value: string }>;
+  };
+  DataBiayaListrikBulanan: {
+    [key in TBulan]?: Array<{ Nama: string; Biaya: string }>;
+  };
+  DataPenggunaanListrikTahunan: {
+    [key: string]: Array<{ nama: string; Value: string }>;
+  };
+  DataBiayaListrikTahunan: {
+    [key: string]: Array<{ Nama: string; Biaya: string }>;
+  };
+  CreatedAt: string;
+  UpdatedAt: string;
 }

@@ -1,24 +1,25 @@
 import { Button, Modal, ModalBody, ModalHeader } from "flowbite-react";
 import { Info } from "lucide-react";
-import { useUsers } from "../states/users";
+import { useSettings } from "../../states/settings";
 
 interface IDeleteModal {
   openModal: boolean;
-  userId: number;
-  username: string;
+  idBangunan: number;
+  namaBangunan: string;
   setOpenModal: (open: boolean) => void;
+  // handleDelete: (id: number) => void;
 }
 
-export function UserDeleteModal({
+export function DeleteSettingModal({
   openModal,
   setOpenModal,
-  userId,
-  username,
+  idBangunan,
+  namaBangunan,
 }: IDeleteModal) {
-  const deleteUser = useUsers((state) => state.deleteUser);
+  const deleteSetting = useSettings((state) => state.deleteSetting);
 
   const handleDelete = (id: number) => {
-    deleteUser(id);
+    deleteSetting(id);
     setOpenModal(false);
   };
 
@@ -34,13 +35,13 @@ export function UserDeleteModal({
           <div className="text-center">
             <Info className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Apakah kamu yakin ingin menghapus pengguna {username}?
+              Apakah kamu yakin ingin mendelete bangunan {namaBangunan}?
             </h3>
             <div className="flex justify-center gap-4">
               <Button
                 color="failure"
                 onClick={() => {
-                  handleDelete(userId);
+                  handleDelete(idBangunan);
                 }}>
                 {"Ya, saya yakin"}
               </Button>

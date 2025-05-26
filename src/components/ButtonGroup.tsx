@@ -44,6 +44,15 @@ export default function ButtonGroupComponent({
             : "text-primary-500 bg-transparent"
         }`}
         onClick={() => setActiveTab(2)}>
+        Bulanan
+      </Button>
+      <Button
+        className={`hover:!bg-secondary-100 ${
+          activeTab === 3
+            ? "bg-primary-500 text-white"
+            : "text-primary-500 bg-transparent"
+        }`}
+        onClick={() => setActiveTab(3)}>
         Tahunan
       </Button>
     </Button.Group>

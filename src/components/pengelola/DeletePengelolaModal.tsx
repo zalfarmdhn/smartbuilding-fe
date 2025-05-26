@@ -1,6 +1,6 @@
 import { Button, Modal, ModalBody, ModalHeader } from "flowbite-react";
 import { Info } from "lucide-react";
-import { usePengelola } from "../states/pengelola";
+import { usePengelola } from "../../states/pengelola";
 
 interface IDeleteModal {
   openModal: boolean;
@@ -9,7 +9,7 @@ interface IDeleteModal {
   setOpenModal: (open: boolean) => void;
 }
 
-export function PengelolaDeleteModal({
+export function DeletePengelolaModal({
   openModal,
   setOpenModal,
   userId,

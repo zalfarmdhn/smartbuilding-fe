@@ -52,12 +52,12 @@ export default function WaterMonitoringPage() {
           Monitoring Air (Realtime {scheduler} detik)
         </h1>
       </div>
-      {!waterData.KapasitasToren && (
+      {/* {!waterData.KapasitasToren && (
         <Alert color="warning" icon={OctagonAlert} className="mb-4">
           <span className="font-medium">Server gagal mengakses data!</span>{" "}
           Mohon menunggu dan tolong coba lagi.
         </Alert>
-      )}
+      )} */}
       {/* Statistik Toren Air */}
       <section>
         <h2 className="text-primary-500 font-bold text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4">

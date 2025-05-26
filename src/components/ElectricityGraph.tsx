@@ -1,133 +1,139 @@
-import { useEffect, useState } from "react";
-import { BarchartExample } from "./BarchartExample";
+import { useState } from "react";
+import Barchart from "./charts/Barchart";
 import { useElectricMonitoring } from "../states/electricity-monitoring";
-import ButtonGroupComponent from "./ButtonGroup";
-import { ReusableDropdown } from "./DropdownLogic";
+import ButtonGroup from "./ButtonGroup";
 
-type DayType = "Senin" | "Selasa" | "Rabu" | "Kamis" | "Jumat" | "Sabtu" | "Minggu";
-type WeekType = "Minggu 1" | "Minggu 2" | "Minggu 3" | "Minggu 4";
-type MonthType = "Januari" | "Februari" | "Maret" | "April" | "Mei" | "Juni" | "Juli" | "Agustus" | "September" | "Oktober" | "November" | "Desember";
+type DataType = 'biaya' | 'penggunaan';
 
 export default function ElectricityGraph() {
-  const [labels, setLabels] = useState<string[]>([]);
-  const [chartData, setChartData] = useState<string[]>([]);
-  const [activeMonth, setActiveMonth] = useState<MonthType>("Januari");
-  const [activeWeek, setActiveWeek] = useState<WeekType>("Minggu 1");
-  const [activeDay, setActiveDay] = useState<DayType>("Senin");
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [dataType, setDataType] = useState<DataType>('biaya'); // Default to biaya
+  const [activeTab, setActiveTab] = useState<number>(2); // Default to monthly view
 
   const electricalChart = useElectricMonitoring((state) => state.electricChart);
   const error = useElectricMonitoring((state) => state.error);
 
-
-  const day = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
-
-  const month = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
-
-  const week = ["Minggu 1", "Minggu 2", "Minggu 3", "Minggu 4"];
-
-  useEffect(() => {
-    // Chart Harian
-    if (electricalChart && activeTab === 0) {
-      setLabels(
-        electricalChart?.DataBiayaListrikHarian?.[activeDay]?.map(
-          (item) => item.Nama
-        ) || []
-      );
-      setChartData(
-        electricalChart?.DataBiayaListrikHarian?.[activeDay]?.map(
-          (item) => item.Biaya
-        ) || []
-      );
+  const getChartData = () => {
+    if (dataType === 'biaya') {
+      switch(activeTab) {
+        case 0: // Daily
+          return {
+            periodData: electricalChart?.DataBiayaListrikHarian || {},
+            activePeriod: '',
+            chartType: 'daily' as const,
+            dataType: 'biaya' as const
+          };
+        case 1: // Weekly
+          return {
+            periodData: electricalChart?.DataBiayaListrikMingguan || {},
+            activePeriod: '',
+            chartType: 'weekly' as const,
+            dataType: 'biaya' as const
+          };
+        case 2: // Monthly
+          return {
+            periodData: electricalChart?.DataBiayaListrikBulanan || {},
+            activePeriod: '',
+            chartType: 'monthly' as const,
+            dataType: 'biaya' as const
+          };
+        case 3: // Yearly
+          return {
+            periodData: electricalChart?.DataBiayaListrikTahunan || {},
+            activePeriod: '',
+            chartType: 'yearly' as const,
+            dataType: 'biaya' as const
+          };
+        default:
+          return {
+            periodData: electricalChart?.DataBiayaListrikBulanan || {},
+            activePeriod: '',
+            chartType: 'monthly' as const,
+            dataType: 'biaya' as const
+          };
+      }
+    } else { // penggunaan
+      switch(activeTab) {
+        case 0: // Daily
+          return {
+            periodData: electricalChart?.DataPenggunaanListrikHarian || {},
+            activePeriod: '',
+            chartType: 'daily' as const,
+            dataType: 'penggunaan' as const
+          };
+        case 1: // Weekly
+          return {
+            periodData: electricalChart?.DataPenggunaanListrikMingguan || {},
+            activePeriod: '',
+            chartType: 'weekly' as const,
+            dataType: 'penggunaan' as const
+          };
+        case 2: // Monthly
+          return {
+            periodData: electricalChart?.DataPenggunaanListrikBulanan || {},
+            activePeriod: '',
+            chartType: 'monthly' as const,
+            dataType: 'penggunaan' as const
+          };
+        case 3: // Yearly
+          return {
+            periodData: electricalChart?.DataPenggunaanListrikTahunan || {},
+            activePeriod: '',
+            chartType: 'yearly' as const,
+            dataType: 'penggunaan' as const
+          };
+        default:
+          return {
+            periodData: electricalChart?.DataPenggunaanListrikBulanan || {},
+            activePeriod: '',
+            chartType: 'monthly' as const,
+            dataType: 'penggunaan' as const
+          };
+      }
     }
+  };
 
-    // Chart Mingguan
-    if (electricalChart && activeTab === 1) {
-      setLabels(
-        electricalChart?.DataBiayaListrikMingguan?.[activeWeek]?.map(
-          (item) => item.Nama
-        ) || []
-      );
-      setChartData(
-        electricalChart?.DataBiayaListrikMingguan?.[activeWeek]?.map(
-          (item) => item.Biaya
-        ) || []
-      );
-    }
-
-    // Chart Tahunan
-    if (electricalChart && activeTab === 2) {
-      // const bulan = Object.keys(electricalChart.DataPenggunaanTahunan)[0];
-      setLabels(
-        electricalChart?.DataBiayaListrikTahunan?.[activeMonth]?.map(
-          (item) => item.Nama
-        ) || []
-      );
-      setChartData(
-        electricalChart?.DataBiayaListrikTahunan?.[activeMonth]?.map(
-          (item) => item.Biaya
-        ) || []
-      );
-    }
-  }, [electricalChart, activeMonth, activeTab, activeWeek, activeDay]);
   return (
-    <div className="mt-2">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3 md:gap-0">
-        <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-2 md:gap-4 w-full md:w-auto">
-          {error && (
-            <div
-              className="flex items-center bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded relative text-sm md:text-base"
-              role="alert">
-              <strong className="font-bold">Gagal mengakses data!</strong>
-              <span className="block sm:inline"> Tolong coba lagi.</span>
-            </div>
-          )}
+    <div className="p-4 bg-white rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          {dataType === 'biaya' ? 'Biaya Listrik' : 'Penggunaan Listrik'}
+        </h2>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setDataType('biaya')}
+            className={`px-3 py-1 text-sm font-medium rounded ${
+              dataType === 'biaya'
+                ? 'bg-primary-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Biaya
+          </button>
+          <button
+            onClick={() => setDataType('penggunaan')}
+            className={`px-3 py-1 text-sm font-medium rounded ${
+              dataType === 'penggunaan'
+                ? 'bg-primary-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Penggunaan
+          </button>
+        </div>
+      </div>
 
-          <h1 className="text-primary-500 font-bold text-lg md:text-xl">
-            Grafik Data Biaya Listrik
-          </h1>
-          <ButtonGroupComponent
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        </div>
-        <ReusableDropdown
-          items={day}
-          activeValue={activeDay}
-          onSelect={(value) => setActiveDay(value as DayType)}
-          isVisible={activeTab === 0}
-        />
-        <ReusableDropdown
-          items={week}
-          activeValue={activeWeek}
-          onSelect={(value) => setActiveWeek(value as WeekType)}
-          isVisible={activeTab === 1}
-        />
-        <ReusableDropdown
-          items={month}
-          activeValue={activeMonth}
-          onSelect={(value) => setActiveMonth(value as MonthType)}
-          isVisible={activeTab === 2}
+      <div className="mb-4">
+        <ButtonGroup
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
         />
       </div>
-      <div className="w-full max-w-[900px] h-fit bg-white p-4 rounded-lg shadow-md mx-auto overflow-hidden">
-        <div className="w-full h-full">
-          <BarchartExample mapLabels={labels} mapData={chartData} />
-        </div>
+
+      <div className="mt-4">
+        <Barchart {...getChartData()} />
       </div>
+
+      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 }

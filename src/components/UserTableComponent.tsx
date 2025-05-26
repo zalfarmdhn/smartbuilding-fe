@@ -2,8 +2,8 @@ import { Button, Spinner } from "flowbite-react";
 import { useState } from "react";
 import { useUsers } from "../states/users";
 import { IUser } from "../types/users";
-import { UserModal } from "./UserModal";
-import { UserDeleteModal } from "./UserDeleteModal";
+import { EditUserModal } from "./users/EditUserModal";
+import { DeleteUserModal } from "./users/DeleteUserModal";
 
 interface ModalState {
   editModal: boolean;
@@ -22,8 +22,6 @@ export default function UserTableComponent(): JSX.Element {
   const users = useUsers((state) => state.users);
   const loading = useUsers((state) => state.loading);
 
-  // We'll assume admin role can view the delete button
-  // This would normally come from auth context or user state
   const isAdmin = true;
 
   const handleEdit = (user: IUser) => {
@@ -120,12 +118,11 @@ export default function UserTableComponent(): JSX.Element {
             )}
           </tbody>
         </table>
-      </div>
-
+      </div>{" "}
       {/* Modal Edit User */}
       {openModal.editModal && selectedUser && (
         <div className="modal">
-          <UserModal
+          <EditUserModal
             openModal={openModal.editModal}
             setOpenModal={(value) =>
               setOpenModal((prev) => ({ ...prev, editModal: value }))
@@ -134,11 +131,10 @@ export default function UserTableComponent(): JSX.Element {
           />
         </div>
       )}
-
       {/* Modal Delete User */}
       {openModal.deleteModal && selectedUser && (
         <div className="modal">
-          <UserDeleteModal
+          <DeleteUserModal
             openModal={openModal.deleteModal}
             setOpenModal={(value) =>
               setOpenModal((prev) => ({ ...prev, deleteModal: value }))

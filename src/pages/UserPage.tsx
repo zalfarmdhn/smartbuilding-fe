@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "flowbite-react";
 import UserTableComponent from "../components/UserTableComponent";
-import { UserModal } from "../components/UserModal";
+import { AddUserModal } from "../components/users/AddUserModal";
 import { useUsers } from "../states/users";
 import { useNavigate } from "react-router";
 import { useSettings } from "../states/settings";
@@ -9,16 +9,19 @@ import { useSettings } from "../states/settings";
 export default function UserPage() {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const getUsers = useUsers((state) => state.getUsers);
-  const user = useSettings((state) => state.dataUser);
+  const getSettings = useSettings((state) => state.getSettings);
+  const role = useSettings((state) => state.dataUser?.data.role);
   const navigate = useNavigate();
 
-  if(user?.data.role !== "admin") {
-    navigate("/");
-  }
-
   useEffect(() => {
+    // If the user is not admin, redirect to dashboard and cancel the fetch
+    if (role !== "admin") {
+      navigate("/");
+      return;
+    }
     getUsers();
-  }, [getUsers]);
+    getSettings();
+  }, [role, navigate, getUsers, getSettings]);
 
   useEffect(() => {
     document.title = "Smartbuilding | Users";
@@ -41,13 +44,9 @@ export default function UserPage() {
           onClick={() => setOpenModal(true)}>
           Tambah Pengguna
         </Button>
-      </div>
+      </div>{" "}
       {openModal && (
-        <UserModal
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          addMode={true}
-        />
+        <AddUserModal openModal={openModal} setOpenModal={setOpenModal} />
       )}
       <UserTableComponent />
     </div>

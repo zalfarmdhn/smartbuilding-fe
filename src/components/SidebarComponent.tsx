@@ -160,9 +160,19 @@ export default function SidebarComponent() {
                     <li>
                       <a
                         onClick={handleLogout}
-                        className="block px-4 py-2 text-sm text-red-500 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="block px-4 py-2 text-sm text-red-500 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
                         role="menuitem">
-                        Sign out
+                        Keluar
+                      </a>
+                    </li>
+                  </ul>
+                  <ul className="py-1" role="none">
+                    <li>
+                      <a
+                        onClick={() => navigate("/change-password")}
+                        className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                        role="menuitem">
+                        Ganti Password
                       </a>
                     </li>
                   </ul>
@@ -247,26 +257,35 @@ export default function SidebarComponent() {
                       icon={() => <ControlIcon />}
                       label={section.title}
                       className="text-white">
-                      {section.items.map(
-                        (item, itemIndex) =>
-                          (item.name !== "Pengguna" ||
-                            (userData?.data.role !== "manajement" &&
-                              "pengelola")) && (
-                            <Sidebar.Item
-                              key={itemIndex}
-                              as={Link}
-                              to={item.href}
-                              icon={() => item.icon}
-                              onClick={() => setOpenSidebar(!openSidebar)}
-                              className={
-                                window.location.pathname === item.href
-                                  ? "bg-[#489aeb]"
-                                  : ""
-                              }>
-                              {item.name}
-                            </Sidebar.Item>
-                          )
-                      )}
+                      {section.items.map((item, itemIndex) => {
+                        // Check to see if certain item should be restricted to certain roles
+                        const isRestrictedItem =
+                          item.name === "Pengguna" ||
+                          item.name === "Pengelola Gedung";
+                        const isManagement =
+                          userData?.data.role === "manajement";
+
+                        // If the item is restricted and the user role is management, skip rendering it
+                        if (isRestrictedItem && isManagement) {
+                          return null;
+                        }
+
+                        return (
+                          <Sidebar.Item
+                            key={itemIndex}
+                            as={Link}
+                            to={item.href}
+                            icon={() => item.icon}
+                            onClick={() => setOpenSidebar(!openSidebar)}
+                            className={
+                              window.location.pathname === item.href
+                                ? "bg-[#489aeb]"
+                                : ""
+                            }>
+                            {item.name}
+                          </Sidebar.Item>
+                        );
+                      })}
                     </Sidebar.Collapse>
                   </div>
                 ))}

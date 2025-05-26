@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import userAPI from "../services/users";
 import { IUser } from "../types/users";
+import toast from "react-hot-toast";
 
 interface IUserState {
   users: IUser[] | null;
@@ -22,13 +23,14 @@ interface IUserState {
     role: string
   ) => Promise<void>;
   deleteUser: (id: number) => Promise<void>;
+  changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
 }
 
 export const useUsers = create<IUserState>((set, get) => ({
   users: null,
   loading: false,
   error: null,
-  
+
   // Get all users
   getUsers: async () => {
     try {
@@ -45,25 +47,34 @@ export const useUsers = create<IUserState>((set, get) => ({
       set({ error: `${error}`, loading: false });
     }
   },
-  
+
   // Create a new user
   createUser: async (username, email, password, role, pengelola_gedung) => {
     try {
       set({ loading: true, error: null });
-      await userAPI.createUser(username, email, password, role, pengelola_gedung);
+      await userAPI.createUser(
+        username,
+        email,
+        password,
+        role,
+        pengelola_gedung
+      );
+      toast.success("User berhasil dibuat!");
       // Refresh the users list
       await get().getUsers();
     } catch (error) {
+      toast.error("Gagal membuat user. Silakan coba lagi.");
       console.error(error);
       set({ error: `${error}`, loading: false });
     }
   },
-  
+
   // Update an existing user
   updateUser: async (id, username, email, password, role) => {
     try {
       set({ loading: true, error: null });
       await userAPI.updateUser(id, username, email, password, role);
+      toast.success("User berhasil diperbarui!");
       // Refresh the users list
       await get().getUsers();
     } catch (error) {
@@ -71,15 +82,31 @@ export const useUsers = create<IUserState>((set, get) => ({
       set({ error: `${error}`, loading: false });
     }
   },
-  
+
   // Delete a user
   deleteUser: async (id) => {
     try {
       set({ loading: true, error: null });
       await userAPI.deleteUser(id);
+      toast.success("User berhasil dihapus!");
       // Refresh the users list
       await get().getUsers();
     } catch (error) {
+      toast.error("Gagal menghapus user. Silakan coba lagi.");
+      console.error(error);
+      set({ error: `${error}`, loading: false });
+    }
+  },
+
+  // Change Password
+  changePassword: async (oldPassword: string, newPassword: string) => {
+    try {
+      set({ loading: true, error: null });
+      await userAPI.changePassword(oldPassword, newPassword);
+      toast.success("Password berhasil diubah!");
+      set({ loading: false });
+    } catch (error) {
+      toast.error("Gagal mengubah password. Silakan coba lagi.");
       console.error(error);
       set({ error: `${error}`, loading: false });
     }

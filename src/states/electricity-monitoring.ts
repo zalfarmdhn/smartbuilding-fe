@@ -42,11 +42,17 @@ interface IElectricChart {
   DataBiayaListrikMingguan: {
     [key in Minggu]: Array<{ Nama: string; Biaya: string }>;
   };
-  DataPenggunaanListrikTahunan: {
+  DataPenggunaanListrikBulanan: {
     [key in Bulan]: Array<{ nama: string; Value: string }>;
   };
-  DataBiayaListrikTahunan: {
+  DataBiayaListrikBulanan: {
     [key in Bulan]: Array<{ Nama: string; Biaya: string }>;
+  };
+  DataPenggunaanListrikTahunan: {
+    [key: string]: Array<{ nama: string; Value: string }>;
+  };
+  DataBiayaListrikTahunan: {
+    [key: string]: Array<{ Nama: string; Biaya: string }>;
   };
 }
 
@@ -98,7 +104,7 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       "Minggu 4": [],
       "Minggu 5": [],
     },
-    DataPenggunaanListrikTahunan: {
+    DataPenggunaanListrikBulanan: {
       Januari: [],
       Februari: [],
       Maret: [],
@@ -112,7 +118,7 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       November: [],
       Desember: [],
     },
-    DataBiayaListrikTahunan: {
+    DataBiayaListrikBulanan: {
       Januari: [],
       Februari: [],
       Maret: [],
@@ -125,7 +131,9 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       Oktober: [],
       November: [],
       Desember: [],
-    }
+    },
+    DataPenggunaanListrikTahunan: {},
+    DataBiayaListrikTahunan: {}
   },
   error: "",
   loading: true,
@@ -150,6 +158,8 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
           DataBiayaListrikHarian: response.DataBiayaListrikHarian,
           DataPenggunaanListrikMingguan: response.DataPenggunaanListrikMingguan,
           DataBiayaListrikMingguan: response.DataBiayaListrikMingguan,
+          DataPenggunaanListrikBulanan: response.DataPenggunaanListrikBulanan,
+          DataBiayaListrikBulanan: response.DataBiayaListrikBulanan,
           DataPenggunaanListrikTahunan: response.DataPenggunaanListrikTahunan,
           DataBiayaListrikTahunan: response.DataBiayaListrikTahunan,
         },

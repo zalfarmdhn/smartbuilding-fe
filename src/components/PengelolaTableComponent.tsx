@@ -3,8 +3,8 @@ import { useState } from "react";
 import { usePengelola } from "../states/pengelola";
 import { IPengelolaGedung } from "../types/pengelola";
 import { useSettings } from "../states/settings";
-import { PengelolaDeleteModal } from "./PengelolaDeleteModal";
-import { PengelolaModal } from "./PengelolaModal";
+import { DeletePengelolaModal } from "./pengelola/DeletePengelolaModal";
+import { EditPengelolaModal } from "./pengelola/EditPengelolaModal";
 
 interface ModalState {
   editModal: boolean;
@@ -98,26 +98,34 @@ export default function PengelolaTableComponent(): JSX.Element {
                       </span>
                     </td>
                     <td className="px-6 py-4 flex flex-row gap-x-2">
-                      { // Invoke function to check if user has reached max buildings
+                      {
+                        // Invoke function to check if user has reached max buildings
                         (() => {
-                        // Count how many different setting_ids this username has
-                        const userSettingIds = pengelolaList
-                          .filter((p: IPengelolaGedung) => p.username === pengelola.username)
-                          .map((p: IPengelolaGedung) => p.setting_id);
-                        
-                        const uniqueSettingIds = [...new Set(userSettingIds)];
-                        
-                        // Only show edit button if user hasn't reached max buildings
-                        return uniqueSettingIds.length < (Array.isArray(settings) ? settings.length : 1);
-                      })() && (
-                        <Button
-                          color="blue"
-                          size="xs"
-                          onClick={() => handleEdit(pengelola)}
-                          className="transition-colors duration-200">
-                          Edit
-                        </Button>
-                      )}
+                          // Count how many different setting_ids this username has
+                          const userSettingIds = pengelolaList
+                            .filter(
+                              (p: IPengelolaGedung) =>
+                                p.username === pengelola.username
+                            )
+                            .map((p: IPengelolaGedung) => p.setting_id);
+
+                          const uniqueSettingIds = [...new Set(userSettingIds)];
+
+                          // Only show edit button if user hasn't reached max buildings
+                          return (
+                            uniqueSettingIds.length <
+                            (Array.isArray(settings) ? settings.length : 1)
+                          );
+                        })() && (
+                          <Button
+                            color="blue"
+                            size="xs"
+                            onClick={() => handleEdit(pengelola)}
+                            className="transition-colors duration-200">
+                            Edit
+                          </Button>
+                        )
+                      }
 
                       {isAdmin && (
                         <Button
@@ -141,11 +149,10 @@ export default function PengelolaTableComponent(): JSX.Element {
             )}
           </tbody>
         </table>
-      </div>
-
+      </div>{" "}
       {/* Modal Edit Pengelola */}
       {openModal.editModal && selectedPengelola && (
-        <PengelolaModal
+        <EditPengelolaModal
           openModal={openModal.editModal}
           setOpenModal={(open: boolean) =>
             setOpenModal((prev) => ({ ...prev, editModal: open }))
@@ -153,11 +160,9 @@ export default function PengelolaTableComponent(): JSX.Element {
           pengelola={selectedPengelola}
         />
       )}
-      
-
       {/* Modal Delete Pengelola */}
       {openModal.deleteModal && selectedPengelola && (
-        <PengelolaDeleteModal
+        <DeletePengelolaModal
           openModal={openModal.deleteModal}
           setOpenModal={(open: boolean) =>
             setOpenModal((prev) => ({ ...prev, deleteModal: open }))

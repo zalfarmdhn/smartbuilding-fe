@@ -27,6 +27,9 @@ interface WaterMonitoringState {
     DataPenggunaanMingguan: {
       [key: string]: Array<{ pipa: string; volume: string }>;
     };
+    DataPenggunaanBulanan: {
+      [key: string]: Array<{ pipa: string; volume: string }>;
+    };
     DataPenggunaanTahunan: {
       [key: string]: Array<{ pipa: string; volume: string }>;
     };
@@ -46,6 +49,7 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
   waterChart: {
     DataPenggunaanHarian: {},
     DataPenggunaanMingguan: {},
+    DataPenggunaanBulanan: {},
     DataPenggunaanTahunan: {},
   },
   error: '',
@@ -71,6 +75,7 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
         waterChart : {
           DataPenggunaanHarian: response.DataPenggunaanHarian,
           DataPenggunaanMingguan: response.DataPenggunaanMingguan,
+          DataPenggunaanBulanan: response.DataPenggunaanBulanan || response.DataPenggunaanTahunan, // Gunakan DataPenggunaanTahunan jika DataPenggunaanBulanan tidak tersedia
           DataPenggunaanTahunan: response.DataPenggunaanTahunan,
         }
       })

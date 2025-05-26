@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import TableComponent from "../components/TableComponent";
 import { useSettings } from "../states/settings";
 import { Button } from "flowbite-react";
-import { ModalExample } from "../components/ModalExample";
+import { AddSettingModal } from "../components/settings/AddSettingModal";
 // import { getDataSetting } from "../utils/backupData";
 
 const SettingsPage: React.FC = () => {
@@ -11,6 +11,7 @@ const SettingsPage: React.FC = () => {
   // saat inisialisasi, masukkan data settings ke local storage kemudian nanti diedit tinggal lewat localStorage.
   const [openModal, setOpenModal] = useState<boolean>(false);
   const getSettings = useSettings((state) => state.getSettings);
+  const role = useSettings((state) => state.dataUser?.data.role);
 
   useEffect(() => {
     getSettings();
@@ -35,19 +36,17 @@ const SettingsPage: React.FC = () => {
             Atur semua pengaturan sistem bangunan di sini.
           </p>
         </div>
-        <Button
-          size="xs"
-          className="bg-primary-400 hover:bg-primary-500 text-white px-4 py-2 rounded-md"
-          onClick={() => setOpenModal(true)}>
-          Tambah Gedung
-        </Button>
-      </div>
+        {role === "admin" && (
+          <Button
+            size="xs"
+            className="bg-primary-400 hover:bg-primary-500 text-white px-4 py-2 rounded-md"
+            onClick={() => setOpenModal(true)}>
+            Tambah Gedung
+          </Button>
+        )}
+      </div>{" "}
       {openModal && (
-        <ModalExample
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          addMode={true}
-        />
+        <AddSettingModal openModal={openModal} setOpenModal={setOpenModal} />
       )}
       <TableComponent />
     </div>

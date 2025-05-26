@@ -1,87 +1,50 @@
-import { useEffect, useState } from "react";
-import LineChartExample from "./LineChartExample";
+import { useState } from "react";
+import Linechart from "./charts/Linechart";
 import ButtonGroupComponent from "./ButtonGroup";
 import { useWaterMonitoring } from "../states/water-monitoring";
-import { ReusableDropdown } from "./DropdownLogic";
-
-interface IWaterData {
-  pipa: string;
-  volume: string;
-}
 
 export default function WaterGraph() {
-  const [labels, setLabels] = useState<string[]>([]);
-  const [chartData, setChartData] = useState<string[]>([]);
-  const [activeMonth, setActiveMonth] = useState<string>("Januari");
-  const [activeWeek, setActiveWeek] = useState<string>("Minggu 1");
-  const [activeDay, setActiveDay] = useState<string>("Senin");
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<number>(1); // Default to weekly view since we have data for it
 
   const waterChart = useWaterMonitoring((state) => state.waterChart);
 
-  const day = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
-
-  const month = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
-
-  const week = ["Minggu 1", "Minggu 2", "Minggu 3", "Minggu 4"];
-
-  useEffect(() => {
-    // Chart Harian
-    if (waterChart && activeTab === 0) {
-      setLabels(
-        waterChart?.DataPenggunaanHarian?.[activeDay]?.map(
-          (item) => item.pipa
-        ) || []
-      );
-      setChartData(
-        waterChart?.DataPenggunaanHarian?.[activeDay]?.map(
-          (item: IWaterData) => item.volume
-        ) || []
-      );
+  // Determine which data and period to use based on active tab
+  const getChartData = () => {
+    switch(activeTab) {
+      case 0: // Daily
+        return {
+          periodData: waterChart?.DataPenggunaanHarian || {},
+          activePeriod: '',
+          chartType: 'daily' as const
+        };
+      case 1: // Weekly
+        return {
+          periodData: waterChart?.DataPenggunaanMingguan || {},
+          activePeriod: '',
+          chartType: 'weekly' as const
+        };
+      case 2: // Monthly
+        // Untuk tampilan bulanan, kita menggunakan data dari DataPenggunaanBulanan
+        return {
+          periodData: waterChart?.DataPenggunaanBulanan || {},
+          activePeriod: '', // Tidak perlu active period untuk tampilan bulanan
+          chartType: 'monthly' as const
+        };
+      case 3: // Yearly
+        // Untuk tampilan tahunan, kita menggunakan DataPenggunaanTahunan
+        return {
+          periodData: waterChart?.DataPenggunaanTahunan || {},
+          activePeriod: '',
+          chartType: 'yearly' as const
+        };
+      default:
+        return {
+          periodData: {},
+          activePeriod: '',
+          chartType: 'weekly' as const
+        };
     }
-
-    // Chart Mingguan
-    if (waterChart && activeTab === 1) {
-      setLabels(
-        waterChart?.DataPenggunaanMingguan?.[activeWeek]?.map(
-          (item) => item.pipa
-        ) || []
-      );
-      setChartData(
-        waterChart?.DataPenggunaanMingguan?.[activeWeek]?.map(
-          (item: IWaterData) => item.volume
-        ) || []
-      );
-    }
-
-    // Chart Tahunan
-    if (waterChart && activeTab === 2) {
-      // const bulan = Object.keys(waterChart.DataPenggunaanTahunan)[0];
-      setLabels(
-        waterChart?.DataPenggunaanTahunan?.[activeMonth]?.map(
-          (item) => item.pipa
-        ) || []
-      );
-      setChartData(
-        waterChart?.DataPenggunaanTahunan[activeMonth]?.map(
-          (item: IWaterData) => item.volume
-        ) || []
-      );
-    }
-  }, [waterChart, activeMonth, activeTab, activeWeek, activeDay]);
+  };
 
   return (
     <div className="w-full max-w-[806px] mt-2 sm:px-0">
@@ -95,37 +58,12 @@ export default function WaterGraph() {
             setActiveTab={setActiveTab}
           />
         </div>
-        <div className="w-full sm:w-auto">
-          {activeTab === 0 && (
-            <ReusableDropdown
-              items={day}
-              activeValue={activeDay}
-              onSelect={setActiveDay}
-              isVisible={true}
-            />
-          )}
-          {activeTab === 1 && (
-            <ReusableDropdown
-              items={week}
-              activeValue={activeWeek}
-              onSelect={setActiveWeek}
-              isVisible={true}
-            />
-          )}
-          {activeTab === 2 && (
-            <ReusableDropdown
-              items={month}
-              activeValue={activeMonth}
-              onSelect={setActiveMonth}
-              isVisible={true}
-            />
-          )}
-        </div>
+        {/* Dropdown untuk memilih periode spesifik telah dihapus */}
       </div>
 
       <div className="bg-white p-2 sm:p-4 rounded-lg shadow-md overflow-x-auto">
         <div className="min-h-[300px] md:min-h-[400px] w-full">
-          <LineChartExample mapLabels={labels} mapData={chartData} />
+          <Linechart {...getChartData()} />
         </div>
       </div>
     </div>

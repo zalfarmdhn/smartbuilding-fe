@@ -5,12 +5,14 @@ import { useWaterMonitoring } from "./water-monitoring";
 import { useElectricMonitoring } from "./electricity-monitoring";
 import { getMe } from "../services/me";
 import { IMeRoot } from "../types/me";
+import { AxiosError } from "axios";
+import { IErrorAPI } from "../types/error";
 
 interface ISettingsRoot {
   scheduler: number | null;
   idBangunan: number | null;
   dataUser: IMeRoot | null;
-  errorMe: string | null;
+  errorMe: IErrorAPI | null;
   loading: boolean;
   settings: {
     id: number;
@@ -22,7 +24,7 @@ interface ISettingsRoot {
     jenis_listrik: string;
   } | null;
   getSettings: () => Promise<void>;
-  setCurrentUser: () => Promise<void>;
+  getCurrentUser: () => Promise<void>;
   getIdBangunanState: () => number | null;
   setIdBangunanState: (newId: number) => Promise<void>;
   deleteSetting: (id: number) => Promise<void>;
@@ -63,7 +65,7 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
       console.error(e);
     }
   },
-  setCurrentUser: async () => {
+  getCurrentUser: async () => {
     try {
       const response = await getMe();
       if (response && response.data) {
@@ -75,11 +77,16 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
         setDataUser(response.data);
       } else {
         console.error("Error fetching user data");
-        set({ errorMe: `Error fetching user data` });
-        return;
       }
-    } catch (e) {
+    } catch (e: unknown) {
       console.error(`ini detail errornya`, e);
+      // Kalau errornya AxiosError, ambil data dari response error axios
+      if (e instanceof AxiosError) {
+        set({ errorMe: e.response?.data as IErrorAPI });
+      } else {
+        // Kalau errornya bukan AxiosError, set error umum
+        set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
+      }
     }
   },
   getIdBangunanState: () => {

@@ -1,4 +1,4 @@
-export interface LoginApiResponse {
+export interface ILoginApiResponse {
   data: AuthLogin;
   message: string;
   status: string;
@@ -7,4 +7,14 @@ export interface LoginApiResponse {
 interface AuthLogin {
   token: string;
   role: string;
+  user_id: number;
+  Setting: Array<{
+    id: number;
+    nama_gedung: string;
+    haos_url: string;
+    haos_token: string;
+    scheduler: number;
+    harga_listrik: number;
+    jenis_listrik: string;
+  }>;
 }
