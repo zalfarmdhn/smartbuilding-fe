@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import init from ".";
 import { IAddSettings } from "../types/settings";
 
@@ -17,29 +16,21 @@ export interface IRootSettings {
 }
 
 export const getSettings = async () => {
-  try {
-    const response = await init.get("/setting", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(error);
-  }
+  const response = await init.get("/setting", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return response.data;
 };
 
 export const getSettingById = async (id: number) => {
-  try {
-    const response = await init.get(`/setting/${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(error);
-  }
+  const response = await init.get(`/setting/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return response.data;
 };
 
 export const putSettings = async (
@@ -51,39 +42,24 @@ export const putSettings = async (
   haos_token: string,
   scheduler: number
 ): Promise<ISettings> => {
-  try {
-    const response = await init.put(
-      `/setting/${id}`,
-      {
-        id: id,
-        nama_gedung: nama_gedung,
-        harga_listrik: harga_listrik,
-        jenis_listrik: jenis_listrik,
-        haos_url: haos_url,
-        haos_token: haos_token,
-        scheduler: parseInt(scheduler as unknown as string),
+  const response = await init.put(
+    `/setting/${id}`,
+    {
+      id: id,
+      nama_gedung: nama_gedung,
+      harga_listrik: harga_listrik,
+      jenis_listrik: jenis_listrik,
+      haos_url: haos_url,
+      haos_token: haos_token,
+      scheduler: parseInt(scheduler as unknown as string),
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    toast.success("Pengaturan berhasil diperbarui!");
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    toast.error("Gagal memperbarui pengaturan. Silakan coba lagi.");
-    return {
-      id: 1,
-      nama_gedung: "",
-      harga_listrik: 0,
-      jenis_listrik: "3_phase",
-      haos_url: "",
-      haos_token: "",
-      scheduler: 0,
-    };
-  }
+    }
+  );
+  return response.data;
 };
 
 const addSetting = async (
@@ -95,54 +71,33 @@ const addSetting = async (
   scheduler: number,
   data_toren: { monitoring_name: string; kapasitas_toren: number }[]
 ): Promise<IAddSettings> => {
-  try {
-    const response = await init.post(
-      "/setting",
-      {
-        nama_gedung: nama_gedung,
-        harga_listrik: harga_listrik,
-        jenis_listrik: jenis_listrik,
-        haos_url: haos_url,
-        haos_token: haos_token,
-        scheduler: parseInt(scheduler as unknown as string),
-        data_toren: data_toren,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    toast.success("Pengaturan berhasil ditambahkan!");
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    toast.error("Gagal menambahkan pengaturan. Silakan coba lagi.");
-    return {
-      nama_gedung: "",
-      harga_listrik: 0,
-      jenis_listrik: "3_phase",
-      haos_url: "",
-      haos_token: "",
-      scheduler: 0,
-      data_toren: [],
-    };
-  }
-};
-
-const deleteSetting = async (id: number) => {
-  try {
-    const response = await init.delete(`/setting/${id}`, {
+  const response = await init.post(
+    "/setting",
+    {
+      nama_gedung: nama_gedung,
+      harga_listrik: harga_listrik,
+      jenis_listrik: jenis_listrik,
+      haos_url: haos_url,
+      haos_token: haos_token,
+      scheduler: parseInt(scheduler as unknown as string),
+      data_toren: data_toren,
+    },
+    {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-    });
-    toast.success("Pengaturan berhasil dihapus!");
-    return response.data;
-  } catch (error) {
-    toast.error("Gagal menghapus pengaturan. Silakan coba lagi.");
-    console.error(error);
-  }
+    }
+  );
+  return response.data;
+};
+
+const deleteSetting = async (id: number) => {
+  const response = await init.delete(`/setting/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return response.data;
 };
 
 export default {

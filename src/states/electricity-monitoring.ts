@@ -2,8 +2,12 @@ import { create } from "zustand";
 import electricityMonitoring from "../services/electricity-monitoring";
 import { getIdBangunan, setDataListrik } from "../utils/backupData";
 import { AxiosError } from "axios";
+import {
+  BULAN_CONSTANT,
+  HARI_CONSTANT,
+  MINGGU_CONSTANT,
+} from "../utils/dateConstants";
 // import { useSettings } from "./settings";
-
 
 interface IBiayaPemakaian {
   Nama: string;
@@ -11,16 +15,14 @@ interface IBiayaPemakaian {
 }
 
 interface IDayaListrik {
-  nama: string,
-  Value: string
+  nama: string;
+  Value: string;
 }
 
-type Hari = "Senin" | "Selasa" | "Rabu" | "Kamis" | "Jumat" | "Sabtu" | "Minggu";
-
-type Minggu = "Minggu 1" | "Minggu 2" | "Minggu 3" | "Minggu 4" | "Minggu 5";
-
-type Bulan = "Januari" | "Februari" | "Maret" | "April" | "Mei" | "Juni" | "Juli" | 
-       "Agustus" | "September" | "Oktober" | "November" | "Desember";
+// Change an array of strings to a union type
+type Hari = (typeof HARI_CONSTANT)[number];
+type Minggu = (typeof MINGGU_CONSTANT)[number];
+type Bulan = (typeof BULAN_CONSTANT)[number];
 
 interface IElectricData {
   TotalWatt: string;
@@ -91,18 +93,18 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       Minggu: [],
     },
     DataPenggunaanListrikMingguan: {
-      "Minggu 1": [],
-      "Minggu 2": [],
-      "Minggu 3": [],
-      "Minggu 4": [],
-      "Minggu 5": [],
+      "Minggu ke-1": [],
+      "Minggu ke-2": [],
+      "Minggu ke-3": [],
+      "Minggu ke-4": [],
+      "Minggu ke-5": [],
     },
     DataBiayaListrikMingguan: {
-      "Minggu 1": [],
-      "Minggu 2": [],
-      "Minggu 3": [],
-      "Minggu 4": [],
-      "Minggu 5": [],
+      "Minggu ke-1": [],
+      "Minggu ke-2": [],
+      "Minggu ke-3": [],
+      "Minggu ke-4": [],
+      "Minggu ke-5": [],
     },
     DataPenggunaanListrikBulanan: {
       Januari: [],
@@ -133,7 +135,7 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       Desember: [],
     },
     DataPenggunaanListrikTahunan: {},
-    DataBiayaListrikTahunan: {}
+    DataBiayaListrikTahunan: {},
   },
   error: "",
   loading: true,
@@ -142,7 +144,9 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       // set({ loading: true });
       // const idBangunan = (await getSettings()).id;
       const idBangunan = parseInt(getIdBangunan() || "1");
-      const response = await electricityMonitoring.getMonitoringListrik(idBangunan);
+      const response = await electricityMonitoring.getMonitoringListrik(
+        idBangunan
+      );
       if (response instanceof AxiosError) {
         throw new Error(response.response?.data.error);
       }
@@ -166,7 +170,7 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       });
       setDataListrik(JSON.stringify(response));
       set({ loading: false });
-      set({ error: '' });
+      set({ error: "" });
     } catch (e) {
       set({ error: `${e}` });
       console.error(e);

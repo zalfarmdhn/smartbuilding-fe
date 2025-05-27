@@ -1,9 +1,9 @@
 import { Button, Modal, ModalBody, ModalHeader } from "flowbite-react";
-import { putSettings } from "../../services/settings";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import { useSettings } from "../../states/settings";
 
 interface ISetting {
   id: number;
@@ -24,7 +24,10 @@ const editSettingSchema = z.object({
     invalid_type_error: "Jenis listrik harus dipilih",
     required_error: "Jenis listrik harus dipilih",
   }),
-  haos_url: z.string().url("URL HAOS tidak valid").min(1, "URL HAOS harus diisi"),
+  haos_url: z
+    .string()
+    .url("URL HAOS tidak valid")
+    .min(1, "URL HAOS harus diisi"),
   haos_token: z.string().min(1, "Token HAOS harus diisi"),
   scheduler: z.number().min(1, "Scheduler harus berupa angka positif"),
 });
@@ -37,10 +40,10 @@ interface EditSettingModalProps {
   selectedSetting: ISetting;
 }
 
-export function EditSettingModal({ 
-  openModal, 
-  setOpenModal, 
-  selectedSetting 
+export function EditSettingModal({
+  openModal,
+  setOpenModal,
+  selectedSetting,
 }: EditSettingModalProps) {
   const {
     register,
@@ -52,13 +55,18 @@ export function EditSettingModal({
     resolver: zodResolver(editSettingSchema),
   });
 
+  const putSettings = useSettings((state) => state.putSettings);
+
   // Set form values when selectedSetting changes
   useEffect(() => {
     if (selectedSetting && openModal) {
       setValue("id", selectedSetting.id);
       setValue("nama_gedung", selectedSetting.nama_gedung);
       setValue("harga_listrik", selectedSetting.harga_listrik);
-      setValue("jenis_listrik", selectedSetting.jenis_listrik as "3_phase" | "1_phase");
+      setValue(
+        "jenis_listrik",
+        selectedSetting.jenis_listrik as "3_phase" | "1_phase"
+      );
       setValue("haos_url", selectedSetting.haos_url);
       setValue("haos_token", selectedSetting.haos_token);
       setValue("scheduler", selectedSetting.scheduler);
@@ -76,8 +84,8 @@ export function EditSettingModal({
         data.haos_token,
         data.scheduler
       );
-      setOpenModal(false);
       reset();
+      setOpenModal(false);
     } catch (e) {
       console.error(e);
     }
@@ -118,7 +126,9 @@ export function EditSettingModal({
                 placeholder="Masukkan nama gedung"
               />
               {errors.nama_gedung && (
-                <p className="text-red-500 text-sm mt-1">{errors.nama_gedung.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.nama_gedung.message}
+                </p>
               )}
             </div>
 
@@ -139,7 +149,9 @@ export function EditSettingModal({
                 placeholder="Masukkan harga listrik"
               />
               {errors.harga_listrik && (
-                <p className="text-red-500 text-sm mt-1">{errors.harga_listrik.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.harga_listrik.message}
+                </p>
               )}
             </div>
 
@@ -160,7 +172,9 @@ export function EditSettingModal({
                 <option value="1_phase">1 Phase</option>
               </select>
               {errors.jenis_listrik && (
-                <p className="text-red-500 text-sm mt-1">{errors.jenis_listrik.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.jenis_listrik.message}
+                </p>
               )}
             </div>
 
@@ -181,7 +195,9 @@ export function EditSettingModal({
                 placeholder="http://your-haos-url"
               />
               {errors.haos_url && (
-                <p className="text-red-500 text-sm mt-1">{errors.haos_url.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.haos_url.message}
+                </p>
               )}
             </div>
 
@@ -202,7 +218,9 @@ export function EditSettingModal({
                 placeholder="Masukkan HAOS token"
               />
               {errors.haos_token && (
-                <p className="text-red-500 text-sm mt-1">{errors.haos_token.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.haos_token.message}
+                </p>
               )}
             </div>
 
@@ -223,26 +241,23 @@ export function EditSettingModal({
                 placeholder="30"
               />
               {errors.scheduler && (
-                <p className="text-red-500 text-sm mt-1">{errors.scheduler.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.scheduler.message}
+                </p>
               )}
             </div>
 
             {/* Submit Buttons */}
             <div className="flex gap-3">
-              <Button 
-                type="button" 
-                color="gray" 
+              <Button
+                type="button"
+                color="gray"
                 className="flex-1"
                 onClick={handleClose}
-                disabled={isSubmitting}
-              >
+                disabled={isSubmitting}>
                 Batal
               </Button>
-              <Button 
-                type="submit" 
-                className="flex-1"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="flex-1" disabled={isSubmitting}>
                 {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
               </Button>
             </div>

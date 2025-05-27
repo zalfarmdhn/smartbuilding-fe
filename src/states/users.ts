@@ -2,6 +2,7 @@ import { create } from "zustand";
 import userAPI from "../services/users";
 import { IUser } from "../types/users";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 interface IUserState {
   users: IUser[] | null;
@@ -43,7 +44,10 @@ export const useUsers = create<IUserState>((set, get) => ({
         });
       }
     } catch (error) {
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+      }
       set({ error: `${error}`, loading: false });
     }
   },
@@ -63,8 +67,10 @@ export const useUsers = create<IUserState>((set, get) => ({
       // Refresh the users list
       await get().getUsers();
     } catch (error) {
-      toast.error("Gagal membuat user. Silakan coba lagi.");
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+      }
       set({ error: `${error}`, loading: false });
     }
   },
@@ -78,7 +84,10 @@ export const useUsers = create<IUserState>((set, get) => ({
       // Refresh the users list
       await get().getUsers();
     } catch (error) {
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+      }
       set({ error: `${error}`, loading: false });
     }
   },
@@ -92,8 +101,10 @@ export const useUsers = create<IUserState>((set, get) => ({
       // Refresh the users list
       await get().getUsers();
     } catch (error) {
-      toast.error("Gagal menghapus user. Silakan coba lagi.");
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+      }
       set({ error: `${error}`, loading: false });
     }
   },
@@ -106,8 +117,10 @@ export const useUsers = create<IUserState>((set, get) => ({
       toast.success("Password berhasil diubah!");
       set({ loading: false });
     } catch (error) {
-      toast.error("Gagal mengubah password. Silakan coba lagi.");
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+      }
       set({ error: `${error}`, loading: false });
     }
   },

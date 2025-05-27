@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import waterMonitoring from "../services/water-monitoring";
 import { getIdBangunan, setDataMonitoring } from "../utils/backupData";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
+import { IErrorAPI } from "../types/error";
 
 interface IWaterData {
   KapasitasToren: IKapasitasToren[];
@@ -34,7 +35,7 @@ interface WaterMonitoringState {
       [key: string]: Array<{ pipa: string; volume: string }>;
     };
   };
-  error: string;
+  error: IErrorAPI | string;
   loading: boolean;
   getWaterData: () => Promise<void>;
 }
@@ -82,9 +83,13 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
       setDataMonitoring(JSON.stringify(response));
       set({ loading: false });
       set({ error: '' });
-    } catch (e) {
-      set({ error: `${e}` });
-      console.error(e);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(error);
+        set({ error: error.response?.data });
+      }
+      // Set different error message if it's not an AxiosError
+      set({ error: { message: "An unknown error occurred" } as IErrorAPI });
       set({ loading: false });
     }
   },

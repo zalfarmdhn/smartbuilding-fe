@@ -5,8 +5,9 @@ import { useWaterMonitoring } from "./water-monitoring";
 import { useElectricMonitoring } from "./electricity-monitoring";
 import { getMe } from "../services/me";
 import { IMeRoot } from "../types/me";
-import { AxiosError } from "axios";
+import axios from "axios";
 import { IErrorAPI } from "../types/error";
+import toast from "react-hot-toast";
 
 interface ISettingsRoot {
   scheduler: number | null;
@@ -37,6 +38,15 @@ interface ISettingsRoot {
     scheduler: number,
     data_toren: IDataToren[]
   ) => Promise<void>;
+  putSettings: (
+    id: number,
+    nama_gedung: string,
+    harga_listrik: number,
+    haos_url: string,
+    jenis_listrik: string,
+    haos_token: string,
+    scheduler: number
+  ) => Promise<void>;
 }
 
 interface IDataToren {
@@ -61,32 +71,33 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
         settings: response,
       });
       set({ loading: false });
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(error);
+        set({ errorMe: error.response?.data });
+      }
+      // Set different error message if it's not an AxiosError
+      set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
+      console.error(error);
     }
   },
   getCurrentUser: async () => {
     try {
       const response = await getMe();
-      if (response && response.data) {
-        // set data user ke state
-        set({
-          dataUser: response.data,
-        });
-        // masukkan data user ke localStorage
-        setDataUser(response.data);
-      } else {
-        console.error("Error fetching user data");
+      // set data user ke state
+      set({
+        dataUser: response.data,
+      });
+      // masukkan data user ke localStorage
+      setDataUser(response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(error);
+        set({ errorMe: error.response?.data });
       }
-    } catch (e: unknown) {
-      console.error(`ini detail errornya`, e);
-      // Kalau errornya AxiosError, ambil data dari response error axios
-      if (e instanceof AxiosError) {
-        set({ errorMe: e.response?.data as IErrorAPI });
-      } else {
-        // Kalau errornya bukan AxiosError, set error umum
-        set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
-      }
+      // Set different error message if it's not an AxiosError
+      set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
+      console.error(error);
     }
   },
   getIdBangunanState: () => {
@@ -106,9 +117,16 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
   deleteSetting: async (id: number) => {
     try {
       await settingAPI.deleteSetting(id);
+      toast.success("Setting berhasil dihapus!");
       await get().getSettings();
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+        set({ errorMe: error.response?.data });
+      }
+      // Set different error message if it's not an AxiosError
+      set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
     }
   },
   addSetting: async (
@@ -130,9 +148,47 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
         scheduler,
         data_toren
       );
+      toast.success("Setting berhasil ditambahkan!");
       await get().getSettings();
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+        set({ errorMe: error.response?.data });
+      }
+      // Set different error message if it's not an AxiosError
+      set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
+    }
+  },
+  putSettings: async (
+    id: number,
+    nama_gedung: string,
+    harga_listrik: number,
+    haos_url: string,
+    jenis_listrik: string,
+    haos_token: string,
+    scheduler: number
+  ) => {
+    try {
+      await settingAPI.putSettings(
+        id,
+        nama_gedung,
+        harga_listrik,
+        haos_url,
+        jenis_listrik,
+        haos_token,
+        scheduler
+      );
+      toast.success("Setting berhasil diperbarui!");
+      await get().getSettings();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+        set({ errorMe: error.response?.data });
+      }
+      // Set different error message if it's not an AxiosError
+      set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
     }
   },
 }));

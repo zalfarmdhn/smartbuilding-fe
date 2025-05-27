@@ -2,6 +2,7 @@ import { create } from "zustand";
 import pengelolaAPI from "../services/pengelola";
 import { IPengelolaGedung, IPengelolaBody } from "../types/pengelola";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 interface IPengelolaState {
   pengelolaList: IPengelolaGedung[] | null;
@@ -33,7 +34,7 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
         });
       }
     } catch (error) {
-      console.error(error);
+      console.error(`error mengambil pengelola gedung`, error);
       set({ error: `${error}`, loading: false });
     }
   },
@@ -49,8 +50,10 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
         await get().getPengelolaGedung();
       }
     } catch (error) {
-      toast.error(`${error}`);
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+      }
       set({ error: `${error}`, loading: false });
     }
   },
@@ -63,8 +66,10 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
       toast.success("Pengelola gedung berhasil dihapus!");
       await get().getPengelolaGedung();
     } catch (error) {
-      toast.error("Gagal menghapus pengelola gedung. Silakan coba lagi.");
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+      }
       set({ error: `${error}`, loading: false });
     }
   },
@@ -83,8 +88,10 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
         await get().getPengelolaGedung();
       }
     } catch (error) {
-      toast.error("Gagal memperbaharui pengelola gedung. Silakan coba lagi.");
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`${error.response?.data?.error}`);
+        console.error(error);
+      }
       set({ error: `${error}`, loading: false });
     }
   },
