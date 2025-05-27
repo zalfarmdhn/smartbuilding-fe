@@ -81,12 +81,9 @@ export const deleteUser = async (id: number) => {
   return response.data;
 };
 
-export const changePassword = async (
-  newPassword: string,
-  oldPassword: string
-) => {
+export const changePassword = async (oldPassword: string, newPassword: string) => {
   const response = await init.put(
-    "/users/change-password",
+    "/change-password",
     {
       old_Password: oldPassword,
       new_Password: newPassword,
