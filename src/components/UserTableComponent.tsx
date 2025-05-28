@@ -4,6 +4,7 @@ import { useUsers } from "../states/users";
 import { IUser } from "../types/users";
 import { EditUserModal } from "./users/EditUserModal";
 import { DeleteUserModal } from "./users/DeleteUserModal";
+import { useSettings } from "../states/settings";
 
 interface ModalState {
   editModal: boolean;
@@ -21,8 +22,9 @@ export default function UserTableComponent(): JSX.Element {
 
   const users = useUsers((state) => state.users);
   const loading = useUsers((state) => state.loading);
+  const role = useSettings((state) => state.dataUser?.data.role);
 
-  const isAdmin = true;
+  const isAllowed = role === "admin" || role === "manajement";
 
   const handleEdit = (user: IUser) => {
     setSelectedUser(user);
@@ -97,7 +99,7 @@ export default function UserTableComponent(): JSX.Element {
                       className="transition-colors duration-200">
                       Edit
                     </Button>
-                    {isAdmin && (
+                    {isAllowed && (
                       <Button
                         color="red"
                         size="xs"

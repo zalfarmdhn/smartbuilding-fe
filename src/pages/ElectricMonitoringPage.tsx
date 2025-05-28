@@ -20,8 +20,6 @@ export default function ElectricMonitoringPage() {
     document.title = "Smartbuilding | Monitoring Listrik";
   }, []);
 
-  // TODO : ambil data di localStorage jika API dari home assistant masih error
-
   console.log(`ini listrik data`, electricData);
 
   if (loading) {
@@ -32,23 +30,26 @@ export default function ElectricMonitoringPage() {
     );
   }
 
-  if (error) {
-    return (
-      <Alert color="warning" icon={OctagonAlert}>
-        <span className="font-medium">Gagal mengakses data!</span> Tolong coba
-        lagi.
-      </Alert>
-    );
-  }
-
   const totalWatt =
     electricData?.TotalWatt ?? getSpecificDataListrik("TotalWatt");
+
   return (
     <div className="w-full max-w-[1200px] h-fit flex flex-col gap-4 mx-auto px-4 md:px-6">
-      <div className="flex items-center gap-2 mx-auto bg-primary-400 rounded-lg p-4 shadow-md my-4 w-full">
+      {error && (
+        <div className="flex flex-col gap-2">
+          <Alert color="failure">
+            <span className="font-medium text-white">
+              Gagal mengakses data terbaru! Tolong coba lagi.
+            </span>{" "}
+          </Alert>
+        </div>
+      )}
+      <div className="flex items-center gap-2 mx-auto bg-primary-400 rounded-lg p-4 shadow-md mb-4 w-full">
         <Zap className="w-6 h-6 md:w-8 md:h-8 text-white" />
         <h1 className="text-white font-bold text-lg md:text-2xl">
-          Monitoring Listrik (Realtime {scheduler} detik)
+          Monitoring Listrik {electricData.namaGedung || "Gedung"}
+          <br />
+          {!error && <span>(Realtime {scheduler} detik)</span>}
         </h1>
       </div>
       <hr className="h-px bg-primary-500 border-0 dark:bg-primary-400" />

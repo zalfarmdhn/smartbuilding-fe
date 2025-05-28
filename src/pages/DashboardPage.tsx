@@ -39,7 +39,7 @@ export default function DashboardPage() {
               <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <h2 className="text-primary-500 font-semibold text-sm sm:text-md md:text-lg">
-              Admin Dashboard
+              Detail Aplikasi
             </h2>
           </div>
           {/* Section 1 - Card */}
@@ -54,12 +54,17 @@ export default function DashboardPage() {
                   : "Loading..."
               }
             />
-            <CardStatistic
-              className="w-full"
-              icon={<UserIcon />}
-              heading="Total Pengguna"
-              value={users ? `${users.length} Pengguna` : "Loading..."}
-            />
+            {
+              // if the role is admin, show the total users
+              userName === "admin" && (
+                <CardStatistic
+                  className="w-full"
+                  icon={<UserIcon />}
+                  heading="Total Pengguna"
+                  value={users ? `${users.length} Pengguna` : "Loading..."}
+                />
+              )
+            }
           </div>
         </section>
         {/* Section 2 */}

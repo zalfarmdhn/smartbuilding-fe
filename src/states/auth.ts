@@ -3,18 +3,18 @@ import { setToken } from "../utils/tokenHandler";
 import authAPI from "../services/auth";
 import { setDataSetting, setIdBangunan } from "../utils/backupData";
 import { IErrorAPI } from "../types/error";
-import { AxiosError } from "axios";
+import axios from "axios";
 import toast from "react-hot-toast";
 
 interface AuthState {
   token: string | null;
   loading: boolean;
   idBangunanResponse: number | null;
-  errorAuth: IErrorAPI | null;
+  errorAuth: null | IErrorAPI;
   login: (email: string, password: string) => void;
 }
 
-export const useAuth = create<AuthState>()((set) => ({
+export const useAuthState = create<AuthState>()((set) => ({
   token: null,
   idBangunanResponse: null,
   loading: false,
@@ -30,16 +30,22 @@ export const useAuth = create<AuthState>()((set) => ({
       }
       setIdBangunan(String(settingBangunan[0].id));
       setDataSetting(JSON.stringify(settingBangunan));
-      toast.success("Berhasil login, redirect ke halaman dashboard...");
       set({ loading: false });
-      window.location.href = "/";
       return response.data;
-    } catch (e: unknown) {
-      if (e instanceof AxiosError) {
-        toast.error(e.response?.data.message || "Terjadi kesalahan saat login");
-        console.error(e);
-        set({ errorAuth: e.response?.data as IErrorAPI, loading: false });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data.message || "Terjadi kesalahan saat login"
+        );
+        set({ errorAuth: error.response?.data?.message, loading: false });
+        // return agar tidak melanjutkan eksekusi
+        return;
       }
+      // Jika bukan AxiosError, set pesan error default
+      set({
+        errorAuth: { message: "Terjadi kesalahan saat login" } as IErrorAPI,
+        loading: false,
+      });
     }
   },
 }));

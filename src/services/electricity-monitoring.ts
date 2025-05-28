@@ -1,5 +1,5 @@
 import init from ".";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
 export const getMonitoringListrik = async (
   idBangunan: number
@@ -9,9 +9,6 @@ export const getMonitoringListrik = async (
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
-  if (response instanceof AxiosError) {
-    throw new Error(response.response?.data.error);
-  }
   return response.data;
 };
 

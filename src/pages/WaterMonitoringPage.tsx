@@ -5,7 +5,7 @@ import CardStatistic from "../components/CardStatistic";
 import AirKeluarIcon from "../components/icons/air-keluar-icon";
 import AirMasukIcon from "../components/icons/air-masuk-icon";
 import { Alert, Spinner } from "flowbite-react";
-import { Droplet, OctagonAlert } from "lucide-react";
+import { Droplet } from "lucide-react";
 import { useSettings } from "../states/settings";
 import { useEffect } from "react";
 
@@ -32,32 +32,27 @@ export default function WaterMonitoringPage() {
     );
   }
 
-  // if (!waterData.KapasitasToren) {
-  //   return <p>Data not found</p>;
-  // }
-
   return (
     <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl">
       {/* Warning */}
       {error && (
-        <Alert color="warning" icon={OctagonAlert}>
-          <span className="font-medium">Gagal mengakses data!</span> Tolong coba
-          lagi.
-        </Alert>
+        <div className="flex flex-col gap-2 mb-2">
+          <Alert color="failure">
+            <span className="font-medium text-white">
+              Gagal mengakses data terbaru! Tolong coba lagi.
+            </span>{" "}
+          </Alert>
+        </div>
       )}
       {/* Header */}
       <div className="flex flex-wrap items-center justify-center bg-primary-400 rounded-lg p-3 sm:p-4 shadow-md mb-4">
         <Droplet className="w-6 h-6 sm:w-8 sm:h-8 text-white mr-2" />
         <h1 className="text-white font-bold text-lg sm:text-xl md:text-2xl">
-          Monitoring Air (Realtime {scheduler} detik)
+          Monitoring Air {waterData.namaGedung || "Gedung"}
+          <br />
+          {!error && <span>(Realtime {scheduler} detik)</span>}
         </h1>
       </div>
-      {/* {!waterData.KapasitasToren && (
-        <Alert color="warning" icon={OctagonAlert} className="mb-4">
-          <span className="font-medium">Server gagal mengakses data!</span>{" "}
-          Mohon menunggu dan tolong coba lagi.
-        </Alert>
-      )} */}
       {/* Statistik Toren Air */}
       <section>
         <h2 className="text-primary-500 font-bold text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4">

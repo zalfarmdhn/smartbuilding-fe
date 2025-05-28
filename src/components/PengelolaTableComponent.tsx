@@ -23,10 +23,10 @@ export default function PengelolaTableComponent(): JSX.Element {
   const pengelolaList = usePengelola((state) => state.pengelolaList);
   const loading = usePengelola((state) => state.loading);
   const settings = useSettings((state) => state.settings);
-  const user = useSettings((state) => state.dataUser);
+  const role = useSettings((state) => state.dataUser?.data.role);
 
   // Only admin can delete pengelola
-  const isAdmin = user?.data?.role === "admin";
+  const isAllowed = role === "admin" || role === "manajement";
 
   const handleEdit = (pengelola: IPengelolaGedung) => {
     setSelectedPengelola(pengelola);
@@ -127,7 +127,7 @@ export default function PengelolaTableComponent(): JSX.Element {
                         )
                       }
 
-                      {isAdmin && (
+                      {isAllowed && (
                         <Button
                           color="red"
                           size="xs"

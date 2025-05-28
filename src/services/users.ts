@@ -26,7 +26,7 @@ export const createUser = async (
   email: string,
   password: string,
   role: string,
-  pengelola_gedung: Array<{
+  pengelola_gedung?: Array<{
     setting_id: number;
   }>
 ): Promise<IUserResponse | undefined> => {

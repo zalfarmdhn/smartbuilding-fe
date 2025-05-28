@@ -13,7 +13,7 @@ interface ISettingsRoot {
   scheduler: number | null;
   idBangunan: number | null;
   dataUser: IMeRoot | null;
-  errorMe: IErrorAPI | null;
+  errorMe: null | IErrorAPI;
   loading: boolean;
   settings: {
     id: number;
@@ -91,12 +91,15 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
       // masukkan data user ke localStorage
       setDataUser(response.data);
     } catch (error) {
+      // Handle error jika terjadi kesalahan saat mengambil data user
       if (axios.isAxiosError(error)) {
         console.error(error);
-        set({ errorMe: error.response?.data });
+        set({ errorMe: error.response?.data as IErrorAPI });
+        // return agar blok kode berikutnya tidak dieksekusi
+        return;
       }
       // Set different error message if it's not an AxiosError
-      set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
+      set({ errorMe: { message: "An unknown error occured" } as IErrorAPI });
       console.error(error);
     }
   },
@@ -124,6 +127,8 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
         toast.error(`${error.response?.data?.error}`);
         console.error(error);
         set({ errorMe: error.response?.data });
+        // return agar blok kode berikutnya tidak dieksekusi
+        return;
       }
       // Set different error message if it's not an AxiosError
       set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
@@ -155,6 +160,8 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
         toast.error(`${error.response?.data?.error}`);
         console.error(error);
         set({ errorMe: error.response?.data });
+        // return agar blok kode berikutnya tidak dieksekusi
+        return;
       }
       // Set different error message if it's not an AxiosError
       set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });
@@ -186,6 +193,8 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
         toast.error(`${error.response?.data?.error}`);
         console.error(error);
         set({ errorMe: error.response?.data });
+        // return agar blok kode berikutnya tidak dieksekusi
+        return;
       }
       // Set different error message if it's not an AxiosError
       set({ errorMe: { message: "An unknown error occurred" } as IErrorAPI });

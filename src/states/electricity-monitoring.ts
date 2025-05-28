@@ -1,73 +1,12 @@
 import { create } from "zustand";
 import electricityMonitoring from "../services/electricity-monitoring";
 import { getIdBangunan, setDataListrik } from "../utils/backupData";
-import { AxiosError } from "axios";
-import {
-  BULAN_CONSTANT,
-  HARI_CONSTANT,
-  MINGGU_CONSTANT,
-} from "../utils/dateConstants";
-// import { useSettings } from "./settings";
-
-interface IBiayaPemakaian {
-  Nama: string;
-  Biaya: string;
-}
-
-interface IDayaListrik {
-  nama: string;
-  Value: string;
-}
-
-// Change an array of strings to a union type
-type Hari = (typeof HARI_CONSTANT)[number];
-type Minggu = (typeof MINGGU_CONSTANT)[number];
-type Bulan = (typeof BULAN_CONSTANT)[number];
-
-interface IElectricData {
-  TotalWatt: string;
-  TotalDayaListrik: IDayaListrik[];
-  BiayaPemakaian: IBiayaPemakaian[];
-  UpdatedAt: string;
-}
-
-interface IElectricChart {
-  DataPenggunaanListrikHarian: {
-    [key in Hari]: Array<{ nama: string; Value: string }>;
-  };
-  DataBiayaListrikHarian: {
-    [key in Hari]: Array<{ Nama: string; Biaya: string }>;
-  };
-  DataPenggunaanListrikMingguan: {
-    [key in Minggu]: Array<{ nama: string; Value: string }>;
-  };
-  DataBiayaListrikMingguan: {
-    [key in Minggu]: Array<{ Nama: string; Biaya: string }>;
-  };
-  DataPenggunaanListrikBulanan: {
-    [key in Bulan]: Array<{ nama: string; Value: string }>;
-  };
-  DataBiayaListrikBulanan: {
-    [key in Bulan]: Array<{ Nama: string; Biaya: string }>;
-  };
-  DataPenggunaanListrikTahunan: {
-    [key: string]: Array<{ nama: string; Value: string }>;
-  };
-  DataBiayaListrikTahunan: {
-    [key: string]: Array<{ Nama: string; Biaya: string }>;
-  };
-}
-
-interface ElectricMonitorState {
-  electricData: IElectricData;
-  electricChart: IElectricChart;
-  error: string;
-  loading: boolean;
-  getElectricData: () => void;
-}
+import axios from "axios";
+import { ElectricMonitorState } from "../types/electricity-monitoring";
 
 export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
   electricData: {
+    namaGedung: "",
     TotalWatt: "",
     TotalDayaListrik: [],
     BiayaPemakaian: [],
@@ -141,17 +80,22 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
   loading: true,
   getElectricData: async () => {
     try {
-      // set({ loading: true });
-      // const idBangunan = (await getSettings()).id;
       const idBangunan = parseInt(getIdBangunan() || "1");
       const response = await electricityMonitoring.getMonitoringListrik(
         idBangunan
       );
-      if (response instanceof AxiosError) {
-        throw new Error(response.response?.data.error);
+      const dataListrikBackup = JSON.parse(
+        localStorage.getItem("dataListrik") || "{}"
+      );
+      if (response.TotalWatt === dataListrikBackup.TotalWatt) {
+        console.log("Data monitor listrik gagal disimpan");
+        throw new Error(
+          "Data monitoring listrik tidak berubah, menggunakan data dari backup."
+        );
       }
       set({
         electricData: {
+          namaGedung: response.nama_gedung,
           TotalWatt: response.TotalWatt,
           TotalDayaListrik: response.TotalDayaListrik,
           BiayaPemakaian: response.BiayaPemakaian,
@@ -168,13 +112,51 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
           DataBiayaListrikTahunan: response.DataBiayaListrikTahunan,
         },
       });
+      // Simpan data listrik ke localStorage
       setDataListrik(JSON.stringify(response));
       set({ loading: false });
       set({ error: "" });
-    } catch (e) {
-      set({ error: `${e}` });
-      console.error(e);
-      set({ loading: false });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(error);
+        // Ambil data dari localStorage jika API gagal
+        const backupData = localStorage.getItem("dataListrik");
+        if (backupData) {
+          const parsedData = JSON.parse(backupData);
+          set({
+            electricData: {
+              namaGedung: parsedData.nama_gedung || "",
+              TotalWatt: parsedData.TotalWatt || "",
+              TotalDayaListrik: parsedData.TotalDayaListrik || [],
+              BiayaPemakaian: parsedData.BiayaPemakaian || [],
+              UpdatedAt: parsedData.UpdatedAt || "",
+            },
+            electricChart: {
+              DataPenggunaanListrikHarian:
+                parsedData.DataPenggunaanListrikHarian || {},
+              DataBiayaListrikHarian: parsedData.DataBiayaListrikHarian || {},
+              DataPenggunaanListrikMingguan:
+                parsedData.DataPenggunaanListrikMingguan || {},
+              DataBiayaListrikMingguan:
+                parsedData.DataBiayaListrikMingguan || {},
+              DataPenggunaanListrikBulanan:
+                parsedData.DataPenggunaanListrikBulanan || {},
+              DataBiayaListrikBulanan: parsedData.DataBiayaListrikBulanan || {},
+              DataPenggunaanListrikTahunan:
+                parsedData.DataPenggunaanListrikTahunan || {},
+              DataBiayaListrikTahunan: parsedData.DataBiayaListrikTahunan || {},
+            },
+            loading: false,
+            error: "Menggunakan data tersimpan - Koneksi API gagal",
+          });
+        } else {
+          set({ error: `${error}`, loading: false });
+        }
+        throw new Error(error.response?.data.error);
+      }
+      // Jika bukan error dari Axios, set error umum
+      console.error(`ini error blok luar axios iserror`, error);
+      set({ error: `${error}`, loading: false });
     }
   },
 }));

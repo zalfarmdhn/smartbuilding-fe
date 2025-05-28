@@ -94,46 +94,40 @@ export default function ElectricityGraph() {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
+      {error && <p className="text-red-500 mb-2">{error}</p>}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-gray-800">
-          {dataType === 'biaya' ? 'Biaya Listrik' : 'Penggunaan Listrik'}
+          {dataType === "biaya" ? "Biaya Listrik" : "Penggunaan Listrik"}
         </h2>
         <div className="flex space-x-2">
           <button
-            onClick={() => setDataType('biaya')}
+            onClick={() => setDataType("biaya")}
             className={`px-3 py-1 text-sm font-medium rounded ${
-              dataType === 'biaya'
-                ? 'bg-primary-500 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
+              dataType === "biaya"
+                ? "bg-primary-500 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}>
             Biaya
           </button>
           <button
-            onClick={() => setDataType('penggunaan')}
+            onClick={() => setDataType("penggunaan")}
             className={`px-3 py-1 text-sm font-medium rounded ${
-              dataType === 'penggunaan'
-                ? 'bg-primary-500 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
+              dataType === "penggunaan"
+                ? "bg-primary-500 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}>
             Penggunaan
           </button>
         </div>
       </div>
 
       <div className="mb-4">
-        <ButtonGroup
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+        <ButtonGroup activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
       <div className="mt-4">
         <Barchart {...getChartData()} />
       </div>
-
-      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 }

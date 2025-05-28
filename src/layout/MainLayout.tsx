@@ -1,34 +1,32 @@
-import { Outlet, ScrollRestoration, useNavigate } from "react-router";
+import { Outlet, ScrollRestoration } from "react-router";
 import SidebarComponent from "../components/SidebarComponent";
 import { useEffect, useState } from "react";
-import { hasToken } from "../utils/tokenHandler";
 import { useWaterMonitoring } from "../states/water-monitoring";
 import { useElectricMonitoring } from "../states/electricity-monitoring";
 import { formatSeconds } from "../utils/formatSeconds";
 import { useSettings } from "../states/settings";
 import { Toaster } from "react-hot-toast";
 import { useUsers } from "../states/users";
+import { useAuth as useAuthHook } from "../hooks/useAuth";
+import { Spinner } from "flowbite-react";
 
 /**
  * TODO :
- * - Handle error berbeda jika token expired 401 Unauthorized (DONE)
  * - Handle error jika API dari server tidak merespon
- * - Fix try catch double di state dan service, utamakan hanya di service saja
  */
 export default function MainLayout() {
   const [loading, setLoading] = useState<boolean>(true);
+  // validasi apakah user sudah login atau belum
+  const { isLoggedIn, isLoading: authLoading } = useAuthHook();
   const getWaterData = useWaterMonitoring((state) => state.getWaterData);
   const getElectricData = useElectricMonitoring(
     (state) => state.getElectricData
   );
 
-  const errorUserData = useSettings((state) => state.errorMe);
-  const navigate = useNavigate();
   const getSettings = useSettings((state) => state.getSettings);
   const getUsers = useUsers((state) => state.getUsers);
   const getMe = useSettings((state) => state.getCurrentUser);
   const scheduler = useSettings((state) => state.scheduler);
-  console.log("ini error", errorUserData);
 
   // Render pertama untuk inital data pada mount
   useEffect(() => {
@@ -54,19 +52,23 @@ export default function MainLayout() {
 
     const interval = setInterval(fetchData, formatSeconds(scheduler || 30000));
     return () => clearInterval(interval);
-  }, [getWaterData, getElectricData, scheduler, navigate]);
+  }, [getWaterData, getElectricData, scheduler]);
 
-  useEffect(() => {
-    if (!hasToken() || errorUserData) {
-      navigate("/login");
-      return;
-    }
-
-    setLoading(false);
-  }, [navigate, errorUserData]);
-
-  if (loading) {
-    return <p>Loading main layout...</p>;
+  // Tampilkan loading ketika auth sedang dicek atau data awal sedang diambil
+  if (authLoading || loading || !isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg shadow-lg border flex items-center space-x-3">
+          <Spinner
+            size="sm"
+            aria-label="Loading spinner"
+            className="me-3"
+            light
+          />
+          <span className="text-gray-700 font-medium">Memuat halaman</span>
+        </div>
+      </div>
+    );
   }
 
   return (

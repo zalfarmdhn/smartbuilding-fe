@@ -51,7 +51,7 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(`${error.response?.data?.error}`);
+        toast.error(`${error.response?.data?.message}`);
         console.error(error);
       }
       set({ error: `${error}`, loading: false });
@@ -67,7 +67,7 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
       await get().getPengelolaGedung();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(`${error.response?.data?.error}`);
+        toast.error(`${error.response?.data?.message}`);
         console.error(error);
       }
       set({ error: `${error}`, loading: false });
@@ -89,7 +89,7 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(`${error.response?.data?.error}`);
+        toast.error(`${error.response?.data?.message}`);
         console.error(error);
       }
       set({ error: `${error}`, loading: false });

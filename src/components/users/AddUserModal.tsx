@@ -9,17 +9,17 @@ const addUserSchema = z.object({
   username: z.string().min(1, "Username harus diisi"),
   email: z.string().email("Format email tidak valid"),
   password: z.string().min(8, "Password minimal 8 karakter"),
-  role: z.enum(["admin", "pengelola", "manajement"], { 
+  roleSelectedForm: z.enum(["admin", "pengelola", "manajement"], {
     invalid_type_error: "Role harus diisi",
     required_error: "Role harus diisi",
   }),
   pengelola_gedung: z
     .array(
       z.object({
-        setting_id: z.number().min(1, "Gedung harus dipilih"),
+        setting_id: z.number().min(0, "Gedung harus dipilih"),
       })
     )
-    .min(1, "Minimal pilih satu gedung"),
+    .optional(),
 });
 
 type AddUserFormData = z.infer<typeof addUserSchema>;
@@ -32,6 +32,7 @@ interface AddUserModalProps {
 export function AddUserModal({ openModal, setOpenModal }: AddUserModalProps) {
   const {
     register,
+    watch,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
@@ -41,22 +42,26 @@ export function AddUserModal({ openModal, setOpenModal }: AddUserModalProps) {
       username: "",
       email: "",
       password: "",
-      role: "pengelola",
+      roleSelectedForm: "pengelola",
       pengelola_gedung: [{ setting_id: 0 }],
     },
   });
 
   const createUser = useUsers((state) => state.createUser);
   const settings = useSettings((state) => state.settings);
+  const userRole = useSettings((state) => state.dataUser?.data.role);
 
-  async function handleFormSubmit(data: AddUserFormData) {
+  // Watch the role field for changes
+  const selectedRole = watch("roleSelectedForm");
+
+  async function onSubmit(data: AddUserFormData) {
     try {
       await createUser(
         data.username,
         data.email,
         data.password,
-        data.role,
-        data.pengelola_gedung
+        data.roleSelectedForm,
+        data.pengelola_gedung || []
       );
       setOpenModal(false);
       reset();
@@ -79,7 +84,7 @@ export function AddUserModal({ openModal, setOpenModal }: AddUserModalProps) {
       </ModalHeader>
       <ModalBody>
         <div className="p-6 max-w-2xl mx-auto">
-          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Username */}
             <div>
               <label
@@ -97,7 +102,9 @@ export function AddUserModal({ openModal, setOpenModal }: AddUserModalProps) {
                 placeholder="Masukkan username"
               />
               {errors.username && (
-                <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.username.message}
+                </p>
               )}
             </div>
 
@@ -118,7 +125,9 @@ export function AddUserModal({ openModal, setOpenModal }: AddUserModalProps) {
                 placeholder="user@example.com"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -139,80 +148,95 @@ export function AddUserModal({ openModal, setOpenModal }: AddUserModalProps) {
                 placeholder="Masukkan password"
               />
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
             {/* Role */}
             <div>
               <label
-                htmlFor="role"
+                htmlFor="roleSelectedForm"
                 className="block mb-2 text-sm font-medium text-gray-900">
                 Role
               </label>
               <select
-                {...register("role")}
+                {...register("roleSelectedForm")}
                 id="role"
                 className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
-                  errors.role ? "border-red-300" : "border-gray-300"
+                  errors.roleSelectedForm ? "border-red-300" : "border-gray-300"
                 }`}>
                 <option value="">Pilih Role</option>
-                <option value="pengelola">Pengelola</option>
-                <option value="admin">Admin</option>
-                <option value="manajement">Management</option>
-              </select>
-              {errors.role && (
-                <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
-              )}
-            </div>
-
-            {/* Gedung */}
-            <div>
-              <label
-                htmlFor="gedung"
-                className="block mb-2 text-sm font-medium text-gray-900">
-                Gedung
-              </label>
-              <select
-                {...register("pengelola_gedung.0.setting_id", { valueAsNumber: true })}
-                id="gedung"
-                className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
-                  errors.pengelola_gedung?.[0]?.setting_id ? "border-red-300" : "border-gray-300"
-                }`}>
-                <option value={0}>Pilih Gedung</option>
-                {Array.isArray(settings) ? (
-                  settings.map((setting) => (
-                    <option key={setting.id} value={setting.id}>
-                      {setting.nama_gedung}
-                    </option>
-                  ))
-                ) : (
-                  <option value="">Tidak ada gedung tersedia</option>
+                {userRole === "admin" && (
+                  <>
+                    <option value="admin">Admin</option>
+                    <option value="pengelola">Pengelola</option>
+                    <option value="manajement">Management</option>
+                  </>
+                )}
+                {userRole === "manajement" && (
+                  <>
+                    <option value="manajement">Management</option>
+                    <option value="pengelola">Pengelola</option>
+                  </>
                 )}
               </select>
-              {errors.pengelola_gedung?.[0]?.setting_id && (
+              {errors.roleSelectedForm && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.pengelola_gedung[0].setting_id.message}
+                  {errors.roleSelectedForm.message}
                 </p>
               )}
             </div>
 
+            {/* Gedung - Hidden when role is admin */}
+            {selectedRole !== "admin" && (
+              <div>
+                <label
+                  htmlFor="gedung"
+                  className="block mb-2 text-sm font-medium text-gray-900">
+                  Gedung
+                </label>
+                <select
+                  {...register("pengelola_gedung.0.setting_id", {
+                    valueAsNumber: true,
+                  })}
+                  id="gedung"
+                  className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
+                    errors.pengelola_gedung?.[0]?.setting_id
+                      ? "border-red-300"
+                      : "border-gray-300"
+                  }`}>
+                  <option value={0}>Pilih Gedung</option>
+                  {Array.isArray(settings) ? (
+                    settings.map((setting) => (
+                      <option key={setting.id} value={setting.id}>
+                        {setting.nama_gedung}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="">Tidak ada gedung tersedia</option>
+                  )}
+                </select>
+                {errors.pengelola_gedung?.[0]?.setting_id && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.pengelola_gedung[0].setting_id.message}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Submit Button */}
             <div className="flex gap-3">
-              <Button 
-                type="button" 
-                color="gray" 
+              <Button
+                type="button"
+                color="gray"
                 className="flex-1"
                 onClick={handleClose}
-                disabled={isSubmitting}
-              >
+                disabled={isSubmitting}>
                 Batal
               </Button>
-              <Button 
-                type="submit" 
-                className="flex-1"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="flex-1" disabled={isSubmitting}>
                 {isSubmitting ? "Menyimpan..." : "Tambah User"}
               </Button>
             </div>

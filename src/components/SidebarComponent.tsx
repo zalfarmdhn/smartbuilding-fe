@@ -8,13 +8,13 @@ import {
   UserIcon,
   WaterIcon,
 } from "./icons";
-// import { removeToken } from "../utils/tokenHandler";
 import { useSettings } from "../states/settings";
 import { CustomFlowbiteTheme, Sidebar } from "flowbite-react";
 import { ISettings } from "../types/settings";
-import { getDataSetting, removeAllData } from "../utils/backupData";
+import { getDataSetting } from "../utils/backupData";
 import { BuildingIcon } from "lucide-react";
 import ControlIcon from "./icons/control-icon";
+import { useAuth } from "../hooks/useAuth";
 
 export default function SidebarComponent() {
   const [userPopup, setUserPopup] = useState<boolean>(false);
@@ -22,6 +22,7 @@ export default function SidebarComponent() {
   const [selectedBuildingId, setSelectedBuildingId] = useState<number | null>(
     null
   );
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const setIdBangunanState = useSettings((state) => state.setIdBangunanState);
   const settings = useSettings((state) => state.settings) ?? getDataSetting();
@@ -105,10 +106,8 @@ export default function SidebarComponent() {
     setSelectedBuildingId(buildingId);
     setIdBangunanState(buildingId);
   };
-
   const handleLogout = () => {
-    removeAllData();
-    navigate("/login");
+    logout();
   };
 
   return (
@@ -137,7 +136,7 @@ export default function SidebarComponent() {
               </Link>
             </div>
             <div className="flex items-center">
-              <div className="flex items-center ms-3">
+              <div className="flex items-center ms-3 relative">
                 <div>
                   <button
                     type="button"
@@ -151,32 +150,41 @@ export default function SidebarComponent() {
                     />
                   </button>
                 </div>
-                <div
-                  className={`z-50 absolute right-0 top-full mt-2 w-48 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 ${
-                    userPopup ? "visible" : "hidden"
-                  }`}
-                  id="dropdown-user">
-                  <ul className="py-1" role="none">
-                    <li>
-                      <a
-                        onClick={handleLogout}
-                        className="block px-4 py-2 text-sm text-red-500 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
-                        role="menuitem">
-                        Keluar
-                      </a>
-                    </li>
-                  </ul>
-                  <ul className="py-1" role="none">
-                    <li>
-                      <a
-                        onClick={() => navigate("/change-password")}
-                        className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
-                        role="menuitem">
-                        Ganti Password
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                {userPopup && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setUserPopup(false)}
+                    />
+                    <div
+                      className="z-50 absolute right-0 top-full mt-2 w-48 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                      id="dropdown-user">
+                      <ul className="py-1" role="none">
+                        <li>
+                          <a
+                            onClick={() => {
+                              navigate("/change-password");
+                              setUserPopup(false);
+                            }}
+                            className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                            role="menuitem">
+                            Ganti Password
+                          </a>
+                        </li>
+                      </ul>
+                      <ul className="py-1" role="none">
+                        <li>
+                          <a
+                            onClick={handleLogout}
+                            className="block px-4 py-2 text-sm text-red-500 hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                            role="menuitem">
+                            Keluar
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -258,18 +266,6 @@ export default function SidebarComponent() {
                       label={section.title}
                       className="text-white">
                       {section.items.map((item, itemIndex) => {
-                        // Check to see if certain item should be restricted to certain roles
-                        const isRestrictedItem =
-                          item.name === "Pengguna" ||
-                          item.name === "Pengelola Gedung";
-                        const isManagement =
-                          userData?.data.role === "manajement";
-
-                        // If the item is restricted and the user role is management, skip rendering it
-                        if (isRestrictedItem && isManagement) {
-                          return null;
-                        }
-
                         return (
                           <Sidebar.Item
                             key={itemIndex}

@@ -45,7 +45,6 @@ export const useUsers = create<IUserState>((set, get) => ({
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(`${error.response?.data?.error}`);
         console.error(error);
       }
       set({ error: `${error}`, loading: false });
@@ -68,7 +67,7 @@ export const useUsers = create<IUserState>((set, get) => ({
       await get().getUsers();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(`${error.response?.data?.error}`);
+        toast.error(`${error.response?.data?.message}`);
         console.error(error);
       }
       set({ error: `${error}`, loading: false });
@@ -85,7 +84,7 @@ export const useUsers = create<IUserState>((set, get) => ({
       await get().getUsers();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(`${error.response?.data?.error}`);
+        toast.error(`${error.response?.data?.message}`);
         console.error(error);
       }
       set({ error: `${error}`, loading: false });
@@ -102,7 +101,7 @@ export const useUsers = create<IUserState>((set, get) => ({
       await get().getUsers();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(`${error.response?.data?.error}`);
+        toast.error(`${error.response?.data?.message}`);
         console.error(error);
       }
       set({ error: `${error}`, loading: false });
@@ -118,7 +117,7 @@ export const useUsers = create<IUserState>((set, get) => ({
       set({ loading: false });
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(`${error.response?.data?.error}`);
+        toast.error(`${error.response?.data?.message}`);
         console.error(error);
       }
       set({ error: `${error}`, loading: false });

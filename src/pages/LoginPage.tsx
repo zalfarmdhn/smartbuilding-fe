@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
-import { useAuth } from "../states/auth";
+import { useAuth as useAuthHook } from "../hooks/useAuth";
+import { useAuthState } from "../states/auth";
 import { useSettings } from "../states/settings";
+import { Spinner } from "flowbite-react";
+import { useNavigate } from "react-router";
 
 const loginSchema = z.object({
   email: z
@@ -19,6 +21,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const { isLoggedIn } = useAuthHook();
 
   const {
     register,
@@ -28,12 +31,17 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const login = useAuth((state) => state.login);
-  const isLoading = useAuth((state) => state.loading);
-  const errorAuth = useAuth((state) => state.errorAuth);
+  const navigate = useNavigate();
+  const login = useAuthState((state) => state.login);
+  const isLoading = useAuthState((state) => state.loading);
+  const errorAuth = useAuthState((state) => state.errorAuth);
   const getMeError = useSettings((state) => state.errorMe);
 
-  console.log(`ini response errornya`, getMeError);
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [navigate, isLoggedIn]);
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -62,8 +70,8 @@ export default function LoginPage() {
             {(errorAuth || getMeError) && (
               <div className="p-4 mb-4 bg-red-100 border-l-4 border-red-500 text-white dark:bg-red-900/50 dark:text-red-400 dark:border-red-500 rounded">
                 <div className="text-sm">
-                  {errorAuth && `${errorAuth.error}`}{" "}
-                  {getMeError && `${getMeError.error}`}
+                  {errorAuth && `${errorAuth}`}{" "}
+                  {getMeError && `${getMeError.message}`}
                 </div>
               </div>
             )}
@@ -127,6 +135,14 @@ export default function LoginPage() {
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={isLoading}>
+                {isLoading && (
+                  <Spinner
+                    size="sm"
+                    aria-label="Loading spinner"
+                    className="me-3"
+                    light
+                  />
+                )}
                 {isLoading ? "Loading..." : "Sign in"}
               </button>
             </div>

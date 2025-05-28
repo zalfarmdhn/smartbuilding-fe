@@ -8,7 +8,7 @@ interface IDayaListrik {
   Value: string;
 }
 
-export type THari =
+type THari =
   | "Senin"
   | "Selasa"
   | "Rabu"
@@ -17,15 +17,14 @@ export type THari =
   | "Sabtu"
   | "Minggu";
 
-  
-export type TMinggu =
-  | "Minggu 1"
-  | "Minggu 2"
-  | "Minggu 3"
-  | "Minggu 4"
-  | "Minggu 5";
+type TMinggu =
+  | "Minggu ke-1"
+  | "Minggu ke-2"
+  | "Minggu ke-3"
+  | "Minggu ke-4"
+  | "Minggu ke-5";
 
-export type TBulan =
+type TBulan =
   | "Januari"
   | "Februari"
   | "Maret"
@@ -39,37 +38,42 @@ export type TBulan =
   | "November"
   | "Desember";
 
-export interface IElectricData {
-  nama_gedung: string;
+interface IBiayaPemakaian {
+  Nama: string;
+  Biaya: string;
+}
+
+interface IDayaListrik {
+  nama: string;
+  Value: string;
+}
+
+interface IElectricData {
+  namaGedung: string;
   TotalWatt: string;
   TotalDayaListrik: IDayaListrik[];
   BiayaPemakaian: IBiayaPemakaian[];
-  CreatedAt: string;
   UpdatedAt: string;
 }
 
-export interface IElectricChart {
-  nama_gedung: string;
-  TotalWatt: string;
-  TotalDayaListrik: IDayaListrik[];
-  BiayaPemakaian: IBiayaPemakaian[];
+interface IElectricChart {
   DataPenggunaanListrikHarian: {
-    [key in THari]?: Array<{ nama: string; Value: string }>;
+    [key in THari]: Array<{ nama: string; Value: string }>;
   };
   DataBiayaListrikHarian: {
-    [key in THari]?: Array<{ Nama: string; Biaya: string }>;
+    [key in THari]: Array<{ Nama: string; Biaya: string }>;
   };
   DataPenggunaanListrikMingguan: {
-    [key in TMinggu]?: Array<{ nama: string; Value: string }>;
+    [key in TMinggu]: Array<{ nama: string; Value: string }>;
   };
   DataBiayaListrikMingguan: {
-    [key in TMinggu]?: Array<{ Nama: string; Biaya: string }>;
+    [key in TMinggu]: Array<{ Nama: string; Biaya: string }>;
   };
   DataPenggunaanListrikBulanan: {
-    [key in TBulan]?: Array<{ nama: string; Value: string }>;
+    [key in TBulan]: Array<{ nama: string; Value: string }>;
   };
   DataBiayaListrikBulanan: {
-    [key in TBulan]?: Array<{ Nama: string; Biaya: string }>;
+    [key in TBulan]: Array<{ Nama: string; Biaya: string }>;
   };
   DataPenggunaanListrikTahunan: {
     [key: string]: Array<{ nama: string; Value: string }>;
@@ -77,6 +81,11 @@ export interface IElectricChart {
   DataBiayaListrikTahunan: {
     [key: string]: Array<{ Nama: string; Biaya: string }>;
   };
-  CreatedAt: string;
-  UpdatedAt: string;
+}
+export interface ElectricMonitorState {
+  electricData: IElectricData;
+  electricChart: IElectricChart;
+  error: string;
+  loading: boolean;
+  getElectricData: () => void;
 }
