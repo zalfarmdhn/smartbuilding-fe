@@ -6,10 +6,12 @@ import { useWaterMonitoring } from "../states/water-monitoring";
 import { useElectricMonitoring } from "../states/electricity-monitoring";
 import { UserIcon, WaterIcon } from "../components/icons";
 import ElectricalIcon from "../components/icons/electrical-icon";
+import { useUsers } from "../states/users";
 
 export default function DashboardPage() {
   const settings = useSettings((state) => state.settings);
   const userName = useSettings((state) => state.dataUser?.data?.username);
+  const users = useUsers((state) => state.users);
   const monitorAir = useWaterMonitoring((state) => state.waterData);
   const monitorListrik = useElectricMonitoring((state) => state.electricData);
 
@@ -43,6 +45,7 @@ export default function DashboardPage() {
           {/* Section 1 - Card */}
           <div className="grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-1 gap-3 w-full md:w-fit">
             <CardStatistic
+              className="w-full"
               icon={<BuildingIcon />}
               heading="Jumlah Gedung"
               value={
@@ -51,11 +54,11 @@ export default function DashboardPage() {
                   : "Loading..."
               }
             />
-            {/* TODO : Integrasi total pengguna */}
             <CardStatistic
+              className="w-full"
               icon={<UserIcon />}
               heading="Total Pengguna"
-              value="20"
+              value={users ? `${users.length} Pengguna` : "Loading..."}
             />
           </div>
         </section>

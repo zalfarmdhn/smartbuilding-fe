@@ -7,6 +7,7 @@ import { useElectricMonitoring } from "../states/electricity-monitoring";
 import { formatSeconds } from "../utils/formatSeconds";
 import { useSettings } from "../states/settings";
 import { Toaster } from "react-hot-toast";
+import { useUsers } from "../states/users";
 
 /**
  * TODO :
@@ -24,6 +25,7 @@ export default function MainLayout() {
   const errorUserData = useSettings((state) => state.errorMe);
   const navigate = useNavigate();
   const getSettings = useSettings((state) => state.getSettings);
+  const getUsers = useUsers((state) => state.getUsers);
   const getMe = useSettings((state) => state.getCurrentUser);
   const scheduler = useSettings((state) => state.scheduler);
   console.log("ini error", errorUserData);
@@ -35,13 +37,14 @@ export default function MainLayout() {
         getWaterData(),
         getElectricData(),
         getSettings(),
+        getUsers(),
         getMe(),
       ]);
       setLoading(false);
     };
 
     initialFetch();
-  }, [getSettings, getWaterData, getElectricData, getMe]);
+  }, [getSettings, getWaterData, getUsers, getElectricData, getMe]);
 
   // useEffect kedua untuk fetch data setiap interval sekian detik
   useEffect(() => {
