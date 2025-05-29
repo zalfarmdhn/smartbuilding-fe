@@ -6,87 +6,88 @@ import ButtonGroup from "./ButtonGroup";
 type DataType = 'biaya' | 'penggunaan';
 
 export default function ElectricityGraph() {
-  const [dataType, setDataType] = useState<DataType>('biaya'); // Default to biaya
+  const [dataType, setDataType] = useState<DataType>("biaya"); // Default to biaya
   const [activeTab, setActiveTab] = useState<number>(2); // Default to monthly view
 
   const electricalChart = useElectricMonitoring((state) => state.electricChart);
-  const error = useElectricMonitoring((state) => state.error);
+  // const error = useElectricMonitoring((state) => state.error);
 
   const getChartData = () => {
-    if (dataType === 'biaya') {
-      switch(activeTab) {
+    if (dataType === "biaya") {
+      switch (activeTab) {
         case 0: // Daily
           return {
             periodData: electricalChart?.DataBiayaListrikHarian || {},
-            activePeriod: '',
-            chartType: 'daily' as const,
-            dataType: 'biaya' as const
+            activePeriod: "",
+            chartType: "daily" as const,
+            dataType: "biaya" as const,
           };
         case 1: // Weekly
           return {
             periodData: electricalChart?.DataBiayaListrikMingguan || {},
-            activePeriod: '',
-            chartType: 'weekly' as const,
-            dataType: 'biaya' as const
+            activePeriod: "",
+            chartType: "weekly" as const,
+            dataType: "biaya" as const,
           };
         case 2: // Monthly
           return {
             periodData: electricalChart?.DataBiayaListrikBulanan || {},
-            activePeriod: '',
-            chartType: 'monthly' as const,
-            dataType: 'biaya' as const
+            activePeriod: "",
+            chartType: "monthly" as const,
+            dataType: "biaya" as const,
           };
         case 3: // Yearly
           return {
             periodData: electricalChart?.DataBiayaListrikTahunan || {},
-            activePeriod: '',
-            chartType: 'yearly' as const,
-            dataType: 'biaya' as const
+            activePeriod: "",
+            chartType: "yearly" as const,
+            dataType: "biaya" as const,
           };
         default:
           return {
             periodData: electricalChart?.DataBiayaListrikBulanan || {},
-            activePeriod: '',
-            chartType: 'monthly' as const,
-            dataType: 'biaya' as const
+            activePeriod: "",
+            chartType: "monthly" as const,
+            dataType: "biaya" as const,
           };
       }
-    } else { // penggunaan
-      switch(activeTab) {
+    } else {
+      // penggunaan
+      switch (activeTab) {
         case 0: // Daily
           return {
             periodData: electricalChart?.DataPenggunaanListrikHarian || {},
-            activePeriod: '',
-            chartType: 'daily' as const,
-            dataType: 'penggunaan' as const
+            activePeriod: "",
+            chartType: "daily" as const,
+            dataType: "penggunaan" as const,
           };
         case 1: // Weekly
           return {
             periodData: electricalChart?.DataPenggunaanListrikMingguan || {},
-            activePeriod: '',
-            chartType: 'weekly' as const,
-            dataType: 'penggunaan' as const
+            activePeriod: "",
+            chartType: "weekly" as const,
+            dataType: "penggunaan" as const,
           };
         case 2: // Monthly
           return {
             periodData: electricalChart?.DataPenggunaanListrikBulanan || {},
-            activePeriod: '',
-            chartType: 'monthly' as const,
-            dataType: 'penggunaan' as const
+            activePeriod: "",
+            chartType: "monthly" as const,
+            dataType: "penggunaan" as const,
           };
         case 3: // Yearly
           return {
             periodData: electricalChart?.DataPenggunaanListrikTahunan || {},
-            activePeriod: '',
-            chartType: 'yearly' as const,
-            dataType: 'penggunaan' as const
+            activePeriod: "",
+            chartType: "yearly" as const,
+            dataType: "penggunaan" as const,
           };
         default:
           return {
             periodData: electricalChart?.DataPenggunaanListrikBulanan || {},
-            activePeriod: '',
-            chartType: 'monthly' as const,
-            dataType: 'penggunaan' as const
+            activePeriod: "",
+            chartType: "monthly" as const,
+            dataType: "penggunaan" as const,
           };
       }
     }
@@ -127,7 +128,7 @@ export default function ElectricityGraph() {
       <div className="mt-4">
         <Barchart {...getChartData()} />
       </div>
-      {error && <p className="text-red-500 mb-2">{error}</p>}
+      {/* {error && <p className="text-red-500 mb-2">{error}</p>} */}
     </div>
   );
 }

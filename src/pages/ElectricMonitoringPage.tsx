@@ -34,24 +34,34 @@ export default function ElectricMonitoringPage() {
 
   return (
     <div className="w-full max-w-[1200px] h-fit flex flex-col gap-4 mx-auto px-4 md:px-6">
-      {/* Error Alert */}
+      <div className="flex items-center gap-2 mx-auto bg-primary-400 rounded-lg p-4 shadow-md mb-2 w-full">
+        <Zap className="w-6 h-6 md:w-8 md:h-8 text-white" />
+        <h1 className="text-white font-bold text-lg md:text-2xl">
+          Monitoring Listrik {electricData.namaGedung || "Gedung"}
+          <br />
+          {!error && <span>(Realtime {scheduler} detik)</span>}
+        </h1>
+      </div>
+      <hr className="h-px bg-primary-500 border-0 dark:bg-primary-400" />
+      {/* Error notice */}
       {error && (
-        <div className="flex flex-col gap-2 mt-2">
-          <Alert color="failure">
-            <div className="flex flex-row gap-2 items-center">
-              <span className="font-medium text-white">
-                Gagal mengakses data terbaru! Menggunakan data backup.
-              </span>
+        <div className="flex flex-col gap-2">
+          <Alert color="warning" className="border-orange-200">
+            <div className="flex flex-row gap-2 items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="font-medium">
+                  Data listrik sedang dalam proses pembaruan. Pesan ini akan
+                  hilang setelah pembaruan selesai.
+                </span>
+              </div>
               <button
                 onClick={() => window.location.reload()}
-                className="px-3 py-1 bg-red-700 text-white rounded hover:bg-red-800 transition-colors flex items-center gap-2">
-                {/* Refresh Icon */}
+                className="px-3 py-1 bg-yellow-500 border-[#8e4b10] text-white rounded hover:bg-yellow-600 transition-colors flex items-center gap-2 text-sm">
                 <svg
                   className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -65,15 +75,6 @@ export default function ElectricMonitoringPage() {
           </Alert>
         </div>
       )}
-      <div className="flex items-center gap-2 mx-auto bg-primary-400 rounded-lg p-4 shadow-md mb-4 w-full">
-        <Zap className="w-6 h-6 md:w-8 md:h-8 text-white" />
-        <h1 className="text-white font-bold text-lg md:text-2xl">
-          Monitoring Listrik {electricData.namaGedung || "Gedung"}
-          <br />
-          {!error && <span>(Realtime {scheduler} detik)</span>}
-        </h1>
-      </div>
-      <hr className="h-px bg-primary-500 border-0 dark:bg-primary-400" />
       <h1 className="text-primary-500 font-bold text-xl">
         Total Penggunaan Listrik
       </h1>{" "}
@@ -107,13 +108,13 @@ export default function ElectricMonitoringPage() {
       {/* Section Informasi Pembaruan */}
       <section className="mt-6">
         <h2 className="text-primary-500 font-bold text-xl md:text-2xl mb-4">
-          Informasi Pembaharuan
+          Informasi Pembaruan
         </h2>
         <div className="bg-primary-400 rounded-lg shadow-md p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <ClockIcon className="text-[#273C97]" />
+              <div className="min-w-10 min-h-10 w-10 h-10 sm:w-12 sm:h-12 bg-[#273C97] text-white rounded-lg flex items-center justify-center">
+                <ClockIcon className="text-white" />
               </div>
               <div>
                 <h3 className="font-semibold text-white">
@@ -127,16 +128,6 @@ export default function ElectricMonitoringPage() {
                     : "Data tidak tersedia"}
                 </p>
               </div>
-            </div>
-            <div className="text-right">
-              <span
-                className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                  error
-                    ? "bg-red-100 text-gray-100"
-                    : "bg-green-100 text-green-800"
-                }`}>
-                {error ? "Offline" : "Online"}
-              </span>
             </div>
           </div>
         </div>

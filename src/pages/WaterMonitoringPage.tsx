@@ -35,24 +35,33 @@ export default function WaterMonitoringPage() {
 
   return (
     <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl">
-      {/* Warning */}
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-center bg-primary-400 rounded-lg p-3 sm:p-4 shadow-md mb-4">
+        <Droplet className="w-6 h-6 sm:w-8 sm:h-8 text-white mr-2" />
+        <h1 className="text-white font-bold text-lg sm:text-xl md:text-2xl">
+          Monitoring Air {waterData.namaGedung || "Gedung"}
+          <br />
+          {!error && <span>(Realtime {scheduler} detik)</span>}
+        </h1>
+      </div>
       {error && (
-        <div className="flex flex-col gap-2 my-4">
-          <Alert color="failure">
-            <div className="flex flex-row gap-2 items-center">
-              <span className="font-medium text-white">
-                Gagal mengakses data terbaru! Menggunakan data backup.
-              </span>
+        <div className="flex flex-col gap-2 mb-2">
+          <Alert color="warning" className="border-orange-200">
+            <div className="flex flex-row gap-2 items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="font-medium">
+                  Data air sedang dalam proses pembaruan. Pesan ini akan hilang
+                  setelah pembaruan selesai.
+                </span>
+              </div>
               <button
                 onClick={() => window.location.reload()}
-                className="px-3 py-1 bg-red-700 text-white rounded hover:bg-red-800 transition-colors flex items-center gap-2">
-                {/* Refresh Icon */}
+                className="px-3 py-1 bg-yellow-500 border-[#8e4b10] text-white rounded hover:bg-yellow-600 transition-colors flex items-center gap-2 text-sm">
                 <svg
                   className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -66,15 +75,6 @@ export default function WaterMonitoringPage() {
           </Alert>
         </div>
       )}
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-center bg-primary-400 rounded-lg p-3 sm:p-4 shadow-md mb-4">
-        <Droplet className="w-6 h-6 sm:w-8 sm:h-8 text-white mr-2" />
-        <h1 className="text-white font-bold text-lg sm:text-xl md:text-2xl">
-          Monitoring Air {waterData.namaGedung || "Gedung"}
-          <br />
-          {!error && <span>(Realtime {scheduler} detik)</span>}
-        </h1>
-      </div>
       {/* Statistik Toren Air */}
       <section>
         <h2 className="text-primary-500 font-bold text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4">
@@ -116,16 +116,6 @@ export default function WaterMonitoringPage() {
                     : "Data tidak tersedia"}
                 </p>
               </div>
-            </div>
-            <div className="text-right">
-              <span
-                className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                  error
-                    ? "bg-red-100 text-gray-100"
-                    : "bg-green-100 text-green-800"
-                }`}>
-                {error ? "Offline" : "Online"}
-              </span>
             </div>
           </div>
         </div>
