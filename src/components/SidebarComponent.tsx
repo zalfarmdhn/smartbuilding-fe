@@ -50,7 +50,7 @@ export default function SidebarComponent() {
         {
           name: "Dashboard",
           icon: <DashboardIcon />,
-          href: "/",
+          href: "/dashboard",
         },
       ],
     },
@@ -61,12 +61,12 @@ export default function SidebarComponent() {
         {
           name: "Monitoring Air",
           icon: <WaterIcon />,
-          href: "/water-monitor",
+          href: "/dashboard/water-monitor",
         },
         {
           name: "Monitoring Listrik",
           icon: <LightningIcon />,
-          href: "/electricity-monitor",
+          href: "/dashboard/electricity-monitor",
         },
       ],
     })) || []),
@@ -78,17 +78,17 @@ export default function SidebarComponent() {
         {
           name: "Pengguna",
           icon: <UserIcon />,
-          href: "/users",
+          href: "/dashboard/users",
         },
         {
           name: "Pengelola Gedung",
           icon: <BuildingIcon className="w-5 h-5" />,
-          href: "/pengelola_gedung",
+          href: "/dashboard/pengelola_gedung",
         },
         {
           name: "Settings",
           icon: <SettingsIcon />,
-          href: "/settings",
+          href: "/dashboard/settings",
         },
       ],
     },

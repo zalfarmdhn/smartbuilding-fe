@@ -17,7 +17,7 @@ export default function PengelolaGedungPage() {
   useEffect(() => {
     // If the user is not admin, redirect to dashboard and cancel the fetch
     if (role !== "admin" && role !== "manajement") {
-      navigate("/");
+      navigate("/dashboard");
       return;
     }
     // Fetch all required data
