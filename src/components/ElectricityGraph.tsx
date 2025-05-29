@@ -94,7 +94,6 @@ export default function ElectricityGraph() {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      {error && <p className="text-red-500 mb-2">{error}</p>}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-gray-800">
           {dataType === "biaya" ? "Biaya Listrik" : "Penggunaan Listrik"}
@@ -128,6 +127,7 @@ export default function ElectricityGraph() {
       <div className="mt-4">
         <Barchart {...getChartData()} />
       </div>
+      {error && <p className="text-red-500 mb-2">{error}</p>}
     </div>
   );
 }

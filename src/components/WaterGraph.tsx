@@ -56,10 +56,10 @@ export default function WaterGraph() {
       </div>
 
       <div className="bg-white p-2 sm:p-4 rounded-lg shadow-md overflow-x-auto">
-        {error && <p className="text-red-500 mb-2">{error}</p>}
         <div className="min-h-[300px] md:min-h-[400px] w-full">
           <Linechart {...getChartData()} />
         </div>
+        {error && <p className="text-red-500 mb-2">{error}</p>}
       </div>
     </div>
   );

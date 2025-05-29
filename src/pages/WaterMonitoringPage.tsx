@@ -5,9 +5,10 @@ import CardStatistic from "../components/CardStatistic";
 import AirKeluarIcon from "../components/icons/air-keluar-icon";
 import AirMasukIcon from "../components/icons/air-masuk-icon";
 import { Alert, Spinner } from "flowbite-react";
-import { Droplet } from "lucide-react";
+import { ClockIcon, Droplet } from "lucide-react";
 import { useSettings } from "../states/settings";
 import { useEffect } from "react";
+import { returnFullDate } from "../utils/formatDate";
 
 export default function WaterMonitoringPage() {
   // const [loading, setIsLoading] = useState(true);
@@ -36,11 +37,32 @@ export default function WaterMonitoringPage() {
     <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl">
       {/* Warning */}
       {error && (
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col gap-2 my-4">
           <Alert color="failure">
-            <span className="font-medium text-white">
-              Gagal mengakses data terbaru! Tolong coba lagi.
-            </span>{" "}
+            <div className="flex flex-row gap-2 items-center">
+              <span className="font-medium text-white">
+                Gagal mengakses data terbaru! Menggunakan data backup.
+              </span>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-3 py-1 bg-red-700 text-white rounded hover:bg-red-800 transition-colors flex items-center gap-2">
+                {/* Refresh Icon */}
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                Refresh
+              </button>
+            </div>
           </Alert>
         </div>
       )}
@@ -69,6 +91,43 @@ export default function WaterMonitoringPage() {
               lastUpdated={toren.created_at}
             />
           ))}
+        </div>
+      </section>
+      {/* Informasi Pembaruan */}
+      <section className="mt-6">
+        <h2 className="text-primary-500 font-bold text-xl md:text-2xl mb-4">
+          Informasi Pembaharuan
+        </h2>
+        <div className="bg-primary-400 rounded-lg shadow-md p-4 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <ClockIcon className="text-[#273C97]" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">
+                  Terakhir Diperbarui
+                </h3>
+                <p className="text-sm text-white">
+                  {waterData?.UpdatedAt
+                    ? `${returnFullDate(waterData.UpdatedAt)}, ${new Date(
+                        waterData.UpdatedAt
+                      ).toLocaleTimeString()}`
+                    : "Data tidak tersedia"}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span
+                className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                  error
+                    ? "bg-red-100 text-gray-100"
+                    : "bg-green-100 text-green-800"
+                }`}>
+                {error ? "Offline" : "Online"}
+              </span>
+            </div>
+          </div>
         </div>
       </section>
       {/* Data Monitoring Air */}{" "}

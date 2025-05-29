@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import electricityMonitoring from "../services/electricity-monitoring";
 import { getIdBangunan, setDataListrik } from "../utils/backupData";
-import axios from "axios";
 import { ElectricMonitorState } from "../types/electricity-monitoring";
 
 export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
@@ -87,6 +86,7 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       const dataListrikBackup = JSON.parse(
         localStorage.getItem("dataListrik") || "{}"
       );
+      // Cek apakah data dari API sama dengan data backup
       if (response.TotalWatt === dataListrikBackup.TotalWatt) {
         console.log("Data monitor listrik gagal disimpan");
         throw new Error(
@@ -117,46 +117,38 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       set({ loading: false });
       set({ error: "" });
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error);
-        // Ambil data dari localStorage jika API gagal
-        const backupData = localStorage.getItem("dataListrik");
-        if (backupData) {
-          const parsedData = JSON.parse(backupData);
-          set({
-            electricData: {
-              namaGedung: parsedData.nama_gedung || "",
-              TotalWatt: parsedData.TotalWatt || "",
-              TotalDayaListrik: parsedData.TotalDayaListrik || [],
-              BiayaPemakaian: parsedData.BiayaPemakaian || [],
-              UpdatedAt: parsedData.UpdatedAt || "",
-            },
-            electricChart: {
-              DataPenggunaanListrikHarian:
-                parsedData.DataPenggunaanListrikHarian || {},
-              DataBiayaListrikHarian: parsedData.DataBiayaListrikHarian || {},
-              DataPenggunaanListrikMingguan:
-                parsedData.DataPenggunaanListrikMingguan || {},
-              DataBiayaListrikMingguan:
-                parsedData.DataBiayaListrikMingguan || {},
-              DataPenggunaanListrikBulanan:
-                parsedData.DataPenggunaanListrikBulanan || {},
-              DataBiayaListrikBulanan: parsedData.DataBiayaListrikBulanan || {},
-              DataPenggunaanListrikTahunan:
-                parsedData.DataPenggunaanListrikTahunan || {},
-              DataBiayaListrikTahunan: parsedData.DataBiayaListrikTahunan || {},
-            },
-            loading: false,
-            error: "Menggunakan data tersimpan - Koneksi API gagal",
-          });
-        } else {
-          set({ error: `${error}`, loading: false });
-        }
-        throw new Error(error.response?.data.error);
+      // Ambil data dari localStorage jika API gagal
+      const backupData = localStorage.getItem("dataListrik");
+      if (backupData) {
+        const parsedData = JSON.parse(backupData);
+        set({
+          electricData: {
+            namaGedung: parsedData.nama_gedung || "",
+            TotalWatt: parsedData.TotalWatt || "",
+            TotalDayaListrik: parsedData.TotalDayaListrik || [],
+            BiayaPemakaian: parsedData.BiayaPemakaian || [],
+            UpdatedAt: parsedData.UpdatedAt || "",
+          },
+          electricChart: {
+            DataPenggunaanListrikHarian:
+              parsedData.DataPenggunaanListrikHarian || {},
+            DataBiayaListrikHarian: parsedData.DataBiayaListrikHarian || {},
+            DataPenggunaanListrikMingguan:
+              parsedData.DataPenggunaanListrikMingguan || {},
+            DataBiayaListrikMingguan: parsedData.DataBiayaListrikMingguan || {},
+            DataPenggunaanListrikBulanan:
+              parsedData.DataPenggunaanListrikBulanan || {},
+            DataBiayaListrikBulanan: parsedData.DataBiayaListrikBulanan || {},
+            DataPenggunaanListrikTahunan:
+              parsedData.DataPenggunaanListrikTahunan || {},
+            DataBiayaListrikTahunan: parsedData.DataBiayaListrikTahunan || {},
+          },
+          loading: false,
+          error:
+            "Menggunakan data tersimpan - Tolong refresh halaman untuk update",
+        });
       }
-      // Jika bukan error dari Axios, set error umum
-      console.error(`ini error blok luar axios iserror`, error);
-      set({ error: `${error}`, loading: false });
+      console.error(`ini error listrik`, error);
     }
   },
 }));

@@ -17,3 +17,12 @@ export function formatDate(date: string | Date) {
     year: "numeric"
   });
 }
+
+export function returnFullDate(date: string | Date) {
+  const inputDate = new Date(date);
+  const day = inputDate.getDate();
+  const month = inputDate.toLocaleString("id-ID", { month: "long" });
+  const year = inputDate.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
