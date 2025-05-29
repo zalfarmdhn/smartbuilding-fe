@@ -14,7 +14,7 @@ export function useAuth(): UseAuthReturn {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const errorUserData = useSettings((state) => state.errorMe);
-  
+
   // Mengecek apakah user punya token yang valid dan tidak ada error dari endpoint /me
   const isLoggedIn = hasToken() && !errorUserData;
 
@@ -25,8 +25,10 @@ export function useAuth(): UseAuthReturn {
       return;
     }
 
+    // Kalau user sudah login, set loading ke false
     setIsLoading(false);
   }, [isLoggedIn, navigate]);
+
   const logout = () => {
     // Hapus semua data yang tersimpan
     removeAllData();

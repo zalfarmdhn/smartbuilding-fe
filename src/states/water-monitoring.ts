@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import waterMonitoring from "../services/water-monitoring";
 import { getIdBangunan, setDataMonitoring } from "../utils/backupData";
-import axios from "axios";
 import { WaterMonitoringState } from "../types/water-monitoring";
 
 export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
@@ -59,39 +58,31 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
       set({ loading: false });
       set({ error: "" });
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error);
-        // Ambil data dari localStorage jika API gagal
-        const backupData = localStorage.getItem("dataTorenAir");
-        // Jika ada data backup, gunakan data tersebut
-        if (backupData) {
-          const parsedData = JSON.parse(backupData);
-          set({
-            waterData: {
-              namaGedung: parsedData.nama_gedung || "",
-              KapasitasToren: parsedData.kapasitasToren || [],
-              AirKeluar: parsedData.AirKeluar || "",
-              AirMasuk: parsedData.AirMasuk || "",
-              UpdatedAt: parsedData.UpdatedAt || "",
-            },
-            waterChart: {
-              DataPenggunaanHarian: parsedData.DataPenggunaanHarian || {},
-              DataPenggunaanMingguan: parsedData.DataPenggunaanMingguan || {},
-              DataPenggunaanBulanan: parsedData.DataPenggunaanBulanan || {},
-              DataPenggunaanTahunan: parsedData.DataPenggunaanTahunan || {},
-            },
-            loading: false,
-            error: "Menggunakan data tersimpan - Koneksi API gagal",
-          });
-          // Kalau tidak ada data backup, set error
-        } else {
-          set({ error: `${error}`, loading: false });
-        }
-        // throw new Error(error.response?.data.error);
+      // Ambil data dari localStorage jika API gagal
+      const backupData = localStorage.getItem("dataTorenAir");
+      // Jika ada data backup, gunakan data tersebut
+      if (backupData) {
+        const parsedData = JSON.parse(backupData);
+        set({
+          waterData: {
+            namaGedung: parsedData.nama_gedung || "",
+            KapasitasToren: parsedData.kapasitasToren || [],
+            AirKeluar: parsedData.AirKeluar || "",
+            AirMasuk: parsedData.AirMasuk || "",
+            UpdatedAt: parsedData.UpdatedAt || "",
+          },
+          waterChart: {
+            DataPenggunaanHarian: parsedData.DataPenggunaanHarian || {},
+            DataPenggunaanMingguan: parsedData.DataPenggunaanMingguan || {},
+            DataPenggunaanBulanan: parsedData.DataPenggunaanBulanan || {},
+            DataPenggunaanTahunan: parsedData.DataPenggunaanTahunan || {},
+          },
+          loading: false,
+          error:
+            "Menggunakan data tersimpan - Tolong refresh halaman untuk update",
+        });
       }
-      // Jika bukan AxiosError, set error umum
       console.error(`ini error air`, error);
-      set({ error: `${error}`, loading: false });
     }
   },
 }));

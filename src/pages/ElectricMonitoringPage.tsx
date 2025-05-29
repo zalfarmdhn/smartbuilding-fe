@@ -1,12 +1,12 @@
 import { useElectricMonitoring } from "../states/electricity-monitoring";
-import { formatDate } from "../utils/formatDate";
+import { formatDate, returnFullDate } from "../utils/formatDate";
 import CardStatistic from "../components/CardStatistic";
 import ElectricalIcon from "../components/icons/electrical-icon";
 import RupiahIcon from "../components/icons/rupiah-icon";
 import { getSpecificDataListrik } from "../utils/backupData";
 import ElectricityGraph from "../components/ElectricityGraph";
 import { Alert, Spinner } from "flowbite-react";
-import { ClockIcon, OctagonAlert, Zap } from "lucide-react";
+import { ClockIcon, Zap } from "lucide-react";
 import { useSettings } from "../states/settings";
 import { useEffect } from "react";
 
@@ -30,21 +30,11 @@ export default function ElectricMonitoringPage() {
     );
   }
 
-  const totalWatt =
-    electricData?.TotalWatt ?? getSpecificDataListrik("TotalWatt");
+  const totalWatt = electricData?.TotalWatt;
 
   return (
     <div className="w-full max-w-[1200px] h-fit flex flex-col gap-4 mx-auto px-4 md:px-6">
-      {error && (
-        <div className="flex flex-col gap-2">
-          <Alert color="failure">
-            <span className="font-medium text-white">
-              Gagal mengakses data terbaru! Tolong coba lagi.
-            </span>{" "}
-          </Alert>
-        </div>
-      )}
-      <div className="flex items-center gap-2 mx-auto bg-primary-400 rounded-lg p-4 shadow-md mb-4 w-full">
+      <div className="flex items-center gap-2 mx-auto bg-primary-400 rounded-lg p-4 shadow-md mb-2 w-full">
         <Zap className="w-6 h-6 md:w-8 md:h-8 text-white" />
         <h1 className="text-white font-bold text-lg md:text-2xl">
           Monitoring Listrik {electricData.namaGedung || "Gedung"}
@@ -53,11 +43,37 @@ export default function ElectricMonitoringPage() {
         </h1>
       </div>
       <hr className="h-px bg-primary-500 border-0 dark:bg-primary-400" />
-      {!electricData.TotalDayaListrik && (
-        <Alert color="warning" icon={OctagonAlert}>
-          <span className="font-medium">Server gagal mengakses data!</span>{" "}
-          Mohon menunggu dan tolong coba lagi.
-        </Alert>
+      {/* Error notice */}
+      {error && (
+        <div className="flex flex-col gap-2">
+          <Alert color="warning" className="border-orange-200">
+            <div className="flex flex-row gap-2 items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="font-medium">
+                  Data listrik sedang dalam proses pembaruan. Pesan ini akan
+                  hilang setelah pembaruan selesai.
+                </span>
+              </div>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-3 py-1 bg-yellow-500 border-[#8e4b10] text-white rounded hover:bg-yellow-600 transition-colors flex items-center gap-2 text-sm">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                Refresh
+              </button>
+            </div>
+          </Alert>
+        </div>
       )}
       <h1 className="text-primary-500 font-bold text-xl">
         Total Penggunaan Listrik
@@ -89,6 +105,34 @@ export default function ElectricMonitoringPage() {
           </div>
         </div>
       </div>{" "}
+      {/* Section Informasi Pembaruan */}
+      <section className="mt-6">
+        <h2 className="text-primary-500 font-bold text-xl md:text-2xl mb-4">
+          Informasi Pembaruan
+        </h2>
+        <div className="bg-primary-400 rounded-lg shadow-md p-4 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="min-w-10 min-h-10 w-10 h-10 sm:w-12 sm:h-12 bg-[#273C97] text-white rounded-lg flex items-center justify-center">
+                <ClockIcon className="text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">
+                  Terakhir Diperbarui
+                </h3>
+                <p className="text-sm text-white">
+                  {electricData?.UpdatedAt
+                    ? `${returnFullDate(electricData.UpdatedAt)}, ${new Date(
+                        electricData.UpdatedAt
+                      ).toLocaleTimeString()}`
+                    : "Data tidak tersedia"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Section Biaya Pemakaian Listrik */}
       <div className="w-full flex flex-col gap-2">
         <h1 className="text-primary-500 font-bold text-lg md:text-xl">
           Biaya Pemakaian Listrik
@@ -130,6 +174,9 @@ export default function ElectricMonitoringPage() {
         </div>
       </div>
       {/* Section Grafik Penggunaan Listrik */}
+      <h2 className="text-primary-500 font-bold text-xl md:text-2xl">
+        Grafik Listrik
+      </h2>
       <ElectricityGraph />
     </div>
   );

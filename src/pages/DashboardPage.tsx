@@ -12,8 +12,9 @@ export default function DashboardPage() {
   const settings = useSettings((state) => state.settings);
   const userName = useSettings((state) => state.dataUser?.data?.username);
   const users = useUsers((state) => state.users);
-  const monitorAir = useWaterMonitoring((state) => state.waterData);
-  const monitorListrik = useElectricMonitoring((state) => state.electricData);
+  const monitorAirStatus = useWaterMonitoring((state) => state.error);
+  const monitorListrikStatus = useElectricMonitoring((state) => state.error);
+  const bangunan = useWaterMonitoring((state) => state.waterData.namaGedung);
 
   useEffect(() => {
     document.title = "Smartbuilding | Dashboard";
@@ -74,7 +75,7 @@ export default function DashboardPage() {
               <ChartNoAxesColumn className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <h2 className="text-primary-500 font-semibold text-sm sm:text-md md:text-lg">
-              Status Monitoring
+              Status Monitoring {bangunan ? bangunan : "Gedung"}
             </h2>
           </div>
           {/* Section 2 - Card  */}
@@ -82,12 +83,30 @@ export default function DashboardPage() {
             <CardStatistic
               icon={<WaterIcon />}
               heading="Water Monitoring"
-              value={monitorAir ? "Online" : "Offline"}
+              value={
+                <div
+                  className={`px-3 py-1 my-1 rounded-full text-xs font-medium ${
+                    monitorAirStatus
+                      ? "bg-red-100 text-gray-100"
+                      : "bg-green-100 text-green-700"
+                  }`}>
+                  {monitorAirStatus ? "Offline" : "Online"}
+                </div>
+              }
             />
             <CardStatistic
               icon={<ElectricalIcon />}
               heading="Electric Monitoring"
-              value={monitorListrik ? "Online" : "Offline"}
+              value={
+                <div
+                  className={`px-3 py-1 my-1 rounded-full text-xs font-medium ${
+                    monitorListrikStatus
+                      ? "bg-red-100 text-gray-100"
+                      : "bg-green-100 text-green-700"
+                  }`}>
+                  {monitorListrikStatus ? "Offline" : "Online"}
+                </div>
+              }
             />
           </div>
         </section>
