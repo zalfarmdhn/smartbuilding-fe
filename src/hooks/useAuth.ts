@@ -21,7 +21,7 @@ export function useAuth(): UseAuthReturn {
   useEffect(() => {
     // Kalau user belum login, redirect ke halaman login
     if (!isLoggedIn) {
-      navigate("/login");
+      navigate("/");
       return;
     }
 
@@ -33,7 +33,7 @@ export function useAuth(): UseAuthReturn {
     // Hapus semua data yang tersimpan
     removeAllData();
     // Redirect ke halaman login
-    navigate("/login");
+    navigate("/");
   };
 
   return {

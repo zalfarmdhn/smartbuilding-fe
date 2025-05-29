@@ -93,16 +93,16 @@ export default function WaterMonitoringPage() {
           ))}
         </div>
       </section>
-      {/* Informasi Pembaruan */}
+      {/* Section Informasi Pembaruan */}
       <section className="mt-6">
         <h2 className="text-primary-500 font-bold text-xl md:text-2xl mb-4">
-          Informasi Pembaharuan
+          Informasi Pembaruan
         </h2>
         <div className="bg-primary-400 rounded-lg shadow-md p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <ClockIcon className="text-[#273C97]" />
+              <div className="min-w-10 min-h-10 w-10 h-10 sm:w-12 sm:h-12 bg-[#273C97] text-white rounded-lg flex items-center justify-center">
+                <ClockIcon className="text-white" />
               </div>
               <div>
                 <h3 className="font-semibold text-white">

@@ -8,14 +8,15 @@ import DashboardPage from "../pages/DashboardPage";
 import UserPage from "../pages/UserPage";
 import PengelolaGedungPage from "../pages/PengelolaGedungPage";
 import ChangePasswordPage from "../pages/ChangePasswordPage";
+import NotFoundPage from "../pages/404";
 
 const routes = createBrowserRouter([
   {
-    path: "/login",
+    path: "/",
     element: <LoginPage />,
   },
   {
-    path: "/",
+    path: "/dashboard",
     element: <MainLayout />,
     children: [
       {
@@ -23,34 +24,38 @@ const routes = createBrowserRouter([
         element: <DashboardPage />,
       },
       {
-        path: "/water-monitor",
+        path: "water-monitor",
         element: <WaterMonitoringPage />,
       },
       {
-        path: "/electricity-monitor",
+        path: "electricity-monitor",
         element: <ElectricMonitoringPage />,
       },
       {
-        path: "/users",
+        path: "users",
         element: <UserPage />,
       },
       {
-        path: "/pengelola_gedung",
+        path: "pengelola_gedung",
         element: <PengelolaGedungPage />,
       },
       {
-        path: "/settings",
+        path: "settings",
         element: <SettingsPage />,
       },
       {
-        path: "/change-password",
+        path: "change-password",
         element: <ChangePasswordPage />,
       },
       {
         path: "*",
-        element: <h1>404 - Page Not Found</h1>,
+        element: <NotFoundPage link="dashboard" />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFoundPage className="bg-white" />,
   },
 ]);
 
