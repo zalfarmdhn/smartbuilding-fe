@@ -2,6 +2,7 @@ import { create } from "zustand";
 import electricityMonitoring from "../services/electricity-monitoring";
 import { getIdBangunan, setDataListrik } from "../utils/backupData";
 import { ElectricMonitorState } from "../types/electricity-monitoring";
+import { useSettings } from "./settings";
 
 export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
   electricData: {
@@ -77,22 +78,38 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
   },
   error: "",
   loading: true,
+  // Fungsi untuk mengecek apakah monitoring listrik online atau offline
+  isMonitoringOnline: () => {
+    const idBangunan = parseInt(getIdBangunan() || "1");
+    const indexBangunan = idBangunan - 1;
+    const status =
+      useSettings.getState().settings[indexBangunan]?.monitoring_status;
+    return status?.[1]?.["monitoring listrik"] === "online";
+  },
   getElectricData: async () => {
     try {
       const idBangunan = parseInt(getIdBangunan() || "1");
       const response = await electricityMonitoring.getMonitoringListrik(
         idBangunan
       );
-      const dataListrikBackup = JSON.parse(
-        localStorage.getItem("dataListrik") || "{}"
-      );
-      // Cek apakah data dari API sama dengan data backup
-      if (response.TotalWatt === dataListrikBackup.TotalWatt) {
-        console.log("Data monitor listrik gagal disimpan");
+
+      // Simpan data ke localStorage setiap kali berhasil fetch
+      console.log("Data monitoring listrik berhasil di-fetch dan disimpan");
+      setDataListrik(JSON.stringify(response));
+
+      // Cek status monitoring untuk menentukan apakah menggunakan data real-time atau backup
+      const isOnline = useElectricMonitoring.getState().isMonitoringOnline();
+
+      if (!isOnline) {
+        console.log(
+          "Status monitoring listrik offline, menggunakan data backup dari localStorage"
+        );
         throw new Error(
-          "Data monitoring listrik tidak berubah, menggunakan data dari backup."
+          "Data monitoring listrik offline, menggunakan data dari backup."
         );
       }
+
+      // Jika online, gunakan data dari API
       set({
         electricData: {
           namaGedung: response.nama_gedung,
@@ -112,13 +129,12 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
           DataBiayaListrikTahunan: response.DataBiayaListrikTahunan,
         },
       });
-      // Simpan data listrik ke localStorage
-      setDataListrik(JSON.stringify(response));
+
       set({ loading: false });
       set({ error: "" });
     } catch (error) {
       // Ambil data dari localStorage jika API gagal
-      const backupData = localStorage.getItem("dataListrik");
+      const backupData = localStorage.getItem(`dataListrik-${getIdBangunan()}`);
       if (backupData) {
         const parsedData = JSON.parse(backupData);
         set({
@@ -143,11 +159,11 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
               parsedData.DataPenggunaanListrikTahunan || {},
             DataBiayaListrikTahunan: parsedData.DataBiayaListrikTahunan || {},
           },
-          loading: false,
           error:
             "Menggunakan data tersimpan - Tolong refresh halaman untuk update",
         });
       }
+      set({ loading: false });
       console.error(`ini error listrik`, error);
     }
   },

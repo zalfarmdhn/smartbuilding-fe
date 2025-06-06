@@ -9,21 +9,29 @@ import axios from "axios";
 import { IErrorAPI } from "../types/error";
 import toast from "react-hot-toast";
 
+type MonitoringStatus = [
+  { "monitoring air": "unknown" | "offline" | "online" },
+  { "monitoring listrik": "unknown" | "offline" | "online" }
+];
+
+type Settings = {
+  id: number;
+  nama_gedung: string;
+  haos_url: string;
+  haos_token: string;
+  scheduler: number;
+  harga_listrik: number;
+  jenis_listrik: string;
+  monitoring_status: MonitoringStatus;
+};
+
 interface ISettingsRoot {
   scheduler: number | null;
   idBangunan: number | null;
   dataUser: IMeRoot | null;
   errorMe: null | IErrorAPI;
   loading: boolean;
-  settings: {
-    id: number;
-    nama_gedung: string;
-    haos_url: string;
-    haos_token: string;
-    scheduler: number;
-    harga_listrik: number;
-    jenis_listrik: string;
-  } | null;
+  settings: Settings[];
   getSettings: () => Promise<void>;
   getCurrentUser: () => Promise<void>;
   getIdBangunanState: () => number | null;
@@ -59,7 +67,7 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
   dataUser: null,
   errorMe: null,
   loading: false,
-  settings: null,
+  settings: [],
   idBangunan: null,
   getSettings: async () => {
     try {

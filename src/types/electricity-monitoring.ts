@@ -87,5 +87,6 @@ export interface ElectricMonitorState {
   electricChart: IElectricChart;
   error: string;
   loading: boolean;
+  isMonitoringOnline: () => boolean;
   getElectricData: () => void;
 }
