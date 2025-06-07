@@ -18,7 +18,7 @@ import {
   HARI_CONSTANT,
   MINGGU_CONSTANT,
 } from "../../utils/dateConstants";
-import { DISTINCT_HSL_COLORS } from "../../utils/hslColors";
+import { getItemColorByName } from "../../utils/getItemColorByName";
 
 ChartJS.register(
   CategoryScale,
@@ -74,18 +74,6 @@ export default function Barchart({
     };
   }, []);
 
-  // Function to generate a consistent color based on item name
-  const getItemColorByName = (itemName: string) => {
-    let hash = 0;
-    for (let i = 0; i < itemName.length; i++) {
-      const char = itemName.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash |= 0; // Convert to 32bit integer
-    }
-    const index = Math.abs(hash) % DISTINCT_HSL_COLORS.length;
-    return DISTINCT_HSL_COLORS[index];
-  };
-
   // Process the data for the chart
   const { labels, datasets } = useMemo(() => {
     // Debug: Log the data being processed
@@ -119,8 +107,13 @@ export default function Barchart({
         sortedPeriods = allPeriods.sort((a, b) => {
           return HARI_CONSTANT.indexOf(a) - HARI_CONSTANT.indexOf(b);
         });
-      } else {
+      } else if (chartType === "daily") {
         // daily
+        sortedPeriods = allPeriods.sort((a, b) => {
+          return new Date(a).getTime() - new Date(b).getTime();
+        });
+      } else {
+        // default
         sortedPeriods = [...allPeriods];
       }
 

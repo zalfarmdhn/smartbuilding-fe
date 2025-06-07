@@ -71,60 +71,64 @@ export default function DashboardPage() {
             }
           </div>
         </section>
-        {/* Section Mapping Status Monitoring Bangunan */}
-        {settings.map((setting: ISettings, index: number) => {
-          // Cek apakah monitorAirStatus dan monitorListrikStatus offline atau online
-          const monitorAirStatus =
-            setting.monitoring_status[0]["monitoring air"] === "online";
-          const monitorListrikStatus =
-            setting.monitoring_status[1]["monitoring listrik"] === "online";
+        <section className="col-span-2 md:grid md:grid-cols-2 w-full">
+          {/* Section Mapping Status Monitoring Bangunan */}
+          {settings.map((setting: ISettings, index: number) => {
+            // Cek apakah monitorAirStatus dan monitorListrikStatus offline atau online
+            const monitorAirStatus =
+              setting.monitoring_status[0]["monitoring air"] === "online";
+            const monitorListrikStatus =
+              setting.monitoring_status[1]["monitoring listrik"] === "online";
 
-          return (
-            <section
-              key={index}
-              className="col-span-2 md:col-span-1 w-full  md:w-fit rounded-lg">
-              <div className="flex flex-row items-center gap-2 mb-4">
-                <div className="min-w-8 min-h-8 w-8 h-8 sm:w-10 sm:h-10 bg-[#273C97] text-white rounded-lg flex items-center justify-center">
-                  <ChartNoAxesColumn className="w-4 h-4 sm:w-5 sm:h-5" />
+            return (
+              <div
+                key={index}
+                className="col-span-2 md:col-span-1 w-full  md:w-fit rounded-lg my-4">
+                <div className="flex flex-row items-center gap-2 mb-4">
+                  <div className="min-w-8 min-h-8 w-8 h-8 sm:w-10 sm:h-10 bg-[#273C97] text-white rounded-lg flex items-center justify-center">
+                    <ChartNoAxesColumn className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <h2 className="text-primary-500 font-semibold text-sm sm:text-md md:text-lg">
+                    Status Monitoring {setting.nama_gedung}
+                  </h2>
                 </div>
-                <h2 className="text-primary-500 font-semibold text-sm sm:text-md md:text-lg">
-                  Status Monitoring {setting.nama_gedung}
-                </h2>
+                {/* Section 1 - Card */}
+                <div className="grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-1 tablet:grid-cols-1 w-full gap-3">
+                  <CardStatistic
+                    icon={<WaterIcon />}
+                    heading="Water Monitoring"
+                    className="sm:w-full"
+                    value={
+                      <div
+                        className={`px-3 py-1 my-1 rounded-full text-xs font-medium ${
+                          monitorAirStatus
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-gray-100"
+                        }`}>
+                        {monitorAirStatus ? "Online" : "Offline"}
+                      </div>
+                    }
+                  />
+                  <CardStatistic
+                    icon={<ElectricalIcon />}
+                    heading="Electric Monitoring"
+                    className="sm:w-full"
+                    value={
+                      <div
+                        className={`px-3 py-1 my-1 rounded-full text-xs font-medium ${
+                          monitorListrikStatus
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-gray-100"
+                        }`}>
+                        {monitorListrikStatus ? "Online" : "Offline"}
+                      </div>
+                    }
+                  />
+                </div>
               </div>
-              {/* Section 1 - Card */}
-              <div className="grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-1 gap-3">
-                <CardStatistic
-                  icon={<WaterIcon />}
-                  heading="Water Monitoring"
-                  value={
-                    <div
-                      className={`px-3 py-1 my-1 rounded-full text-xs font-medium ${
-                        monitorAirStatus
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-gray-100"
-                      }`}>
-                      {monitorAirStatus ? "Online" : "Offline"}
-                    </div>
-                  }
-                />
-                <CardStatistic
-                  icon={<ElectricalIcon />}
-                  heading="Electric Monitoring"
-                  value={
-                    <div
-                      className={`px-3 py-1 my-1 rounded-full text-xs font-medium ${
-                        monitorListrikStatus
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-gray-100"
-                      }`}>
-                      {monitorListrikStatus ? "Online" : "Offline"}
-                    </div>
-                  }
-                />
-              </div>
-            </section>
-          );
-        })}
+            );
+          })}
+        </section>
       </div>
       <span className="text-gray-500 text-sm">
         Catatan: refresh status monitoring secara berkala.

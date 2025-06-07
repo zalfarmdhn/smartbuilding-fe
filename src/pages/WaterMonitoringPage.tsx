@@ -49,9 +49,9 @@ export default function WaterMonitoringPage() {
           Statistik Toren Air
         </h2>
         <div className="space-y-3 sm:space-y-4">
-          {waterData?.KapasitasToren?.map((toren, index) => (
+          {waterData?.KapasitasToren?.map((toren) => (
             <CardToren
-              key={index}
+              key={toren.nama}
               torenTitle={toren.nama}
               torenPercentage={toren.kapasitas}
               torenCapacity={toren.kapasitas_toren}
