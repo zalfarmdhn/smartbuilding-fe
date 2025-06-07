@@ -7,7 +7,7 @@ type DataType = 'biaya' | 'penggunaan';
 
 export default function ElectricityGraph() {
   const [dataType, setDataType] = useState<DataType>("biaya"); // Default to biaya
-  const [activeTab, setActiveTab] = useState<number>(2); // Default to monthly view
+  const [activeTab, setActiveTab] = useState<number>(0); // Daily as default
 
   const electricalChart = useElectricMonitoring((state) => state.electricChart);
   // const error = useElectricMonitoring((state) => state.error);

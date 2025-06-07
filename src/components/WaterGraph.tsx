@@ -4,7 +4,7 @@ import ButtonGroupComponent from "./ButtonGroup";
 import { useWaterMonitoring } from "../states/water-monitoring";
 
 export default function WaterGraph() {
-  const [activeTab, setActiveTab] = useState<number>(1); // Default to weekly view since we have data for it
+  const [activeTab, setActiveTab] = useState<number>(0); // Default to daily
   // const error = useWaterMonitoring((state) => state.error);
   const waterChart = useWaterMonitoring((state) => state.waterChart);
   // Determine which data and period to use based on active tab

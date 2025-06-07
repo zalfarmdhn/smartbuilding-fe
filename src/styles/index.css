@@ -15,16 +15,6 @@
   animation: l1 1s infinite linear;
 }
 
-@theme {
-  --breakpoints: {
-    sm: 640px,
-    md: 1248px,
-    lg: 1300px,
-    xl: 1280px,
-    '2xl': 1536px,
-  }
-}
-
 
 @keyframes l1 {
   0%  {background-size: 20% 100%,20% 100%,20% 100%}
