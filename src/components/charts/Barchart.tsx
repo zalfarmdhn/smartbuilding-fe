@@ -18,6 +18,7 @@ import {
   HARI_CONSTANT,
   MINGGU_CONSTANT,
 } from "../../utils/dateConstants";
+import { DISTINCT_HSL_COLORS } from "../../utils/hslColors";
 
 ChartJS.register(
   CategoryScale,
@@ -73,6 +74,18 @@ export default function Barchart({
     };
   }, []);
 
+  // Function to generate a consistent color based on item name
+  const getItemColorByName = (itemName: string) => {
+    let hash = 0;
+    for (let i = 0; i < itemName.length; i++) {
+      const char = itemName.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash |= 0; // Convert to 32bit integer
+    }
+    const index = Math.abs(hash) % DISTINCT_HSL_COLORS.length;
+    return DISTINCT_HSL_COLORS[index];
+  };
+
   // Process the data for the chart
   const { labels, datasets } = useMemo(() => {
     // Debug: Log the data being processed
@@ -100,17 +113,15 @@ export default function Barchart({
       let sortedPeriods;
       if (chartType === "monthly") {
         sortedPeriods = allPeriods.sort((a, b) => {
-          return BULAN_CONSTANT.indexOf(a) - BULAN_CONSTANT.indexOf(b);
+          return MINGGU_CONSTANT.indexOf(a) - MINGGU_CONSTANT.indexOf(b);
         });
       } else if (chartType === "weekly") {
         sortedPeriods = allPeriods.sort((a, b) => {
-          return MINGGU_CONSTANT.indexOf(a) - MINGGU_CONSTANT.indexOf(b);
+          return HARI_CONSTANT.indexOf(a) - HARI_CONSTANT.indexOf(b);
         });
       } else {
         // daily
-        sortedPeriods = allPeriods.sort((a, b) => {
-          return HARI_CONSTANT.indexOf(a) - HARI_CONSTANT.indexOf(b);
-        });
+        sortedPeriods = [...allPeriods];
       }
 
       console.log("Sorted periods:", sortedPeriods);
@@ -134,9 +145,11 @@ export default function Barchart({
       console.log("All unique items:", Array.from(allItems));
 
       // Create datasets for each item
-      const itemDatasets = Array.from(allItems).map((itemName, index) => {
-        // Generate a color based on the index
-        const hue = (index * 137) % 360; // Use golden ratio to spread colors
+      const itemDatasets = Array.from(allItems).map((itemName) => {
+        // Select a color from the predefined list based on the item name
+        const colorParams = getItemColorByName(itemName);
+        const borderColor = `hsl(${colorParams.h}, ${colorParams.s}%, ${colorParams.l}%)`;
+        const backgroundColor = `hsla(${colorParams.h}, ${colorParams.s}%, ${colorParams.l}%, 0.5)`;
 
         // Get data for this item across all periods
         const data = sortedPeriods.map((period) => {
@@ -163,8 +176,8 @@ export default function Barchart({
         return {
           label: itemName,
           data,
-          borderColor: `hsl(${hue}, 70%, 50%)`,
-          backgroundColor: `hsla(${hue}, 70%, 50%, 0.5)`,
+          borderColor: borderColor,
+          backgroundColor: backgroundColor,
           tension: 0.3, // Add some curve to the lines
         };
       });
@@ -180,16 +193,20 @@ export default function Barchart({
       // Get all available years
       const allYears = Object.keys(periodData);
 
+      const sortedPeriods = allYears.sort((a, b) => {
+        return BULAN_CONSTANT.indexOf(a) - BULAN_CONSTANT.indexOf(b);
+      });
+
       console.log("Available years:", allYears);
 
-      if (allYears.length === 0) {
+      if (sortedPeriods.length === 0) {
         console.log("No years found in data");
         return { labels: [], datasets: [] };
       }
 
       // Get all unique items across all years
       const allItems = new Set<string>();
-      allYears.forEach((year) => {
+      sortedPeriods.forEach((year) => {
         const yearItems = periodData[year] || [];
         console.log(`Items for year ${year}:`, yearItems);
 
@@ -206,9 +223,11 @@ export default function Barchart({
       console.log("All unique items for yearly view:", Array.from(allItems));
 
       // Create datasets for each item
-      const itemDatasets = Array.from(allItems).map((itemName, index) => {
-        // Generate a color based on the index
-        const hue = (index * 137) % 360; // Use golden ratio to spread colors
+      const itemDatasets = Array.from(allItems).map((itemName) => {
+        // Select a color from the predefined list based on the item name
+        const colorParams = getItemColorByName(itemName);
+        const borderColor = `hsl(${colorParams.h}, ${colorParams.s}%, ${colorParams.l}%)`;
+        const backgroundColor = `hsla(${colorParams.h}, ${colorParams.s}%, ${colorParams.l}%, 0.5)`;
 
         // Get data for this item across all years
         const data = allYears.map((year) => {
@@ -235,8 +254,8 @@ export default function Barchart({
         return {
           label: itemName,
           data,
-          borderColor: `hsl(${hue}, 70%, 50%)`,
-          backgroundColor: `hsla(${hue}, 70%, 50%, 0.5)`,
+          borderColor: borderColor,
+          backgroundColor: backgroundColor,
           tension: 0.3, // Add some curve to the lines
         };
       });

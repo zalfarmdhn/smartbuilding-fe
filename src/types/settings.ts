@@ -1,3 +1,8 @@
+type MonitoringStatus = [
+  { "monitoring air": "unknown" | "offline" | "online" },
+  { "monitoring listrik": "unknown" | "offline" | "online" }
+];
+
 export interface ISettings {
   id: number;
   nama_gedung: string;
@@ -6,6 +11,7 @@ export interface ISettings {
   haos_url: string;
   haos_token: string;
   scheduler: number;
+  monitoring_status: MonitoringStatus;
 }
 
 export interface IAddSettings {

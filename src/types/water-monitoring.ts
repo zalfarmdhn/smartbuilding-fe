@@ -32,5 +32,6 @@ export interface WaterMonitoringState {
   };
   error: string;
   loading: boolean;
+  isMonitoringOnline: () => boolean;
   getWaterData: () => Promise<void>;
 }

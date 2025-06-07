@@ -10,10 +10,6 @@ import { useUsers } from "../states/users";
 import { useAuth as useAuthHook } from "../hooks/useAuth";
 import { Spinner } from "flowbite-react";
 
-/**
- * TODO :
- * - Handle error jika API dari server tidak merespon
- */
 export default function MainLayout() {
   const [loading, setLoading] = useState<boolean>(true);
   // validasi apakah user sudah login atau belum
@@ -28,27 +24,27 @@ export default function MainLayout() {
   const getMe = useSettings((state) => state.getCurrentUser);
   const scheduler = useSettings((state) => state.scheduler);
 
-  // Render pertama untuk inital data pada mount
+  // Render sekali untuk inital data pada mount
   useEffect(() => {
     const initialFetch = async () => {
-      await Promise.all([
-        getWaterData(),
-        getElectricData(),
-        getSettings(),
-        getUsers(),
-        getMe(),
-      ]);
+      await Promise.all([getSettings(), getUsers(), getMe()]);
       setLoading(false);
     };
 
     initialFetch();
-  }, [getSettings, getWaterData, getUsers, getElectricData, getMe]);
+  }, [getSettings, getUsers, getMe]);
 
   // useEffect kedua untuk fetch data setiap interval sekian detik
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.all([getWaterData(), getElectricData()]);
+      try {
+        await Promise.all([getWaterData(), getElectricData()]);
+      } catch (error) {
+        console.error("Failed to fetch monitoring data:", error);
+      }
     };
+
+    fetchData(); // fetch once immediately
 
     const interval = setInterval(fetchData, formatSeconds(scheduler || 30000));
     return () => clearInterval(interval);
