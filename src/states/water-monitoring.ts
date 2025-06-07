@@ -34,16 +34,16 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
       const response = await waterMonitoring.getMonitoringAir(idBangunan);
 
       // Simpan data ke localStorage setiap kali berhasil fetch
-      console.log("Data monitoring air berhasil di-fetch dan disimpan");
+      // console.log("Data monitoring air berhasil di-fetch dan disimpan");
       setDataMonitoring(JSON.stringify(response));
 
       // Cek status monitoring untuk menentukan apakah menggunakan data real-time atau backup
       const isOnline = useWaterMonitoring.getState().isMonitoringOnline();
 
       if (!isOnline) {
-        console.log(
-          "Status monitoring air offline, menggunakan data backup dari localStorage"
-        );
+        // console.log(
+        //   "Status monitoring air offline, menggunakan data backup dari localStorage"
+        // );
         throw new Error(
           "Data monitoring air offline, menggunakan data dari backup."
         );
@@ -98,7 +98,7 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
         });
       }
       set({ loading: false });
-      console.log("debug setelah backupData");
+      // console.log("debug setelah backupData");
       console.error(`ini error air`, error);
     }
   },

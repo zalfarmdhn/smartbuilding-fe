@@ -8,7 +8,7 @@ import { useSettings } from "../states/settings";
 import { Toaster } from "react-hot-toast";
 import { useUsers } from "../states/users";
 import { useAuth as useAuthHook } from "../hooks/useAuth";
-import { Spinner } from "flowbite-react";
+import LoadingLayout from "./LoadingLayout";
 
 export default function MainLayout() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -52,19 +52,7 @@ export default function MainLayout() {
 
   // Tampilkan loading ketika auth sedang dicek atau data awal sedang diambil
   if (authLoading || loading || !isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg border flex items-center space-x-3">
-          <Spinner
-            size="sm"
-            aria-label="Loading spinner"
-            className="me-3"
-            light
-          />
-          <span className="text-gray-700 font-medium">Memuat halaman</span>
-        </div>
-      </div>
-    );
+    return <LoadingLayout />;
   }
 
   return (

@@ -27,7 +27,7 @@ export default function SidebarComponent() {
   const setIdBangunanState = useSettings((state) => state.setIdBangunanState);
   const settings = useSettings((state) => state.settings) ?? getDataSetting();
   const userData = useSettings((state) => state.dataUser);
-  console.log(`ini data user`, userData);
+  // console.log(`ini data user`, userData);
 
   const customTheme: CustomFlowbiteTheme["sidebar"] = {
     root: {
@@ -45,6 +45,7 @@ export default function SidebarComponent() {
 
   const buildings = [
     {
+      id: null,
       name: "Dashboard",
       items: [
         {
@@ -83,7 +84,7 @@ export default function SidebarComponent() {
         {
           name: "Pengelola Gedung",
           icon: <BuildingIcon className="w-5 h-5" />,
-          href: "/dashboard/pengelola_gedung",
+          href: "/dashboard/pengelola-gedung",
         },
         {
           name: "Settings",
@@ -124,11 +125,12 @@ export default function SidebarComponent() {
                 <span className="sr-only">Open sidebar</span>
                 <HamburgerIcon />
               </button>
-              <Link to="/" className="flex ms-1 md:me-24">
+              <Link rel="preload" to="/" className="flex ms-1 md:me-24">
                 <img
                   src="/logo.svg"
                   alt="Smartbuilding"
                   className="mx-auto h-8 w-auto"
+                  loading="lazy"
                 />
                 <span className="self-center ml-2 text-[#273C97] text-xl font-semibold sm:text-md whitespace-nowrap dark:text-white">
                   Smartbuilding
@@ -144,9 +146,12 @@ export default function SidebarComponent() {
                     onClick={() => setUserPopup(!userPopup)}>
                     <span className="sr-only">Open user menu</span>
                     <img
-                      className="w-8 h-8 rounded-full"
+                      width={32}
+                      height={32}
+                      className="rounded-full"
                       src={`https://ui-avatars.com/api/?name=${userData?.data.username}&background=random`}
                       alt="user photo"
+                      loading="lazy"
                     />
                   </button>
                 </div>

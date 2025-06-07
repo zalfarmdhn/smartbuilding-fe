@@ -140,11 +140,11 @@ export default function Linechart({ periodData, chartType }: ChartProps) {
         return BULAN_CONSTANT.indexOf(a) - BULAN_CONSTANT.indexOf(b);
       });
 
-      console.log("Available years for yearly chart:", allYears);
-      console.log("Period data for yearly chart:", periodData);
+      // console.log("Available years for yearly chart:", allYears);
+      // console.log("Period data for yearly chart:", periodData);
 
       if (sortedPeriods.length === 0) {
-        console.log("No years found in data");
+        // console.log("No years found in data");
         return { labels: [], datasets: [] };
       }
 
@@ -152,7 +152,7 @@ export default function Linechart({ periodData, chartType }: ChartProps) {
       const allPipes = new Set<string>();
       sortedPeriods.forEach((year) => {
         const yearItems = periodData[year] || [];
-        console.log(`Items for year ${year}:`, yearItems);
+        // console.log(`Items for year ${year}:`, yearItems);
 
         yearItems.forEach((item: WaterDataPoint) => {
           allPipes.add(item.pipa);
@@ -171,7 +171,7 @@ export default function Linechart({ periodData, chartType }: ChartProps) {
           const yearItems = periodData[year] || [];
           const pipeData = yearItems.find((item) => item.pipa === pipeName);
           const value = pipeData ? returnNumber(pipeData.volume) : 0;
-          console.log(`Value for ${pipeName} in ${year}:`, value);
+          // console.log(`Value for ${pipeName} in ${year}:`, value);
           return value;
         });
 
@@ -184,7 +184,7 @@ export default function Linechart({ periodData, chartType }: ChartProps) {
         };
       });
 
-      console.log("Generated datasets for yearly view:", pipeDatasets);
+      // console.log("Generated datasets for yearly view:", pipeDatasets);
 
       return {
         labels: allYears,
@@ -227,13 +227,15 @@ export default function Linechart({ periodData, chartType }: ChartProps) {
           bodyFont: {
             size: chartWidth < 400 ? 11 : 13,
           },
-          title: function (context: TooltipItem<"line">[]) {
-            return context[0].label;
-          },
-          label: function (context: TooltipItem<"line">) {
-            const label = context.dataset.label || "";
-            const value = context.parsed.y;
-            return `${label}: ${value} L`;
+          callbacks: {
+            title: function (context: TooltipItem<"line">[]) {
+              return context[0].label;
+            },
+            label: function (context: TooltipItem<"line">) {
+              const label = context.dataset.label || "";
+              const value = context.parsed.y;
+              return `${label}: ${value} L`;
+            },
           },
         },
       },

@@ -3,17 +3,33 @@
  * @param value - The number to format
  * @returns Formatted string with commas
  */
-export const formatNumber = (value: number | string): string => {
-  if (typeof value === 'string') {
+export const formatDecimalNumber = (value: number | string): string => {
+  if (typeof value === "string") {
     value = parseFloat(value);
   }
-  
+
   if (isNaN(value)) {
-    return '0';
+    return "0";
   }
 
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 
+export const returnDecimalNumber = (value: number | string): number => {
+  if (typeof value === "string") {
+    // Extract only the numeric part (including decimal) from the string
+    const numericMatch = value.match(/\d+\.?\d*/);
+    if (numericMatch) {
+      return parseFloat(numericMatch[0]);
+    }
+    return 0;
+  }
+
+  if (isNaN(value)) {
+    return 0;
+  }
+
+  return value;
 };
 
 export const returnNumber = (value: number | string): string => {

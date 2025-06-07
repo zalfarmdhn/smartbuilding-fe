@@ -94,16 +94,16 @@ export const useElectricMonitoring = create<ElectricMonitorState>()((set) => ({
       );
 
       // Simpan data ke localStorage setiap kali berhasil fetch
-      console.log("Data monitoring listrik berhasil di-fetch dan disimpan");
+      // console.log("Data monitoring listrik berhasil di-fetch dan disimpan");
       setDataListrik(JSON.stringify(response));
 
       // Cek status monitoring untuk menentukan apakah menggunakan data real-time atau backup
       const isOnline = useElectricMonitoring.getState().isMonitoringOnline();
 
       if (!isOnline) {
-        console.log(
-          "Status monitoring listrik offline, menggunakan data backup dari localStorage"
-        );
+        // console.log(
+        //   "Status monitoring listrik offline, menggunakan data backup dari localStorage"
+        // );
         throw new Error(
           "Data monitoring listrik offline, menggunakan data dari backup."
         );

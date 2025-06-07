@@ -21,8 +21,8 @@ export default function WaterMonitoringPage() {
     document.title = "Smartbuilding | Monitoring Air";
   }, []);
 
-  console.log(`ini air data`, waterData);
-  console.log(`ini loading`, loading);
+  // console.log(`ini air data`, waterData);
+  // console.log(`ini loading`, loading);
 
   if (loading) {
     return (

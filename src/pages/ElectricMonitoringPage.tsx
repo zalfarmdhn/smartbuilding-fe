@@ -20,7 +20,7 @@ export default function ElectricMonitoringPage() {
     document.title = "Smartbuilding | Monitoring Listrik";
   }, []);
 
-  console.log(`ini listrik data`, electricData);
+  // console.log(`ini listrik data`, electricData);
 
   if (loading) {
     return (
@@ -49,9 +49,10 @@ export default function ElectricMonitoringPage() {
       <div className="flex flex-row gap-4 md:gap-6">
         <div className="w-full sm:w-[280px] md:w-[298px] h-full bg-primary-400 p-3 md:p-4 rounded-lg shadow-md flex">
           <div className="flex flex-col gap-2 items-center justify-center text-white w-full">
+            {" "}
             <ElectricalIcon
-              width={`40`}
-              height={`40`}
+              width={40}
+              height={40}
               className="md:w-[60px] md:h-[60px]"
             />
             <h1 className="text-xl md:text-2xl font-semibold">Total Watt</h1>

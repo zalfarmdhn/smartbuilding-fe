@@ -1,14 +1,18 @@
 import { createBrowserRouter } from "react-router";
-import LoginPage from "../pages/LoginPage";
-import MainLayout from "../layout/MainLayout";
-import WaterMonitoringPage from "../pages/WaterMonitoringPage";
-import ElectricMonitoringPage from "../pages/ElectricMonitoringPage";
-import SettingsPage from "../pages/SettingsPage";
-import DashboardPage from "../pages/DashboardPage";
-import UserPage from "../pages/UserPage";
-import PengelolaGedungPage from "../pages/PengelolaGedungPage";
-import ChangePasswordPage from "../pages/ChangePasswordPage";
-import NotFoundPage from "../pages/404";
+import { lazy } from "react";
+
+const LoginPage = lazy(() => import("../pages/LoginPage"));
+const MainLayout = lazy(() => import("../layout/MainLayout"));
+const WaterMonitoringPage = lazy(() => import("../pages/WaterMonitoringPage"));
+const ElectricMonitoringPage = lazy(
+  () => import("../pages/ElectricMonitoringPage")
+);
+const SettingsPage = lazy(() => import("../pages/SettingsPage"));
+const DashboardPage = lazy(() => import("../pages/DashboardPage"));
+const UserPage = lazy(() => import("../pages/UserPage"));
+const PengelolaGedungPage = lazy(() => import("../pages/PengelolaGedungPage"));
+const ChangePasswordPage = lazy(() => import("../pages/ChangePasswordPage"));
+const NotFoundPage = lazy(() => import("../pages/404"));
 
 const routes = createBrowserRouter([
   {
@@ -36,7 +40,7 @@ const routes = createBrowserRouter([
         element: <UserPage />,
       },
       {
-        path: "pengelola_gedung",
+        path: "pengelola-gedung",
         element: <PengelolaGedungPage />,
       },
       {

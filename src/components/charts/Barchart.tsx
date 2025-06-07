@@ -12,7 +12,7 @@ import {
   TooltipItem,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { returnNumber } from "../../utils/formatNumber";
+import { returnDecimalNumber } from "../../utils/formatNumber";
 import {
   BULAN_CONSTANT,
   HARI_CONSTANT,
@@ -77,9 +77,9 @@ export default function Barchart({
   // Process the data for the chart
   const { labels, datasets } = useMemo(() => {
     // Debug: Log the data being processed
-    console.log("ChartType:", chartType);
-    console.log("PeriodData:", periodData);
-    console.log("DataType:", dataType);
+    // console.log("ChartType:", chartType);
+    // console.log("PeriodData:", periodData);
+    // console.log("DataType:", dataType);
 
     // Handle different chart types
     if (
@@ -90,10 +90,10 @@ export default function Barchart({
       // Get all available time periods from the data
       const allPeriods = Object.keys(periodData);
 
-      console.log("Available periods:", allPeriods);
+      // console.log("Available periods:", allPeriods);
 
       if (allPeriods.length === 0) {
-        console.log("No periods found in data");
+        // console.log("No periods found in data");
         return { labels: [], datasets: [] };
       }
 
@@ -117,13 +117,13 @@ export default function Barchart({
         sortedPeriods = [...allPeriods];
       }
 
-      console.log("Sorted periods:", sortedPeriods);
+      // console.log("Sorted periods:", sortedPeriods);
 
       // Get all unique items across all periods
       const allItems = new Set<string>();
       sortedPeriods.forEach((period) => {
         const periodItems = periodData[period] || [];
-        console.log(`Items for period ${period}:`, periodItems);
+        // console.log(`Items for period ${period}:`, periodItems);
 
         periodItems.forEach((item: ElectricDataPoint) => {
           // Use the appropriate field based on data type
@@ -135,7 +135,7 @@ export default function Barchart({
         });
       });
 
-      console.log("All unique items:", Array.from(allItems));
+      // console.log("All unique items:", Array.from(allItems));
 
       // Create datasets for each item
       const itemDatasets = Array.from(allItems).map((itemName) => {
@@ -151,17 +151,21 @@ export default function Barchart({
 
           if (dataType === "biaya") {
             itemData = periodItems.find((item) => item.Nama === itemName);
-            const value = itemData ? returnNumber(itemData.Biaya || "0") : 0;
-            console.log(`Value for ${itemName} in ${period} (biaya):`, value);
+            const value = itemData
+              ? returnDecimalNumber(itemData.Biaya || "0")
+              : 0;
+            // console.log(`Value for ${itemName} in ${period} (biaya):`, value);
             return value;
           } else {
             // penggunaan
             itemData = periodItems.find((item) => item.nama === itemName);
-            const value = itemData ? returnNumber(itemData.Value || "0") : 0;
-            console.log(
-              `Value for ${itemName} in ${period} (penggunaan):`,
-              value
-            );
+            const value = itemData
+              ? returnDecimalNumber(itemData.Value || "0")
+              : 0;
+            // console.log(
+            //   `Value for ${itemName} in ${period} (penggunaan):`,
+            //   value
+            // );
             return value;
           }
         });
@@ -174,8 +178,6 @@ export default function Barchart({
           tension: 0.3, // Add some curve to the lines
         };
       });
-
-      console.log("Generated datasets:", itemDatasets);
 
       return {
         labels: sortedPeriods,
@@ -190,10 +192,10 @@ export default function Barchart({
         return BULAN_CONSTANT.indexOf(a) - BULAN_CONSTANT.indexOf(b);
       });
 
-      console.log("Available years:", allYears);
+      // console.log("Available years:", allYears);
 
       if (sortedPeriods.length === 0) {
-        console.log("No years found in data");
+        // console.log("No years found in data");
         return { labels: [], datasets: [] };
       }
 
@@ -201,7 +203,7 @@ export default function Barchart({
       const allItems = new Set<string>();
       sortedPeriods.forEach((year) => {
         const yearItems = periodData[year] || [];
-        console.log(`Items for year ${year}:`, yearItems);
+        // console.log(`Items for year ${year}:`, yearItems);
 
         yearItems.forEach((item: ElectricDataPoint) => {
           // Use the appropriate field based on data type
@@ -213,7 +215,7 @@ export default function Barchart({
         });
       });
 
-      console.log("All unique items for yearly view:", Array.from(allItems));
+      // console.log("All unique items for yearly view:", Array.from(allItems));
 
       // Create datasets for each item
       const itemDatasets = Array.from(allItems).map((itemName) => {
@@ -229,17 +231,21 @@ export default function Barchart({
 
           if (dataType === "biaya") {
             itemData = yearItems.find((item) => item.Nama === itemName);
-            const value = itemData ? returnNumber(itemData.Biaya || "0") : 0;
-            console.log(`Value for ${itemName} in ${year} (biaya):`, value);
+            const value = itemData
+              ? returnDecimalNumber(itemData.Biaya || "0")
+              : 0;
+            // console.log(`Value for ${itemName} in ${year} (biaya):`, value);
             return value;
           } else {
             // penggunaan
             itemData = yearItems.find((item) => item.nama === itemName);
-            const value = itemData ? returnNumber(itemData.Value || "0") : 0;
-            console.log(
-              `Value for ${itemName} in ${year} (penggunaan):`,
-              value
-            );
+            const value = itemData
+              ? returnDecimalNumber(itemData.Value || "0")
+              : 0;
+            // console.log(
+            //   `Value for ${itemName} in ${year} (penggunaan):`,
+            //   value
+            // );
             return value;
           }
         });
@@ -253,7 +259,7 @@ export default function Barchart({
         };
       });
 
-      console.log("Generated datasets for yearly view:", itemDatasets);
+      // console.log("Generated datasets for yearly view:", itemDatasets);
 
       return {
         labels: allYears,
@@ -299,17 +305,19 @@ export default function Barchart({
           bodyFont: {
             size: chartWidth < 400 ? 11 : 13,
           },
-          title: function (context: TooltipItem<"bar">[]) {
-            return context[0].label;
-          },
-          label: function (context: TooltipItem<"bar">) {
-            const label = context.dataset.label || "";
-            const value = context.parsed.y;
-            if (dataType === "biaya") {
-              return `${label}: Rp ${value.toLocaleString()}`;
-            } else {
-              return `${label}: ${value} W`;
-            }
+          callbacks: {
+            title: function (context: TooltipItem<"bar">[]) {
+              return context[0].label;
+            },
+            label: function (context: TooltipItem<"bar">) {
+              const label = context.dataset.label || "";
+              const value = context.parsed.y;
+              if (dataType === "biaya") {
+                return `${label}: Rp. ${value.toLocaleString()}`;
+              } else {
+                return `${label}: ${value.toLocaleString()} kWh`;
+              }
+            },
           },
         },
       },
@@ -334,13 +342,13 @@ export default function Barchart({
               if (dataType === "biaya") {
                 return `Rp ${numValue.toLocaleString()}`;
               } else {
-                return `${numValue} W`;
+                return `${numValue} kWh`;
               }
             },
           },
           title: {
             display: true,
-            text: dataType === "biaya" ? "Biaya (Rp)" : "Daya (Watt)",
+            text: dataType === "biaya" ? "Biaya (Rp)" : "Daya (Kilowatt)",
             font: {
               size: chartWidth < 400 ? 10 : 12,
             },

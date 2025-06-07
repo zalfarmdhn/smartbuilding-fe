@@ -36,7 +36,7 @@ export default function TableComponent(): JSX.Element {
     null
   );
 
-  console.log(`modal yang terbuka`, openModal);
+  // console.log(`modal yang terbuka`, openModal);
 
   const settings = useSettings((state) => state.settings) ?? [];
   const loading = useSettings((state) => state.loading);
@@ -66,7 +66,7 @@ export default function TableComponent(): JSX.Element {
     );
   }
 
-  console.log(`selected setting`, selectedSetting);
+  // console.log(`selected setting`, selectedSetting);
 
   return (
     <>
@@ -96,7 +96,7 @@ export default function TableComponent(): JSX.Element {
           </thead>
           <tbody>
             {settings instanceof Array ? (
-              settings.map((setting: TableSettings, index: number) => (
+              settings.map((setting, index: number) => (
                 <tr
                   key={setting.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
@@ -113,7 +113,9 @@ export default function TableComponent(): JSX.Element {
                     <Button
                       color="blue"
                       size="xs"
-                      onClick={() => handleEdit(setting)}
+                      onClick={() =>
+                        handleEdit(setting as unknown as TableSettings)
+                      }
                       className="transition-colors duration-200">
                       Edit
                     </Button>
@@ -121,7 +123,9 @@ export default function TableComponent(): JSX.Element {
                       <Button
                         color="red"
                         size="xs"
-                        onClick={() => handleDelete(setting)}
+                        onClick={() =>
+                          handleDelete(setting as unknown as TableSettings)
+                        }
                         className="transition-colors duration-200 bg-red-100 text-white">
                         Delete
                       </Button>

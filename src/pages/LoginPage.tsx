@@ -57,7 +57,9 @@ export default function LoginPage() {
         <img
           src="/logo.svg"
           alt="Smartbuilding"
-          className="mx-auto h-12 w-auto"
+          loading="lazy"
+          height={8}
+          className="mx-auto w-auto"
         />
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
           Login ke Smartbuilding

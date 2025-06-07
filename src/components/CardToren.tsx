@@ -1,6 +1,6 @@
 import { getSpecificDataToren } from "../utils/backupData";
 import { formatDate } from "../utils/formatDate";
-import { formatNumber } from "../utils/formatNumber";
+import { formatDecimalNumber } from "../utils/formatNumber";
 import CardStatistic from "./CardStatistic";
 import ClockIcon from "./icons/clock-icon";
 import IndikatorAirIcon from "./icons/indicator-air-icon";
@@ -80,7 +80,7 @@ export const CardToren = ({
             <CardStatistic
               icon={<WaterTankIcon />}
               heading="Kapasitas Toren"
-              value={`${formatNumber(
+              value={`${formatDecimalNumber(
                 torenCapacity ?? getSpecificDataToren("KapasitasToren")
               )} L`}
               className="flex-1"
@@ -99,7 +99,7 @@ export const CardToren = ({
             <CardStatistic
               icon={<VolumeSensorIcon />}
               heading="Volume Sensor"
-              value={`${formatNumber(
+              value={`${formatDecimalNumber(
                 sensorVolume ?? getSpecificDataToren("VolumeSensor")
               )} L`}
               className="flex-1"
