@@ -30,8 +30,8 @@ export const useAuthState = create<AuthState>()((set) => ({
       }
       setIdBangunan(String(settingBangunan[0].id));
       setDataSetting(JSON.stringify(settingBangunan));
-      // window.location.replace("/");
       set({ loading: false });
+      window.location.replace("/dashboard");
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

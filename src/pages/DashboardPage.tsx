@@ -47,7 +47,7 @@ export default function DashboardPage() {
             </h2>
           </div>
           {/* Section 1 - Card */}
-          <div className="grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-1 gap-3 w-full md:w-fit">
+          <div className="grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-2 gap-3 w-full md:w-fit">
             <CardStatistic
               className="w-full"
               icon={<BuildingIcon />}
@@ -130,9 +130,6 @@ export default function DashboardPage() {
           })}
         </section>
       </div>
-      <span className="text-gray-500 text-sm">
-        Catatan: refresh status monitoring secara berkala.
-      </span>
       <button
         className="flex flex-row items-center gap-x-2 mr-auto text-xs sm:text-sm text-white bg-primary-400 hover:bg-primary-500 md:px-2 md:py-1 px-4 py-2 rounded-md"
         disabled={loadingSettings}
@@ -142,6 +139,9 @@ export default function DashboardPage() {
         <RefreshCwIcon width={15} height={15} />
         {loadingSettings ? "Loading..." : "Refresh Status Monitoring"}
       </button>
+      <span className="text-gray-500 text-sm">
+        Catatan: refresh status monitoring secara berkala.
+      </span>
     </div>
   );
 }
