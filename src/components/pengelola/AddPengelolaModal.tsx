@@ -5,7 +5,7 @@ import { useUsers } from "../../states/users";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ISettings } from "../../services/settings";
+import { ISettings } from "../../types/settings";
 
 const addPengelolaSchema = z.object({
   id_user: z.number().min(1, "User harus dipilih"),

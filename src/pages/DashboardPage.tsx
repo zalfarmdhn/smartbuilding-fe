@@ -76,9 +76,10 @@ export default function DashboardPage() {
           {settings.map((setting: ISettings, index: number) => {
             // Cek apakah monitorAirStatus dan monitorListrikStatus offline atau online
             const monitorAirStatus =
-              setting.monitoring_status[0]["monitoring air"] === "online";
+              setting?.monitoring_status?.[0]?.["monitoring air"] === "online";
             const monitorListrikStatus =
-              setting.monitoring_status[1]["monitoring listrik"] === "online";
+              setting?.monitoring_status?.[1]?.["monitoring listrik"] ===
+              "online";
 
             return (
               <div

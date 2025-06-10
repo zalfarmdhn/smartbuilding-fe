@@ -7,7 +7,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { ISettings } from "../../services/settings";
+import { ISettings } from "../../types/settings";
 
 const editPengelolaSchema = z.object({
   id: z.number(),
@@ -23,10 +23,10 @@ interface EditPengelolaModalProps {
   pengelola: IPengelolaGedung;
 }
 
-export function EditPengelolaModal({ 
-  openModal, 
-  setOpenModal, 
-  pengelola 
+export function EditPengelolaModal({
+  openModal,
+  setOpenModal,
+  pengelola,
 }: EditPengelolaModalProps) {
   const {
     register,
@@ -50,7 +50,7 @@ export function EditPengelolaModal({
       // Find the user ID by matching username
       const user = users.find((u) => u.username === pengelola.username);
       setValue("id", pengelola.id);
-      setValue("id_user", user ? user.id : 0);
+      setValue("id_user", user?.id ?? 1);
       setValue("id_setting", pengelola.setting_id);
     }
   }, [pengelola, users, openModal, setValue]);
@@ -109,7 +109,9 @@ export function EditPengelolaModal({
                   ))}
               </select>
               {errors.id_user && (
-                <p className="text-red-500 text-sm mt-1">{errors.id_user.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.id_user.message}
+                </p>
               )}
               <p className="text-xs text-gray-500 mt-1">
                 User tidak dapat diubah saat edit
@@ -139,26 +141,26 @@ export function EditPengelolaModal({
                   ))}
               </select>
               {errors.id_setting && (
-                <p className="text-red-500 text-sm mt-1">{errors.id_setting.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.id_setting.message}
+                </p>
               )}
             </div>
 
             {/* Submit Buttons */}
             <div className="flex gap-3">
-              <Button 
-                type="button" 
-                color="gray" 
+              <Button
+                type="button"
+                color="gray"
                 className="flex-1"
                 onClick={handleClose}
-                disabled={isSubmitting}
-              >
+                disabled={isSubmitting}>
                 Batal
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="flex-1 bg-primary-400 hover:bg-primary-500"
-                disabled={isSubmitting}
-              >
+                disabled={isSubmitting}>
                 {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
               </Button>
             </div>

@@ -1,7 +1,7 @@
 import { Button, Spinner } from "flowbite-react";
 import { useState } from "react";
 import { useUsers } from "../states/users";
-import { IUser } from "../types/users";
+import { IUserWithID } from "../types/users";
 import { EditUserModal } from "./users/EditUserModal";
 import { DeleteUserModal } from "./users/DeleteUserModal";
 import { useSettings } from "../states/settings";
@@ -18,7 +18,7 @@ export default function UserTableComponent(): JSX.Element {
     deleteModal: false,
     addModal: false,
   });
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [selectedUser, setSelectedUser] = useState<IUserWithID | null>(null);
 
   const users = useUsers((state) => state.users);
   const loading = useUsers((state) => state.loading);
@@ -26,7 +26,7 @@ export default function UserTableComponent(): JSX.Element {
 
   const isAllowed = role === "admin" || role === "manajement";
 
-  const handleEdit = (user: IUser) => {
+  const handleEdit = (user: IUserWithID) => {
     setSelectedUser(user);
     setOpenModal((prev) => ({
       ...prev,
@@ -34,7 +34,7 @@ export default function UserTableComponent(): JSX.Element {
     }));
   };
 
-  const handleDelete = (user: IUser) => {
+  const handleDelete = (user: IUserWithID) => {
     setSelectedUser(user);
     setOpenModal((prev) => ({
       ...prev,
@@ -75,7 +75,7 @@ export default function UserTableComponent(): JSX.Element {
           </thead>
           <tbody>
             {users instanceof Array ? (
-              users.map((user: IUser, index: number) => (
+              users.map((user: IUserWithID, index: number) => (
                 <tr
                   key={user.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">

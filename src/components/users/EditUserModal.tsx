@@ -1,6 +1,6 @@
 import { Button, Modal, ModalBody, ModalHeader } from "flowbite-react";
 import { useUsers } from "../../states/users";
-import { IUser } from "../../types/users";
+import { IUserWithID } from "../../types/users";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ const editUserSchema = z.object({
   username: z.string().min(1, "Username harus diisi"),
   email: z.string().email("Format email tidak valid"),
   password: z.string().optional(),
-  role: z.enum(["admin", "pengelola", "manajement"], { 
+  role: z.enum(["admin", "pengelola", "manajement"], {
     invalid_type_error: "Role harus diisi",
     required_error: "Role harus diisi",
   }),
@@ -22,7 +22,7 @@ type EditUserFormData = z.infer<typeof editUserSchema>;
 interface EditUserModalProps {
   openModal: boolean;
   setOpenModal: (value: boolean) => void;
-  selectedUser: IUser;
+  selectedUser: IUserWithID;
 }
 
 export function EditUserModal({ 

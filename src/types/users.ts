@@ -3,11 +3,14 @@ interface IPengelolaGedung {
 }
 
 export interface IUser {
-  id?: number;
   username: string;
   email: string;
   role: string;
   password: string | undefined;
+}
+
+export interface IUserWithID extends IUser {
+  id: number;
 }
 
 export interface IUserPengelola extends IUser {

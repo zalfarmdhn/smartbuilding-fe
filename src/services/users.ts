@@ -1,8 +1,8 @@
 import init from ".";
 import { IResponse, IResponseData } from "../types/response";
-import { IUser, IUserPengelola } from "../types/users";
+import { IUserPengelola, IUserWithID } from "../types/users";
 
-export const getUsers = async (): Promise<IResponseData<IUser[]>> => {
+export const getUsers = async (): Promise<IResponseData<IUserWithID[]>> => {
   const response = await init.get("/users", {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -13,7 +13,7 @@ export const getUsers = async (): Promise<IResponseData<IUser[]>> => {
 
 export const getUserById = async (
   id: number
-): Promise<IResponseData<IUser>> => {
+): Promise<IResponseData<IUserWithID>> => {
   const response = await init.get(`/users/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -53,7 +53,7 @@ export const updateUser = async (
   email: string,
   password: string,
   role: string
-): Promise<IResponseData<IUser> | undefined> => {
+): Promise<IResponseData<IUserWithID> | undefined> => {
   const response = await init.put(
     `/users/${id}`,
     {

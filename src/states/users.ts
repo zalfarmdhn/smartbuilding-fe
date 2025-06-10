@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import userAPI from "../services/users";
-import { IUser } from "../types/users";
+import { IUserWithID } from "../types/users";
 import toast from "react-hot-toast";
 import axios from "axios";
 
 interface IUserState {
-  users: IUser[] | null;
+  users: IUserWithID[] | null;
   loading: boolean;
   error: string | null;
   getUsers: () => Promise<void>;
