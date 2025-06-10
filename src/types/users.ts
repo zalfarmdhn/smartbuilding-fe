@@ -1,14 +1,18 @@
+interface IPengelolaGedung {
+  setting_id: number;
+}
+
 export interface IUser {
-  id: number;
+  id?: number;
   username: string;
   email: string;
   role: string;
   password: string | undefined;
-  pengelola_gedung: Array<{
-    setting_id: number;
-  }>;
 }
 
+export interface IUserPengelola extends IUser {
+  pengelola_gedung: IPengelolaGedung[];
+}
 export interface IUserCreate {
   username: string;
   email: string;
@@ -17,16 +21,4 @@ export interface IUserCreate {
   pengelola_gedung: Array<{
     setting_id: number;
   }>;
-}
-
-export interface IUserResponse {
-  data: IUser;
-  message: string;
-  status: string;
-}
-
-export interface IUsersResponse {
-  data: IUser[];
-  message: string;
-  status: string;
 }

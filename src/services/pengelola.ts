@@ -5,9 +5,10 @@ import {
   IPengelolaGedung,
   IPengelolaGedungResponse,
 } from "../types/pengelola";
+import { IResponse, IResponseData } from "../types/response";
 
 export const getPengelolaGedung = async (): Promise<
-  IPengelolaGedung[] | undefined
+  IResponseData<IPengelolaGedung[]> | undefined
 > => {
   const response = await init.get("/pengelola_gedung", {
     headers: {
@@ -19,7 +20,7 @@ export const getPengelolaGedung = async (): Promise<
 
 export const postPengelolaGedung = async (
   pengelola_gedung: IPengelolaBody
-): Promise<IPengelolaGedungResponse | undefined> => {
+): Promise<IResponseData<IPengelolaGedungResponse> | undefined> => {
   const response = await init.post(
     "/pengelola_gedung",
     {
@@ -41,12 +42,11 @@ export const postPengelolaGedung = async (
 export const putPengelolaGedung = async (
   id: number,
   pengelola_gedung: IPengelolaBody
-): Promise<IPengelolaGedungResponse | undefined> => {
+): Promise<IResponseData<IPengelolaGedungResponse> | undefined> => {
   const response = await init.put(
     `/pengelola_gedung/${id}`,
     {
-      id_user: pengelola_gedung.id_user,
-      id_setting: pengelola_gedung.id_setting,
+      pengelola_gedung,
     },
     {
       headers: {
@@ -60,7 +60,7 @@ export const putPengelolaGedung = async (
   return response.data;
 };
 
-export const deletePengelolaGedung = async (id: number): Promise<void> => {
+export const deletePengelolaGedung = async (id: number): Promise<IResponse> => {
   const response = await init.delete(`/pengelola_gedung/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,

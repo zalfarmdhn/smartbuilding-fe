@@ -29,7 +29,7 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
       const response = await pengelolaAPI.getPengelolaGedung();
       if (response) {
         set({
-          pengelolaList: response,
+          pengelolaList: response.data,
           loading: false,
         });
       }
@@ -44,12 +44,16 @@ export const usePengelola = create<IPengelolaState>((set, get) => ({
     try {
       set({ loading: true, error: null });
       const response = await pengelolaAPI.postPengelolaGedung(pengelola_gedung);
-      if (response) {
+      // Jika berhasil dan ada response data, tampilkan pesan sukses
+      if (response?.data) {
         toast.success("Pengelola gedung berhasil dibuat!");
         // Refresh the list after creating
         await get().getPengelolaGedung();
+        set({ loading: false });
+        return;
       }
     } catch (error) {
+      // Jika API error, tampilkan pesan error
       if (axios.isAxiosError(error)) {
         toast.error(`${error.response?.data?.message}`);
         console.error(error);

@@ -1,21 +1,12 @@
 import init from ".";
-import { IAddSettings } from "../types/settings";
-
-export interface ISettings {
-  id: number;
-  nama_gedung: string;
-  harga_listrik: number;
-  jenis_listrik: string;
-  haos_url: string;
-  haos_token: string;
-  scheduler: number;
-}
+import { IResponse, IResponseData } from "../types/response";
+import { IAddSettings, IAddTorenSuccess, ISettings } from "../types/settings";
 
 export interface IRootSettings {
   settings: ISettings[];
 }
 
-export const getSettings = async () => {
+export const getSettings = async (): Promise<IResponseData<ISettings[]>> => {
   const response = await init.get("/setting", {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -24,7 +15,9 @@ export const getSettings = async () => {
   return response.data;
 };
 
-export const getSettingById = async (id: number) => {
+export const getSettingById = async (
+  id: number
+): Promise<IResponseData<ISettings>> => {
   const response = await init.get(`/setting/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -33,15 +26,15 @@ export const getSettingById = async (id: number) => {
   return response.data;
 };
 
-export const putSettings = async (
-  id: number,
-  nama_gedung: string,
-  harga_listrik: number,
-  haos_url: string,
-  jenis_listrik: string,
-  haos_token: string,
-  scheduler: number
-): Promise<ISettings> => {
+export const putSettings = async ({
+  id,
+  nama_gedung,
+  harga_listrik,
+  jenis_listrik,
+  haos_url,
+  haos_token,
+  scheduler,
+}: ISettings): Promise<IResponseData<ISettings>> => {
   const response = await init.put(
     `/setting/${id}`,
     {
@@ -62,15 +55,15 @@ export const putSettings = async (
   return response.data;
 };
 
-const addSetting = async (
-  nama_gedung: string,
-  harga_listrik: number,
-  haos_url: string,
-  jenis_listrik: string,
-  haos_token: string,
-  scheduler: number,
-  data_toren: { monitoring_name: string; kapasitas_toren: number }[]
-): Promise<IAddSettings> => {
+const addSetting = async ({
+  nama_gedung,
+  harga_listrik,
+  jenis_listrik,
+  haos_url,
+  haos_token,
+  scheduler,
+  data_toren,
+}: IAddSettings): Promise<IResponseData<IAddTorenSuccess>> => {
   const response = await init.post(
     "/setting",
     {
@@ -79,7 +72,7 @@ const addSetting = async (
       jenis_listrik: jenis_listrik,
       haos_url: haos_url,
       haos_token: haos_token,
-      scheduler: parseInt(scheduler as unknown as string),
+      scheduler: scheduler,
       data_toren: data_toren,
     },
     {
@@ -91,7 +84,7 @@ const addSetting = async (
   return response.data;
 };
 
-const deleteSetting = async (id: number) => {
+const deleteSetting = async (id: number): Promise<IResponse> => {
   const response = await init.delete(`/setting/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,

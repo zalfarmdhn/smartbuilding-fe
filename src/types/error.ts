@@ -1,5 +1,5 @@
-export interface IErrorAPI {
+import { IResponse } from "./response";
+
+export interface IErrorAPI extends IResponse {
   error: string;
-  message: string;
-  status: string;
 }

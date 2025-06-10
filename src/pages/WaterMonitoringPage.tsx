@@ -38,7 +38,7 @@ export default function WaterMonitoringPage() {
       <div className="flex flex-wrap items-center justify-center bg-primary-400 rounded-lg p-3 sm:p-4 shadow-md mb-4">
         <Droplet className="w-6 h-6 sm:w-8 sm:h-8 text-white mr-2" />
         <h1 className="text-white font-bold text-lg sm:text-xl md:text-2xl">
-          Monitoring Air {waterData.namaGedung || "Gedung"}
+          Monitoring Air {waterData.nama_gedung || "Gedung"}
           <br />
           {!error && <span>(Realtime {scheduler} detik)</span>}
         </h1>
@@ -49,7 +49,7 @@ export default function WaterMonitoringPage() {
           Statistik Toren Air
         </h2>
         <div className="space-y-3 sm:space-y-4">
-          {waterData?.KapasitasToren?.map((toren) => (
+          {waterData?.kapasitasToren?.map((toren) => (
             <CardToren
               key={toren.nama}
               torenTitle={toren.nama}

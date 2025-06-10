@@ -8,22 +8,7 @@ import { IMeRoot } from "../types/me";
 import axios from "axios";
 import { IErrorAPI } from "../types/error";
 import toast from "react-hot-toast";
-
-type MonitoringStatus = [
-  { "monitoring air": "unknown" | "offline" | "online" },
-  { "monitoring listrik": "unknown" | "offline" | "online" }
-];
-
-type Settings = {
-  id: number;
-  nama_gedung: string;
-  haos_url: string;
-  haos_token: string;
-  scheduler: number;
-  harga_listrik: number;
-  jenis_listrik: string;
-  monitoring_status: MonitoringStatus;
-};
+import { ISettings } from "../types/settings";
 
 interface ISettingsRoot {
   scheduler: number | null;
@@ -31,7 +16,7 @@ interface ISettingsRoot {
   dataUser: IMeRoot | null;
   errorMe: null | IErrorAPI;
   loading: boolean;
-  settings: Settings[];
+  settings: ISettings[];
   getSettings: () => Promise<void>;
   getCurrentUser: () => Promise<void>;
   getIdBangunanState: () => number | null;
@@ -74,9 +59,9 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
       set({ loading: true });
       const response = await settingAPI.getSettings();
       set({
-        scheduler: response[0].scheduler,
-        idBangunan: response[0].id,
-        settings: response,
+        scheduler: response.data[0].scheduler,
+        idBangunan: response.data[0].id,
+        settings: response.data,
       });
       set({ loading: false });
     } catch (error) {
@@ -117,7 +102,7 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
   setIdBangunanState: async (newId: number) => {
     setIdBangunan(String(newId));
     const response = await settingAPI.getSettingById(newId);
-    set({ scheduler: response.scheduler });
+    set({ scheduler: response.data.scheduler });
     useWaterMonitoring.setState({ loading: true });
     useElectricMonitoring.setState({ loading: true });
     // Import the stores at the top of the file
@@ -152,15 +137,15 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
     data_toren: IDataToren[]
   ) => {
     try {
-      await settingAPI.addSetting(
+      await settingAPI.addSetting({
         nama_gedung,
         harga_listrik,
         haos_url,
         jenis_listrik,
         haos_token,
         scheduler,
-        data_toren
-      );
+        data_toren,
+      });
       toast.success("Setting berhasil ditambahkan!");
       await get().getSettings();
     } catch (error) {
@@ -185,15 +170,15 @@ export const useSettings = create<ISettingsRoot>((set, get) => ({
     scheduler: number
   ) => {
     try {
-      await settingAPI.putSettings(
+      await settingAPI.putSettings({
         id,
         nama_gedung,
         harga_listrik,
         haos_url,
         jenis_listrik,
         haos_token,
-        scheduler
-      );
+        scheduler,
+      });
       toast.success("Setting berhasil diperbarui!");
       await get().getSettings();
     } catch (error) {

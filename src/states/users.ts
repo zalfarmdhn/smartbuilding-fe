@@ -55,13 +55,13 @@ export const useUsers = create<IUserState>((set, get) => ({
   createUser: async (username, email, password, role, pengelola_gedung) => {
     try {
       set({ loading: true, error: null });
-      await userAPI.createUser(
+      await userAPI.createUser({
         username,
         email,
         password,
         role,
-        pengelola_gedung
-      );
+        pengelola_gedung,
+      });
       toast.success("User berhasil dibuat!");
       // Refresh the users list
       await get().getUsers();

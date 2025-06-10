@@ -1,10 +1,7 @@
-interface IWaterData {
-  namaGedung: string;
-  KapasitasToren: IKapasitasToren[];
-  AirKeluar: string;
-  AirMasuk: string;
-  UpdatedAt: string;
-}
+type TWaterPipe = {
+  pipa: string;
+  volume: string;
+};
 
 interface IKapasitasToren {
   nama: string;
@@ -14,22 +11,27 @@ interface IKapasitasToren {
   created_at: string;
 }
 
+export interface IWaterData {
+  nama_gedung: string;
+  kapasitasToren: IKapasitasToren[];
+  AirKeluar: string;
+  AirMasuk: string;
+  CreatedAt: string;
+  UpdatedAt: string;
+}
+
+export interface IWaterChart {
+  DataPenggunaanHarian: Record<string, TWaterPipe[]>;
+  DataPenggunaanMingguan: Record<string, TWaterPipe[]>;
+  DataPenggunaanBulanan: Record<string, TWaterPipe[]>;
+  DataPenggunaanTahunan: Record<string, TWaterPipe[]>;
+}
+
+export interface IWaterResponse extends IWaterData, IWaterChart {}
+
 export interface WaterMonitoringState {
   waterData: IWaterData;
-  waterChart: {
-    DataPenggunaanHarian: {
-      [key: string]: Array<{ pipa: string; volume: string }>;
-    };
-    DataPenggunaanMingguan: {
-      [key: string]: Array<{ pipa: string; volume: string }>;
-    };
-    DataPenggunaanBulanan: {
-      [key: string]: Array<{ pipa: string; volume: string }>;
-    };
-    DataPenggunaanTahunan: {
-      [key: string]: Array<{ pipa: string; volume: string }>;
-    };
-  };
+  waterChart: IWaterChart;
   error: string;
   loading: boolean;
   isMonitoringOnline: () => boolean;

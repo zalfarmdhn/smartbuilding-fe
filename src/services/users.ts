@@ -1,7 +1,8 @@
 import init from ".";
-import { IUserResponse, IUsersResponse } from "../types/users";
+import { IResponse, IResponseData } from "../types/response";
+import { IUser, IUserPengelola } from "../types/users";
 
-export const getUsers = async (): Promise<IUsersResponse | undefined> => {
+export const getUsers = async (): Promise<IResponseData<IUser[]>> => {
   const response = await init.get("/users", {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -12,7 +13,7 @@ export const getUsers = async (): Promise<IUsersResponse | undefined> => {
 
 export const getUserById = async (
   id: number
-): Promise<IUserResponse | undefined> => {
+): Promise<IResponseData<IUser>> => {
   const response = await init.get(`/users/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -21,15 +22,13 @@ export const getUserById = async (
   return response.data;
 };
 
-export const createUser = async (
-  username: string,
-  email: string,
-  password: string,
-  role: string,
-  pengelola_gedung?: Array<{
-    setting_id: number;
-  }>
-): Promise<IUserResponse | undefined> => {
+export const createUser = async ({
+  username,
+  email,
+  password,
+  role,
+  pengelola_gedung,
+}: IUserPengelola): Promise<IResponseData<IUserPengelola> | undefined> => {
   const response = await init.post(
     "/users",
     {
@@ -54,7 +53,7 @@ export const updateUser = async (
   email: string,
   password: string,
   role: string
-): Promise<IUserResponse | undefined> => {
+): Promise<IResponseData<IUser> | undefined> => {
   const response = await init.put(
     `/users/${id}`,
     {
@@ -72,7 +71,7 @@ export const updateUser = async (
   return response.data;
 };
 
-export const deleteUser = async (id: number) => {
+export const deleteUser = async (id: number): Promise<IResponse> => {
   const response = await init.delete(`/users/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -84,7 +83,7 @@ export const deleteUser = async (id: number) => {
 export const changePassword = async (
   oldPassword: string,
   newPassword: string
-) => {
+): Promise<IResponse> => {
   const response = await init.put(
     "/change-password",
     {

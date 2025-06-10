@@ -35,9 +35,9 @@ export default function ElectricMonitoringPage() {
   return (
     <div className="w-full max-w-[1200px] h-fit flex flex-col gap-4 mx-auto px-4 md:px-6">
       <div className="flex items-center gap-2 mx-auto bg-primary-400 rounded-lg p-4 shadow-md mb-2 w-full">
-        <Zap className="w-6 h-6 md:w-8 md:h-8 text-white" />
+        <Zap className="w-6 h-6 md:w-8 md:h-8 text-white" />{" "}
         <h1 className="text-white font-bold text-lg md:text-2xl">
-          Monitoring Listrik {electricData.namaGedung || "Gedung"}
+          Monitoring Listrik {electricData.nama_gedung || "Gedung"}
           <br />
           {!error && <span>(Realtime {scheduler} detik)</span>}
         </h1>

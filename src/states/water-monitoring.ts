@@ -6,10 +6,11 @@ import { useSettings } from "./settings";
 
 export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
   waterData: {
-    namaGedung: "",
-    KapasitasToren: [],
+    nama_gedung: "",
+    kapasitasToren: [],
     AirKeluar: "",
     AirMasuk: "",
+    CreatedAt: "",
     UpdatedAt: "",
   },
   waterChart: {
@@ -32,10 +33,12 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
     try {
       const idBangunan = parseInt(getIdBangunan() || "1");
       const response = await waterMonitoring.getMonitoringAir(idBangunan);
+      console.log(`INI RESPONSEA response`, response);
+      const responseData = response.data[0];
 
       // Simpan data ke localStorage setiap kali berhasil fetch
       // console.log("Data monitoring air berhasil di-fetch dan disimpan");
-      setDataMonitoring(JSON.stringify(response));
+      setDataMonitoring(JSON.stringify(responseData));
 
       // Cek status monitoring untuk menentukan apakah menggunakan data real-time atau backup
       const isOnline = useWaterMonitoring.getState().isMonitoringOnline();
@@ -47,25 +50,23 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
         throw new Error(
           "Data monitoring air offline, menggunakan data dari backup."
         );
-      }
-
-      // Jika online, gunakan data dari API
+      } // Jika online, gunakan data dari API
       set({
         waterData: {
-          namaGedung: response.nama_gedung,
-          KapasitasToren: response.kapasitasToren,
-          AirKeluar: response.AirKeluar,
-          AirMasuk: response.AirMasuk,
-          UpdatedAt: response.UpdatedAt,
+          nama_gedung: responseData.nama_gedung,
+          kapasitasToren: responseData.kapasitasToren,
+          AirKeluar: responseData.AirKeluar,
+          AirMasuk: responseData.AirMasuk,
+          CreatedAt: responseData.CreatedAt,
+          UpdatedAt: responseData.UpdatedAt,
         },
       });
       set({
         waterChart: {
-          DataPenggunaanHarian: response.DataPenggunaanHarian,
-          DataPenggunaanMingguan: response.DataPenggunaanMingguan,
-          DataPenggunaanBulanan:
-            response.DataPenggunaanBulanan || response.DataPenggunaanTahunan,
-          DataPenggunaanTahunan: response.DataPenggunaanTahunan,
+          DataPenggunaanHarian: responseData.DataPenggunaanHarian,
+          DataPenggunaanMingguan: responseData.DataPenggunaanMingguan,
+          DataPenggunaanBulanan: responseData.DataPenggunaanBulanan,
+          DataPenggunaanTahunan: responseData.DataPenggunaanTahunan,
         },
       });
 
@@ -75,16 +76,16 @@ export const useWaterMonitoring = create<WaterMonitoringState>()((set) => ({
       // Ambil data dari localStorage jika API gagal atau status offline
       const backupData = localStorage.getItem(
         `dataTorenAir-${getIdBangunan()}`
-      );
-      // Jika ada data backup, gunakan data tersebut
+      ); // Jika ada data backup, gunakan data tersebut
       if (backupData) {
         const parsedData = JSON.parse(backupData);
         set({
           waterData: {
-            namaGedung: parsedData.nama_gedung || "",
-            KapasitasToren: parsedData.kapasitasToren || [],
+            nama_gedung: parsedData.nama_gedung || "",
+            kapasitasToren: parsedData.kapasitasToren || [],
             AirKeluar: parsedData.AirKeluar || "",
             AirMasuk: parsedData.AirMasuk || "",
+            CreatedAt: parsedData.CreatedAt || "",
             UpdatedAt: parsedData.UpdatedAt || "",
           },
           waterChart: {

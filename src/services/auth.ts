@@ -1,10 +1,11 @@
-import { ILoginApiResponse } from "../types/auth";
+import { AuthLogin as IAuthLogin } from "../types/auth";
+import { IResponse, IResponseData } from "../types/response";
 import init from "./";
 
-export const login = async (
+const login = async (
   email: string,
   password: string
-): Promise<ILoginApiResponse> => {
+): Promise<IResponseData<IAuthLogin>> => {
   const response = await init.post("/auth/login", {
     email: email,
     password: password,
@@ -12,4 +13,17 @@ export const login = async (
   return response.data;
 };
 
-export default { login };
+const logout = async (): Promise<IResponse> => {
+  const response = await init.post(
+    "/auth/logout",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export default { login, logout };

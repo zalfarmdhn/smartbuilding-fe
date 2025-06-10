@@ -1,3 +1,13 @@
+type TPenggunaanListrik = {
+  nama: string;
+  Value: string;
+};
+
+type TBiayaListrik = {
+  Nama: string;
+  Biaya: string;
+};
+
 interface IBiayaPemakaian {
   Nama: string;
   Biaya: string;
@@ -7,36 +17,6 @@ interface IDayaListrik {
   nama: string;
   Value: string;
 }
-
-type THari =
-  | "Senin"
-  | "Selasa"
-  | "Rabu"
-  | "Kamis"
-  | "Jumat"
-  | "Sabtu"
-  | "Minggu";
-
-type TMinggu =
-  | "Minggu ke-1"
-  | "Minggu ke-2"
-  | "Minggu ke-3"
-  | "Minggu ke-4"
-  | "Minggu ke-5";
-
-type TBulan =
-  | "Januari"
-  | "Februari"
-  | "Maret"
-  | "April"
-  | "Mei"
-  | "Juni"
-  | "Juli"
-  | "Agustus"
-  | "September"
-  | "Oktober"
-  | "November"
-  | "Desember";
 
 interface IBiayaPemakaian {
   Nama: string;
@@ -49,39 +29,43 @@ interface IDayaListrik {
 }
 
 interface IElectricData {
-  namaGedung: string;
+  nama_gedung: string;
   TotalWatt: string;
   TotalDayaListrik: IDayaListrik[];
   BiayaPemakaian: IBiayaPemakaian[];
+  CreatedAt: string;
   UpdatedAt: string;
 }
 
 interface IElectricChart {
   DataPenggunaanListrikHarian: {
-    [key in THari]: Array<{ nama: string; Value: string }>;
+    [key: string]: TPenggunaanListrik[];
   };
   DataBiayaListrikHarian: {
-    [key in THari]: Array<{ Nama: string; Biaya: string }>;
+    [key: string]: TBiayaListrik[];
   };
   DataPenggunaanListrikMingguan: {
-    [key in TMinggu]: Array<{ nama: string; Value: string }>;
+    [key: string]: TPenggunaanListrik[];
   };
   DataBiayaListrikMingguan: {
-    [key in TMinggu]: Array<{ Nama: string; Biaya: string }>;
+    [key: string]: TBiayaListrik[];
   };
   DataPenggunaanListrikBulanan: {
-    [key in TBulan]: Array<{ nama: string; Value: string }>;
+    [key: string]: TPenggunaanListrik[];
   };
   DataBiayaListrikBulanan: {
-    [key in TBulan]: Array<{ Nama: string; Biaya: string }>;
+    [key: string]: TBiayaListrik[];
   };
   DataPenggunaanListrikTahunan: {
-    [key: string]: Array<{ nama: string; Value: string }>;
+    [key: string]: TPenggunaanListrik[];
   };
   DataBiayaListrikTahunan: {
-    [key: string]: Array<{ Nama: string; Biaya: string }>;
+    [key: string]: TBiayaListrik[];
   };
 }
+
+export interface IElectricResponse extends IElectricData, IElectricChart {}
+
 export interface ElectricMonitorState {
   electricData: IElectricData;
   electricChart: IElectricChart;
