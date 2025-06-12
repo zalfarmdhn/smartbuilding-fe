@@ -24,7 +24,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 p-4 container">
+    <div className="flex flex-col gap-4 p-4 mx-auto container">
       <div className="mb-3">
         <h2 className="text-[#273C97] font-bold text-xl md:text-2xl">
           Dashboard Smart Building

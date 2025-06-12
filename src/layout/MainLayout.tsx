@@ -57,13 +57,13 @@ export default function MainLayout() {
 
   return (
     <>
-      <SidebarComponent />
-      <div className="p-4 pt-16 sm:ml-64 bg-[#E9EDEF] min-h-screen">
-        <div>
-          <Toaster />
+      <div className="mt-14">
+        <SidebarComponent />
+        <Toaster />
+        <div className="tablet:ml-64">
+          <Outlet />
+          <ScrollRestoration />
         </div>
-        <Outlet />
-        <ScrollRestoration />
       </div>
     </>
   );

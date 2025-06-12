@@ -22,7 +22,7 @@ export default function ButtonGroupComponent({
   return (
     <div className="relative">
       {/* Mobile dropdown */}
-      <div className="md:hidden">
+      <div className="sm:hidden md:hidden">
         <Button
           className="w-full bg-primary-500 text-white hover:bg-primary-600"
           onClick={() => setShowDropdown(!showDropdown)}>
@@ -64,7 +64,7 @@ export default function ButtonGroupComponent({
       </div>
 
       {/* Desktop button group */}
-      <div className="hidden md:block">
+      <div className="hidden sm:blockj md:block">
         <Button.Group theme={customTheme}>
           <Button
             className={`hover:!bg-secondary-100 ${

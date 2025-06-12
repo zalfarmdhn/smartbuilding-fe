@@ -55,7 +55,7 @@ export default function WaterGraph() {
         {/* Dropdown untuk memilih periode spesifik telah dihapus */}
       </div>
 
-      <div className="bg-white p-2 sm:p-4 rounded-lg shadow-md overflow-x-auto">
+      <div className="bg-[#F9FAFB] p-2 sm:p-4 rounded-lg shadow-md overflow-x-auto">
         <div className="min-h-[300px] md:min-h-[400px] w-full">
           <Linechart {...getChartData()} />
         </div>
