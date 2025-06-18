@@ -64,7 +64,7 @@ export default function ButtonGroupComponent({
       </div>
 
       {/* Desktop button group */}
-      <div className="hidden sm:blockj md:block">
+      <div className="hidden sm:block md:block">
         <Button.Group theme={customTheme}>
           <Button
             className={`hover:!bg-secondary-100 ${

@@ -323,12 +323,14 @@ export default function Barchart({
       },
       scales: {
         x: {
+          type: "category" as const,
           ticks: {
             font: {
               size: chartWidth < 400 ? 10 : 12,
             },
             maxRotation: chartWidth < 600 ? 90 : 0,
             minRotation: chartWidth < 600 ? 45 : 0,
+            autoSkip: false,
           },
         },
         y: {

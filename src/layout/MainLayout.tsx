@@ -57,7 +57,7 @@ export default function MainLayout() {
 
   return (
     <>
-      <div className="mt-14">
+      <div className="mt-14 bg-[#F9FAFB]">
         <SidebarComponent />
         <Toaster />
         <div className="tablet:ml-64">

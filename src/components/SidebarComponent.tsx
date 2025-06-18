@@ -174,7 +174,7 @@ export default function SidebarComponent() {
                         <li>
                           <a
                             onClick={() => {
-                              navigate("/change-password");
+                              navigate("/dashboard/change-password");
                               setUserPopup(false);
                             }}
                             className="block px-4 py-2 text-sm text-gray-600 cursor-pointer hover:bg-gray-300 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"

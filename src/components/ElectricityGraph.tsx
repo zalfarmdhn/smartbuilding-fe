@@ -3,7 +3,7 @@ import Barchart from "./charts/Barchart";
 import { useElectricMonitoring } from "../states/electricity-monitoring";
 import ButtonGroup from "./ButtonGroup";
 
-type DataType = 'biaya' | 'penggunaan';
+type DataType = "biaya" | "penggunaan";
 
 export default function ElectricityGraph() {
   const [dataType, setDataType] = useState<DataType>("biaya"); // Default to biaya
@@ -94,7 +94,7 @@ export default function ElectricityGraph() {
   };
 
   return (
-    <div className="p-4 bg-[#F9FAFB] rounded-lg shadow-md">
+    <div className="p-4 bg-[#F9FAFB] rounded-lg shadow-md border-primary-400 border-2">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-gray-800">
           {dataType === "biaya" ? "Biaya Listrik" : "Penggunaan Listrik"}
