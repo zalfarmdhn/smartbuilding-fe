@@ -10,8 +10,6 @@ import { useSettings } from "../states/settings";
 import { useEffect } from "react";
 
 export default function WaterMonitoringPage() {
-  // const [loading, setIsLoading] = useState(true);
-
   const waterData = useWaterMonitoring((state) => state.waterData);
   const loading = useWaterMonitoring((state) => state.loading);
   const error = useWaterMonitoring((state) => state.error);
@@ -20,9 +18,6 @@ export default function WaterMonitoringPage() {
   useEffect(() => {
     document.title = "Smartbuilding | Monitoring Air";
   }, []);
-
-  // console.log(`ini air data`, waterData);
-  // console.log(`ini loading`, loading);
 
   if (loading) {
     return (

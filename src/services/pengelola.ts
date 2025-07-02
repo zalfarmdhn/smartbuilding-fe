@@ -46,7 +46,8 @@ export const putPengelolaGedung = async (
   const response = await init.put(
     `/pengelola_gedung/${id}`,
     {
-      pengelola_gedung,
+      id_user: pengelola_gedung.id_user,
+      id_setting: pengelola_gedung.id_setting,
     },
     {
       headers: {
